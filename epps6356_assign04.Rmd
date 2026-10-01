@@ -1,0 +1,215 @@
+---
+title: "Assignment 4. Hackathon (Team Project)"
+author:
+  - "Solbee Kim (Coordinator)"
+  - "Evandro M. S. Gomes"
+  - "John Vasconcelos"
+date: "2026-10-01"
+format:
+  html:
+    toc: true
+editor: visual
+---
+
+# Setting
+
+```{r cleaning}
+rm(list = ls())
+```
+
+\
+
+## Library
+
+```{r library}
+library(readxl)
+
+# Graph 1
+library(dplyr)
+library(ggplot2)
+
+# Graph 2
+library(gt)
+library(gtExtras)
+library(tidyverse)
+library(glue)
+```
+
+\
+
+## File
+
+```{r HPI_data}
+hpi_raw <- read_excel("Happy-Planet-Index-2006-2025-public-data-set.xlsx", 
+                        sheet = "All Data", skip = 1)
+```
+
+## Data Check
+
+```{r HPI_naming}
+hpi <- hpi_raw[, !names(hpi_raw) %in% c("...15", "...21", "...22", "...23")]
+hpi_year <- hpi[hpi$Year == 2025, ]
+
+# Note from data file
+continent_map <- c(
+  "1" = "Latin America",
+  "2" = "North America & Oceania",
+  "3" = "Western Europe",
+  "4" = "Middle East",
+  "5" = "Africa",
+  "6" = "South Asia",
+  "7" = "Eastern Europe & Central Asia",
+  "8" = "East Asia"
+)
+
+hpi_year$Continent_name <- factor(continent_map[as.character(hpi_year$Continent)])
+```
+
+\
+\
+\
+
+# Solbee Kim
+
+## Chart 1. Variable-width column
+
+```{r chart1_data}
+chart1_data <- hpi_year %>%
+  group_by(Continent_name) %>%
+  summarise(
+    total_pop = sum(Population, na.rm = TRUE),
+    mean_hpi  = mean(HPI, na.rm = TRUE)
+  ) %>%
+  arrange(desc(mean_hpi)) %>%
+  mutate(
+    xmax = cumsum(total_pop),
+    xmin = xmax - total_pop,
+    xmid = (xmin + xmax) / 2
+  )
+```
+
+\
+
+```{r chart1_plot}
+rainbow <- c("#FFADAD", "#FFC6FF", "#F0E68C", "#CAFCCF", 
+             "#9BF6FF", "#A0C4FF", "#BDB2FF", "#FFD6A5")
+
+ggplot(chart1_data) +
+  geom_rect(aes(xmin = xmin, xmax = xmax, ymin = 0, ymax = mean_hpi,
+                fill = Continent_name),
+            color = "white", linewidth = 0.5) +
+  geom_text(aes(x = xmid, y = mean_hpi + 2, label = round(mean_hpi, 1)),
+          size = 3.0, fontface = "italic") +
+  scale_fill_manual(values = rainbow, name = "Region") +
+  scale_x_continuous(labels = scales::comma) +
+  scale_y_continuous(limits = c(0, 65), expand = c(0, 0)) +
+  labs(
+    title = "No link between population and wellbeing",
+    x = "Cumulative population",
+    y = "Mean of HPI Score",
+    caption = "*Source: Happy Planet Index 2025, Hot or Cool Institute"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "right",
+        panel.grid.minor = element_blank(),
+        plot.margin = margin(t = 10, r = 10, b = 10, l = 10),
+        plot.title = element_text(hjust = 0.5, face = "bold"),
+        plot.caption = element_text(hjust = 1),
+        plot.title.position = "plot",
+        plot.caption.position = "plot",
+        axis.title.x = element_text(margin = margin(t = 10)),
+        axis.title.y = element_text(margin = margin(r = 10)))
+```
+
+\
+\
+
+## Chart 2. Table with Embedded Charts
+
+```{r char2_data}
+chart2_data <- hpi_year %>%
+  group_by(Continent_name) %>%
+  slice_max(order_by = HPI, n = 5) %>%
+  ungroup() %>%
+  arrange(Continent_name, desc(HPI)) %>%
+  select(Continent_name, Country, HPI, `Life Expectancy`, `Ecological Footprint`)
+
+```
+
+\
+
+```{r chart2_plot}
+# Rounded to two decimal places 
+make_bar <- function(value, max_value, color) {
+  width_pct <- round(100 * value / max_value, 1)
+  value_rounded <- round(value, 2)
+  glue(
+    '<div style="display:flex; align-items:center; gap:6px;">
+       <div style="background:{color}; width:{width_pct}px; height:14px;"></div>
+       <span>{value_rounded}</span>
+     </div>'
+  )
+}
+
+chart2_data <- chart2_data %>%
+  mutate(
+    HPI_bar = map_chr(HPI, ~make_bar(.x, max(HPI, na.rm = TRUE), "#FFD6A5")),
+    LifeExp_bar = map_chr(`Life Expectancy`, ~make_bar(.x, max(`Life Expectancy`, na.rm = TRUE), "#A0C4FF"))
+  )
+
+
+# Graph
+chart2_data %>%
+  select(Continent_name, Country, HPI_bar, LifeExp_bar, `Ecological Footprint`) %>%
+  gt(groupname_col = "Continent_name") %>%
+  fmt_markdown(columns = c(HPI_bar, LifeExp_bar)) %>%
+  fmt_number(columns = `Ecological Footprint`, decimals = 2) %>%
+  tab_header(
+    title = "Top 5 countries by HPI score, within each region, 2025"
+  ) %>%
+  tab_source_note("*Source: Happy Planet Index 2025, Hot or Cool Institute") %>%
+  cols_label(
+    Country = "Country",
+    HPI_bar = "HPI Score",
+    LifeExp_bar = "Life Expectancy (yrs)",
+    `Ecological Footprint` = "Ecological Footprint (gha)"
+  ) %>%
+  tab_style(
+    style = cell_text(weight = "bold", align = "center"),
+    locations = cells_title()
+  ) %>%
+  tab_style(
+    style = cell_text(style = "italic"),
+    locations = cells_source_notes()
+  ) %>%
+  tab_style(
+    style = cell_text(weight = "bold"),
+    locations = cells_row_groups()
+  )
+```
+
+
+\
+\
+\
+
+# 
+
+
+
+\
+\
+\
+
+# 
+
+
+\
+\
+\
+
+```{r }
+sessionInfo()
+```
+
+
