@@ -1,0 +1,1669 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Solbee Kim (Coordinator)">
+<meta name="author" content="Evandro M. S. Gomes">
+<meta name="author" content="John Vasconcelos">
+<meta name="dcterms.date" content="2026-10-02">
+
+<title>Assignment 4. Hackathon (Team Project)</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="epps6356_assign04_files/libs/clipboard/clipboard.min.js"></script>
+<script src="epps6356_assign04_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="epps6356_assign04_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="epps6356_assign04_files/libs/quarto-html/popper.min.js"></script>
+<script src="epps6356_assign04_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="epps6356_assign04_files/libs/quarto-html/anchor.min.js"></script>
+<link href="epps6356_assign04_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="epps6356_assign04_files/libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="epps6356_assign04_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="epps6356_assign04_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="epps6356_assign04_files/libs/bootstrap/bootstrap-215b371544c282197b31c8aa00ce3677.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#setting" id="toc-setting" class="nav-link active" data-scroll-target="#setting">Setting</a></li>
+  <li><a href="#libraries" id="toc-libraries" class="nav-link" data-scroll-target="#libraries">Libraries</a></li>
+  <li><a href="#file" id="toc-file" class="nav-link" data-scroll-target="#file">File</a></li>
+  <li><a href="#data-check" id="toc-data-check" class="nav-link" data-scroll-target="#data-check">Data Check</a></li>
+  <li><a href="#solbee-kim" id="toc-solbee-kim" class="nav-link" data-scroll-target="#solbee-kim">Solbee Kim</a>
+  <ul class="collapse">
+  <li><a href="#chart-1.-variable-width-column" id="toc-chart-1.-variable-width-column" class="nav-link" data-scroll-target="#chart-1.-variable-width-column">Chart 1. Variable-width column</a></li>
+  <li><a href="#chart-2.-table-with-embedded-charts" id="toc-chart-2.-table-with-embedded-charts" class="nav-link" data-scroll-target="#chart-2.-table-with-embedded-charts">Chart 2. Table with Embedded Charts</a></li>
+  </ul></li>
+  <li><a href="#john-vasconcelos" id="toc-john-vasconcelos" class="nav-link" data-scroll-target="#john-vasconcelos">John Vasconcelos</a>
+  <ul class="collapse">
+  <li><a href="#chart-3.-bar-chart" id="toc-chart-3.-bar-chart" class="nav-link" data-scroll-target="#chart-3.-bar-chart">Chart 3. Bar Chart</a></li>
+  </ul></li>
+  <li><a href="#evandro-gomes" id="toc-evandro-gomes" class="nav-link" data-scroll-target="#evandro-gomes">Evandro Gomes</a>
+  <ul class="collapse">
+  <li><a href="#chart-4.-column-chart" id="toc-chart-4.-column-chart" class="nav-link" data-scroll-target="#chart-4.-column-chart">Chart 4. Column chart</a></li>
+  </ul></li>
+  <li><a href="#session-info" id="toc-session-info" class="nav-link" data-scroll-target="#session-info">Session Info</a></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Assignment 4. Hackathon (Team Project)</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Authors</div>
+    <div class="quarto-title-meta-contents">
+             <p>Solbee Kim (Coordinator) </p>
+             <p>Evandro M. S. Gomes </p>
+             <p>John Vasconcelos </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">October 2, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="setting" class="level2">
+<h2 class="anchored" data-anchor-id="setting">Setting</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(<span class="at">list =</span> <span class="fu">ls</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="libraries" class="level2">
+<h2 class="anchored" data-anchor-id="libraries">Libraries</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Graph 1</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Graph 2</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gt)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gtExtras)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glue)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Graph 3</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="file" class="level2">
+<h2 class="anchored" data-anchor-id="file">File</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>hpi_raw <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">"Happy-Planet-Index-2006-2025-public-data-set.xlsx"</span>, </span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>                        <span class="at">sheet =</span> <span class="st">"All Data"</span>, <span class="at">skip =</span> <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="data-check" class="level2">
+<h2 class="anchored" data-anchor-id="data-check">Data Check</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>hpi <span class="ot">&lt;-</span> hpi_raw[, <span class="sc">!</span><span class="fu">names</span>(hpi_raw) <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"...15"</span>, <span class="st">"...21"</span>, <span class="st">"...22"</span>, <span class="st">"...23"</span>)]</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>hpi_year <span class="ot">&lt;-</span> hpi[hpi<span class="sc">$</span>Year <span class="sc">==</span> <span class="dv">2025</span>, ]</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Note from data file</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>continent_map <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"1"</span> <span class="ot">=</span> <span class="st">"Latin America"</span>,</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">"2"</span> <span class="ot">=</span> <span class="st">"North America &amp; Oceania"</span>,</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">"3"</span> <span class="ot">=</span> <span class="st">"Western Europe"</span>,</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">"4"</span> <span class="ot">=</span> <span class="st">"Middle East"</span>,</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="st">"5"</span> <span class="ot">=</span> <span class="st">"Africa"</span>,</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="st">"6"</span> <span class="ot">=</span> <span class="st">"South Asia"</span>,</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="st">"7"</span> <span class="ot">=</span> <span class="st">"Eastern Europe &amp; Central Asia"</span>,</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="st">"8"</span> <span class="ot">=</span> <span class="st">"East Asia"</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>hpi_year<span class="sc">$</span>Continent_name <span class="ot">&lt;-</span> <span class="fu">factor</span>(continent_map[<span class="fu">as.character</span>(hpi_year<span class="sc">$</span>Continent)])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<hr>
+</section>
+<section id="solbee-kim" class="level1">
+<h1>Solbee Kim</h1>
+<section id="chart-1.-variable-width-column" class="level2">
+<h2 class="anchored" data-anchor-id="chart-1.-variable-width-column">Chart 1. Variable-width column</h2>
+<p><em>Data setup</em></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>chart1_data <span class="ot">&lt;-</span> hpi_year <span class="sc">%&gt;%</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Continent_name) <span class="sc">%&gt;%</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">total_pop =</span> <span class="fu">sum</span>(Population, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_hpi  =</span> <span class="fu">mean</span>(HPI, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(mean_hpi)) <span class="sc">%&gt;%</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">xmax =</span> <span class="fu">cumsum</span>(total_pop),</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">xmin =</span> xmax <span class="sc">-</span> total_pop,</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">xmid =</span> (xmin <span class="sc">+</span> xmax) <span class="sc">/</span> <span class="dv">2</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><em>Plotting</em></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>rainbow <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"#FFADAD"</span>, <span class="st">"#FFC6FF"</span>, <span class="st">"#F0E68C"</span>, <span class="st">"#CAFCCF"</span>, </span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>             <span class="st">"#9BF6FF"</span>, <span class="st">"#A0C4FF"</span>, <span class="st">"#BDB2FF"</span>, <span class="st">"#FFD6A5"</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(chart1_data) <span class="sc">+</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_rect</span>(<span class="fu">aes</span>(<span class="at">xmin =</span> xmin, <span class="at">xmax =</span> xmax, <span class="at">ymin =</span> <span class="dv">0</span>, <span class="at">ymax =</span> mean_hpi,</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>                <span class="at">fill =</span> Continent_name),</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">linewidth =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">x =</span> xmid, <span class="at">y =</span> mean_hpi <span class="sc">+</span> <span class="dv">2</span>, <span class="at">label =</span> <span class="fu">round</span>(mean_hpi, <span class="dv">1</span>)),</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>          <span class="at">size =</span> <span class="fl">3.0</span>, <span class="at">fontface =</span> <span class="st">"italic"</span>) <span class="sc">+</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> rainbow, <span class="at">name =</span> <span class="st">"Region"</span>) <span class="sc">+</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span>comma) <span class="sc">+</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">65</span>), <span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)) <span class="sc">+</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"No link between population and wellbeing"</span>,</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Cumulative population"</span>,</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Mean of HPI Score"</span>,</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">"*Source: Happy Planet Index 2025, Hot or Cool Institute"</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">12</span>) <span class="sc">+</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"right"</span>,</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.grid.minor =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>        <span class="at">plot.margin =</span> <span class="fu">margin</span>(<span class="at">t =</span> <span class="dv">10</span>, <span class="at">r =</span> <span class="dv">10</span>, <span class="at">b =</span> <span class="dv">10</span>, <span class="at">l =</span> <span class="dv">10</span>),</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>        <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>        <span class="at">plot.caption =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="dv">1</span>),</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>        <span class="at">plot.title.position =</span> <span class="st">"plot"</span>,</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>        <span class="at">plot.caption.position =</span> <span class="st">"plot"</span>,</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.title.x =</span> <span class="fu">element_text</span>(<span class="at">margin =</span> <span class="fu">margin</span>(<span class="at">t =</span> <span class="dv">10</span>)),</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.title.y =</span> <span class="fu">element_text</span>(<span class="at">margin =</span> <span class="fu">margin</span>(<span class="at">r =</span> <span class="dv">10</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="epps6356_assign04_files/figure-html/chart1_plot-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="chart-2.-table-with-embedded-charts" class="level2">
+<h2 class="anchored" data-anchor-id="chart-2.-table-with-embedded-charts">Chart 2. Table with Embedded Charts</h2>
+<p><em>Data setup</em></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>chart2_data <span class="ot">&lt;-</span> hpi_year <span class="sc">%&gt;%</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Continent_name) <span class="sc">%&gt;%</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_max</span>(<span class="at">order_by =</span> HPI, <span class="at">n =</span> <span class="dv">5</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Continent_name, <span class="fu">desc</span>(HPI)) <span class="sc">%&gt;%</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Continent_name, Country, HPI, <span class="st">`</span><span class="at">Life Expectancy</span><span class="st">`</span>, <span class="st">`</span><span class="at">Ecological Footprint</span><span class="st">`</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><em>Plotting</em></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Rounded to two decimal places </span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>make_bar <span class="ot">&lt;-</span> <span class="cf">function</span>(value, max_value, color) {</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  width_pct <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="dv">100</span> <span class="sc">*</span> value <span class="sc">/</span> max_value, <span class="dv">1</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  value_rounded <span class="ot">&lt;-</span> <span class="fu">round</span>(value, <span class="dv">2</span>)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glue</span>(<span class="st">'&lt;span style="display:inline-block; width:100px; background:linear-gradient(to right, {color} {width_pct}%, transparent {width_pct}%); padding:2px 6px; border-radius:2px;"&gt;{value_rounded}&lt;/span&gt;'</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>chart2_data <span class="ot">&lt;-</span> chart2_data <span class="sc">%&gt;%</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">HPI_bar =</span> <span class="fu">map_chr</span>(HPI, <span class="sc">~</span><span class="fu">make_bar</span>(.x, <span class="fu">max</span>(HPI, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="st">"#FFD6A5"</span>)),</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">LifeExp_bar =</span> <span class="fu">map_chr</span>(<span class="st">`</span><span class="at">Life Expectancy</span><span class="st">`</span>, <span class="sc">~</span><span class="fu">make_bar</span>(.x, <span class="fu">max</span>(<span class="st">`</span><span class="at">Life Expectancy</span><span class="st">`</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="st">"#A0C4FF"</span>))</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Graph</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>chart2_data <span class="sc">%&gt;%</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Continent_name, Country, HPI_bar, LifeExp_bar, <span class="st">`</span><span class="at">Ecological Footprint</span><span class="st">`</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>(<span class="at">groupname_col =</span> <span class="st">"Continent_name"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fmt_markdown</span>(<span class="at">columns =</span> <span class="fu">c</span>(HPI_bar, LifeExp_bar)) <span class="sc">%&gt;%</span></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fmt_number</span>(<span class="at">columns =</span> <span class="st">`</span><span class="at">Ecological Footprint</span><span class="st">`</span>, <span class="at">decimals =</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_header</span>(</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Top 5 countries by HPI score, within each region, 2025"</span></span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_source_note</span>(<span class="st">"*Source: Happy Planet Index 2025, Hot or Cool Institute"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cols_label</span>(</span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">Country =</span> <span class="st">"Country"</span>,</span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">HPI_bar =</span> <span class="st">"HPI Score"</span>,</span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">LifeExp_bar =</span> <span class="st">"Life Expectancy (yrs)"</span>,</span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Ecological Footprint</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"Ecological Footprint (gha)"</span></span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_style</span>(</span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">style =</span> <span class="fu">cell_text</span>(<span class="at">weight =</span> <span class="st">"bold"</span>, <span class="at">align =</span> <span class="st">"center"</span>),</span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">locations =</span> <span class="fu">cells_title</span>()</span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_style</span>(</span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">style =</span> <span class="fu">cell_text</span>(<span class="at">style =</span> <span class="st">"italic"</span>),</span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">locations =</span> <span class="fu">cells_source_notes</span>()</span>
+<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_style</span>(</span>
+<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">style =</span> <span class="fu">cell_text</span>(<span class="at">weight =</span> <span class="st">"bold"</span>),</span>
+<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">locations =</span> <span class="fu">cells_row_groups</span>()</span>
+<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div id="kmosbiplia" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#kmosbiplia table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#kmosbiplia thead, #kmosbiplia tbody, #kmosbiplia tfoot, #kmosbiplia tr, #kmosbiplia td, #kmosbiplia th {
+  border-style: none;
+}
+
+#kmosbiplia p {
+  margin: 0;
+  padding: 0;
+}
+
+#kmosbiplia .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#kmosbiplia .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#kmosbiplia .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#kmosbiplia .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#kmosbiplia .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#kmosbiplia .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#kmosbiplia .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#kmosbiplia .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#kmosbiplia .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#kmosbiplia .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#kmosbiplia .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#kmosbiplia .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#kmosbiplia .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#kmosbiplia .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#kmosbiplia .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#kmosbiplia .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#kmosbiplia .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#kmosbiplia .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#kmosbiplia .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#kmosbiplia .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#kmosbiplia .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#kmosbiplia .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#kmosbiplia .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#kmosbiplia .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#kmosbiplia .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#kmosbiplia .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#kmosbiplia .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#kmosbiplia .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#kmosbiplia .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#kmosbiplia .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#kmosbiplia .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#kmosbiplia .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#kmosbiplia .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#kmosbiplia .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#kmosbiplia .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#kmosbiplia .gt_left {
+  text-align: left;
+}
+
+#kmosbiplia .gt_center {
+  text-align: center;
+}
+
+#kmosbiplia .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#kmosbiplia .gt_font_normal {
+  font-weight: normal;
+}
+
+#kmosbiplia .gt_font_bold {
+  font-weight: bold;
+}
+
+#kmosbiplia .gt_font_italic {
+  font-style: italic;
+}
+
+#kmosbiplia .gt_super {
+  font-size: 65%;
+}
+
+#kmosbiplia .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#kmosbiplia .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#kmosbiplia .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#kmosbiplia .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#kmosbiplia .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#kmosbiplia .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#kmosbiplia .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#kmosbiplia .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#kmosbiplia div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+
+<table class="gt_table caption-top table table-sm table-striped small" data-quarto-bootstrap="false">
+<thead>
+<tr class="gt_heading header">
+<td colspan="4" class="gt_heading gt_title gt_font_normal gt_bottom_border" style="text-align: center; font-weight: bold;">Top 5 countries by HPI score, within each region, 2025</td>
+</tr>
+<tr class="gt_col_headings even">
+<th id="Country" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Country</th>
+<th id="HPI_bar" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">HPI Score</th>
+<th id="LifeExp_bar" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Life Expectancy (yrs)</th>
+<th id="Ecological-Footprint" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Ecological Footprint (gha)</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="gt_group_heading_row odd">
+<th colspan="4" id="Africa" class="gt_group_heading" data-quarto-table-cell-role="th" style="font-weight: bold" scope="colgroup">Africa</th>
+</tr>
+<tr class="gt_row_group_first even">
+<td class="gt_row gt_left" headers="Africa  Country">Mozambique</td>
+<td class="gt_row gt_left" headers="Africa  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 74.8%, transparent 74.8%); padding:2px 6px; border-radius:2px;">51.13</span></td>
+<td class="gt_row gt_left" headers="Africa  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 75.3%, transparent 75.3%); padding:2px 6px; border-radius:2px;">63.97</span></td>
+<td class="gt_row gt_right" headers="Africa  Ecological Footprint">0.59</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Africa  Country">Cameroon</td>
+<td class="gt_row gt_left" headers="Africa  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 72.2%, transparent 72.2%); padding:2px 6px; border-radius:2px;">49.34</span></td>
+<td class="gt_row gt_left" headers="Africa  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 75.6%, transparent 75.6%); padding:2px 6px; border-radius:2px;">64.25</span></td>
+<td class="gt_row gt_right" headers="Africa  Ecological Footprint">1.03</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Africa  Country">Uganda</td>
+<td class="gt_row gt_left" headers="Africa  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 70.5%, transparent 70.5%); padding:2px 6px; border-radius:2px;">48.2</span></td>
+<td class="gt_row gt_left" headers="Africa  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 80.8%, transparent 80.8%); padding:2px 6px; border-radius:2px;">68.71</span></td>
+<td class="gt_row gt_right" headers="Africa  Ecological Footprint">1.06</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Africa  Country">Mauritius</td>
+<td class="gt_row gt_left" headers="Africa  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 69.2%, transparent 69.2%); padding:2px 6px; border-radius:2px;">47.31</span></td>
+<td class="gt_row gt_left" headers="Africa  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 88.6%, transparent 88.6%); padding:2px 6px; border-radius:2px;">75.27</span></td>
+<td class="gt_row gt_right" headers="Africa  Ecological Footprint">3.96</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Africa  Country">Kenya</td>
+<td class="gt_row gt_left" headers="Africa  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 69%, transparent 69%); padding:2px 6px; border-radius:2px;">47.17</span></td>
+<td class="gt_row gt_left" headers="Africa  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 75.3%, transparent 75.3%); padding:2px 6px; border-radius:2px;">64.01</span></td>
+<td class="gt_row gt_right" headers="Africa  Ecological Footprint">0.99</td>
+</tr>
+<tr class="gt_group_heading_row odd">
+<th colspan="4" id="East Asia" class="gt_group_heading" data-quarto-table-cell-role="th" style="font-weight: bold" scope="colgroup">East Asia</th>
+</tr>
+<tr class="gt_row_group_first even">
+<td class="gt_row gt_left" headers="East Asia  Country">Philippines</td>
+<td class="gt_row gt_left" headers="East Asia  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 86.8%, transparent 86.8%); padding:2px 6px; border-radius:2px;">59.31</span></td>
+<td class="gt_row gt_left" headers="East Asia  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 82.4%, transparent 82.4%); padding:2px 6px; border-radius:2px;">70.07</span></td>
+<td class="gt_row gt_right" headers="East Asia  Ecological Footprint">1.37</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="East Asia  Country">Laos</td>
+<td class="gt_row gt_left" headers="East Asia  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 86.1%, transparent 86.1%); padding:2px 6px; border-radius:2px;">58.84</span></td>
+<td class="gt_row gt_left" headers="East Asia  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 81.7%, transparent 81.7%); padding:2px 6px; border-radius:2px;">69.47</span></td>
+<td class="gt_row gt_right" headers="East Asia  Ecological Footprint">0.94</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="East Asia  Country">Vietnam</td>
+<td class="gt_row gt_left" headers="East Asia  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 85%, transparent 85%); padding:2px 6px; border-radius:2px;">58.06</span></td>
+<td class="gt_row gt_left" headers="East Asia  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 88.1%, transparent 88.1%); padding:2px 6px; border-radius:2px;">74.88</span></td>
+<td class="gt_row gt_right" headers="East Asia  Ecological Footprint">2.30</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="East Asia  Country">Thailand</td>
+<td class="gt_row gt_left" headers="East Asia  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 83.5%, transparent 83.5%); padding:2px 6px; border-radius:2px;">57.08</span></td>
+<td class="gt_row gt_left" headers="East Asia  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 90.4%, transparent 90.4%); padding:2px 6px; border-radius:2px;">76.83</span></td>
+<td class="gt_row gt_right" headers="East Asia  Ecological Footprint">2.46</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="East Asia  Country">Japan</td>
+<td class="gt_row gt_left" headers="East Asia  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 79.9%, transparent 79.9%); padding:2px 6px; border-radius:2px;">54.6</span></td>
+<td class="gt_row gt_left" headers="East Asia  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 100%, transparent 100%); padding:2px 6px; border-radius:2px;">85</span></td>
+<td class="gt_row gt_right" headers="East Asia  Ecological Footprint">3.94</td>
+</tr>
+<tr class="gt_group_heading_row odd">
+<th colspan="4" id="Eastern Europe &amp;amp; Central Asia" class="gt_group_heading" data-quarto-table-cell-role="th" style="font-weight: bold" scope="colgroup">Eastern Europe &amp; Central Asia</th>
+</tr>
+<tr class="gt_row_group_first even">
+<td class="gt_row gt_left" headers="Eastern Europe &amp; Central Asia  Country">Tajikistan</td>
+<td class="gt_row gt_left" headers="Eastern Europe &amp; Central Asia  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 88.8%, transparent 88.8%); padding:2px 6px; border-radius:2px;">60.67</span></td>
+<td class="gt_row gt_left" headers="Eastern Europe &amp; Central Asia  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 84.8%, transparent 84.8%); padding:2px 6px; border-radius:2px;">72.05</span></td>
+<td class="gt_row gt_right" headers="Eastern Europe &amp; Central Asia  Ecological Footprint">1.03</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Eastern Europe &amp; Central Asia  Country">Albania</td>
+<td class="gt_row gt_left" headers="Eastern Europe &amp; Central Asia  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 85.4%, transparent 85.4%); padding:2px 6px; border-radius:2px;">58.32</span></td>
+<td class="gt_row gt_left" headers="Eastern Europe &amp; Central Asia  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 94.1%, transparent 94.1%); padding:2px 6px; border-radius:2px;">79.95</span></td>
+<td class="gt_row gt_right" headers="Eastern Europe &amp; Central Asia  Ecological Footprint">2.40</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Eastern Europe &amp; Central Asia  Country">Romania</td>
+<td class="gt_row gt_left" headers="Eastern Europe &amp; Central Asia  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 81.4%, transparent 81.4%); padding:2px 6px; border-radius:2px;">55.64</span></td>
+<td class="gt_row gt_left" headers="Eastern Europe &amp; Central Asia  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 89.7%, transparent 89.7%); padding:2px 6px; border-radius:2px;">76.25</span></td>
+<td class="gt_row gt_right" headers="Eastern Europe &amp; Central Asia  Ecological Footprint">3.05</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Eastern Europe &amp; Central Asia  Country">Uzbekistan</td>
+<td class="gt_row gt_left" headers="Eastern Europe &amp; Central Asia  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 80.4%, transparent 80.4%); padding:2px 6px; border-radius:2px;">54.9</span></td>
+<td class="gt_row gt_left" headers="Eastern Europe &amp; Central Asia  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 85.5%, transparent 85.5%); padding:2px 6px; border-radius:2px;">72.66</span></td>
+<td class="gt_row gt_right" headers="Eastern Europe &amp; Central Asia  Ecological Footprint">2.30</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Eastern Europe &amp; Central Asia  Country">Bosnia and Herzegovina</td>
+<td class="gt_row gt_left" headers="Eastern Europe &amp; Central Asia  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 79.3%, transparent 79.3%); padding:2px 6px; border-radius:2px;">54.18</span></td>
+<td class="gt_row gt_left" headers="Eastern Europe &amp; Central Asia  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 92%, transparent 92%); padding:2px 6px; border-radius:2px;">78.24</span></td>
+<td class="gt_row gt_right" headers="Eastern Europe &amp; Central Asia  Ecological Footprint">3.88</td>
+</tr>
+<tr class="gt_group_heading_row odd">
+<th colspan="4" id="Latin America" class="gt_group_heading" data-quarto-table-cell-role="th" style="font-weight: bold" scope="colgroup">Latin America</th>
+</tr>
+<tr class="gt_row_group_first even">
+<td class="gt_row gt_left" headers="Latin America  Country">Costa Rica</td>
+<td class="gt_row gt_left" headers="Latin America  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 100%, transparent 100%); padding:2px 6px; border-radius:2px;">68.32</span></td>
+<td class="gt_row gt_left" headers="Latin America  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 95.5%, transparent 95.5%); padding:2px 6px; border-radius:2px;">81.19</span></td>
+<td class="gt_row gt_right" headers="Latin America  Ecological Footprint">2.62</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Latin America  Country">Guatemala</td>
+<td class="gt_row gt_left" headers="Latin America  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 88.9%, transparent 88.9%); padding:2px 6px; border-radius:2px;">60.71</span></td>
+<td class="gt_row gt_left" headers="Latin America  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 85.8%, transparent 85.8%); padding:2px 6px; border-radius:2px;">72.89</span></td>
+<td class="gt_row gt_right" headers="Latin America  Ecological Footprint">1.79</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Latin America  Country">Colombia</td>
+<td class="gt_row gt_left" headers="Latin America  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 88.7%, transparent 88.7%); padding:2px 6px; border-radius:2px;">60.57</span></td>
+<td class="gt_row gt_left" headers="Latin America  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 91.9%, transparent 91.9%); padding:2px 6px; border-radius:2px;">78.09</span></td>
+<td class="gt_row gt_right" headers="Latin America  Ecological Footprint">1.85</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Latin America  Country">Ecuador</td>
+<td class="gt_row gt_left" headers="Latin America  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 88.3%, transparent 88.3%); padding:2px 6px; border-radius:2px;">60.33</span></td>
+<td class="gt_row gt_left" headers="Latin America  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 91.5%, transparent 91.5%); padding:2px 6px; border-radius:2px;">77.76</span></td>
+<td class="gt_row gt_right" headers="Latin America  Ecological Footprint">2.26</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Latin America  Country">Nicaragua</td>
+<td class="gt_row gt_left" headers="Latin America  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 87.2%, transparent 87.2%); padding:2px 6px; border-radius:2px;">59.59</span></td>
+<td class="gt_row gt_left" headers="Latin America  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 88.5%, transparent 88.5%); padding:2px 6px; border-radius:2px;">75.27</span></td>
+<td class="gt_row gt_right" headers="Latin America  Ecological Footprint">1.80</td>
+</tr>
+<tr class="gt_group_heading_row odd">
+<th colspan="4" id="Middle East" class="gt_group_heading" data-quarto-table-cell-role="th" style="font-weight: bold" scope="colgroup">Middle East</th>
+</tr>
+<tr class="gt_row_group_first even">
+<td class="gt_row gt_left" headers="Middle East  Country">Jordan</td>
+<td class="gt_row gt_left" headers="Middle East  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 81.8%, transparent 81.8%); padding:2px 6px; border-radius:2px;">55.88</span></td>
+<td class="gt_row gt_left" headers="Middle East  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 91.9%, transparent 91.9%); padding:2px 6px; border-radius:2px;">78.13</span></td>
+<td class="gt_row gt_right" headers="Middle East  Ecological Footprint">1.38</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Middle East  Country">Tunisia</td>
+<td class="gt_row gt_left" headers="Middle East  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 79.4%, transparent 79.4%); padding:2px 6px; border-radius:2px;">54.26</span></td>
+<td class="gt_row gt_left" headers="Middle East  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 90.5%, transparent 90.5%); padding:2px 6px; border-radius:2px;">76.9</span></td>
+<td class="gt_row gt_right" headers="Middle East  Ecological Footprint">1.63</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Middle East  Country">Iraq</td>
+<td class="gt_row gt_left" headers="Middle East  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 77.3%, transparent 77.3%); padding:2px 6px; border-radius:2px;">52.8</span></td>
+<td class="gt_row gt_left" headers="Middle East  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 85.3%, transparent 85.3%); padding:2px 6px; border-radius:2px;">72.53</span></td>
+<td class="gt_row gt_right" headers="Middle East  Ecological Footprint">2.02</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Middle East  Country">Algeria</td>
+<td class="gt_row gt_left" headers="Middle East  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 77.3%, transparent 77.3%); padding:2px 6px; border-radius:2px;">52.8</span></td>
+<td class="gt_row gt_left" headers="Middle East  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 90.2%, transparent 90.2%); padding:2px 6px; border-radius:2px;">76.69</span></td>
+<td class="gt_row gt_right" headers="Middle East  Ecological Footprint">2.73</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Middle East  Country">Morocco</td>
+<td class="gt_row gt_left" headers="Middle East  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 72.7%, transparent 72.7%); padding:2px 6px; border-radius:2px;">49.68</span></td>
+<td class="gt_row gt_left" headers="Middle East  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 89%, transparent 89%); padding:2px 6px; border-radius:2px;">75.68</span></td>
+<td class="gt_row gt_right" headers="Middle East  Ecological Footprint">1.87</td>
+</tr>
+<tr class="gt_group_heading_row odd">
+<th colspan="4" id="North America &amp;amp; Oceania" class="gt_group_heading" data-quarto-table-cell-role="th" style="font-weight: bold" scope="colgroup">North America &amp; Oceania</th>
+</tr>
+<tr class="gt_row_group_first even">
+<td class="gt_row gt_left" headers="North America &amp; Oceania  Country">New Zealand</td>
+<td class="gt_row gt_left" headers="North America &amp; Oceania  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 77.9%, transparent 77.9%); padding:2px 6px; border-radius:2px;">53.25</span></td>
+<td class="gt_row gt_left" headers="North America &amp; Oceania  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 96.9%, transparent 96.9%); padding:2px 6px; border-radius:2px;">82.39</span></td>
+<td class="gt_row gt_right" headers="North America &amp; Oceania  Ecological Footprint">5.00</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="North America &amp; Oceania  Country">Canada</td>
+<td class="gt_row gt_left" headers="North America &amp; Oceania  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 66.6%, transparent 66.6%); padding:2px 6px; border-radius:2px;">45.49</span></td>
+<td class="gt_row gt_left" headers="North America &amp; Oceania  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 97.5%, transparent 97.5%); padding:2px 6px; border-radius:2px;">82.88</span></td>
+<td class="gt_row gt_right" headers="North America &amp; Oceania  Ecological Footprint">6.62</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="North America &amp; Oceania  Country">Australia</td>
+<td class="gt_row gt_left" headers="North America &amp; Oceania  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 63.4%, transparent 63.4%); padding:2px 6px; border-radius:2px;">43.33</span></td>
+<td class="gt_row gt_left" headers="North America &amp; Oceania  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 99.1%, transparent 99.1%); padding:2px 6px; border-radius:2px;">84.21</span></td>
+<td class="gt_row gt_right" headers="North America &amp; Oceania  Ecological Footprint">7.75</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="North America &amp; Oceania  Country">United States of America</td>
+<td class="gt_row gt_left" headers="North America &amp; Oceania  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 63.3%, transparent 63.3%); padding:2px 6px; border-radius:2px;">43.23</span></td>
+<td class="gt_row gt_left" headers="North America &amp; Oceania  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 93.7%, transparent 93.7%); padding:2px 6px; border-radius:2px;">79.61</span></td>
+<td class="gt_row gt_right" headers="North America &amp; Oceania  Ecological Footprint">7.05</td>
+</tr>
+<tr class="gt_group_heading_row even">
+<th colspan="4" id="South Asia" class="gt_group_heading" data-quarto-table-cell-role="th" style="font-weight: bold" scope="colgroup">South Asia</th>
+</tr>
+<tr class="gt_row_group_first odd">
+<td class="gt_row gt_left" headers="South Asia  Country">Bangladesh</td>
+<td class="gt_row gt_left" headers="South Asia  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 82.5%, transparent 82.5%); padding:2px 6px; border-radius:2px;">56.34</span></td>
+<td class="gt_row gt_left" headers="South Asia  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 88.5%, transparent 88.5%); padding:2px 6px; border-radius:2px;">75.19</span></td>
+<td class="gt_row gt_right" headers="South Asia  Ecological Footprint">0.91</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="South Asia  Country">Nepal</td>
+<td class="gt_row gt_left" headers="South Asia  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 79%, transparent 79%); padding:2px 6px; border-radius:2px;">53.99</span></td>
+<td class="gt_row gt_left" headers="South Asia  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 83.4%, transparent 83.4%); padding:2px 6px; border-radius:2px;">70.9</span></td>
+<td class="gt_row gt_right" headers="South Asia  Ecological Footprint">0.89</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="South Asia  Country">Pakistan</td>
+<td class="gt_row gt_left" headers="South Asia  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 77.8%, transparent 77.8%); padding:2px 6px; border-radius:2px;">53.13</span></td>
+<td class="gt_row gt_left" headers="South Asia  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 79.9%, transparent 79.9%); padding:2px 6px; border-radius:2px;">67.94</span></td>
+<td class="gt_row gt_right" headers="South Asia  Ecological Footprint">0.72</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="South Asia  Country">Sri Lanka</td>
+<td class="gt_row gt_left" headers="South Asia  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 76.2%, transparent 76.2%); padding:2px 6px; border-radius:2px;">52.07</span></td>
+<td class="gt_row gt_left" headers="South Asia  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 91.6%, transparent 91.6%); padding:2px 6px; border-radius:2px;">77.85</span></td>
+<td class="gt_row gt_right" headers="South Asia  Ecological Footprint">1.27</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="South Asia  Country">India</td>
+<td class="gt_row gt_left" headers="South Asia  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 72.6%, transparent 72.6%); padding:2px 6px; border-radius:2px;">49.58</span></td>
+<td class="gt_row gt_left" headers="South Asia  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 85.3%, transparent 85.3%); padding:2px 6px; border-radius:2px;">72.48</span></td>
+<td class="gt_row gt_right" headers="South Asia  Ecological Footprint">1.13</td>
+</tr>
+<tr class="gt_group_heading_row even">
+<th colspan="4" id="Western Europe" class="gt_group_heading" data-quarto-table-cell-role="th" style="font-weight: bold" scope="colgroup">Western Europe</th>
+</tr>
+<tr class="gt_row_group_first odd">
+<td class="gt_row gt_left" headers="Western Europe  Country">Spain</td>
+<td class="gt_row gt_left" headers="Western Europe  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 88.7%, transparent 88.7%); padding:2px 6px; border-radius:2px;">60.6</span></td>
+<td class="gt_row gt_left" headers="Western Europe  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 98.8%, transparent 98.8%); padding:2px 6px; border-radius:2px;">83.96</span></td>
+<td class="gt_row gt_right" headers="Western Europe  Ecological Footprint">3.18</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Western Europe  Country">Switzerland</td>
+<td class="gt_row gt_left" headers="Western Europe  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 88.3%, transparent 88.3%); padding:2px 6px; border-radius:2px;">60.36</span></td>
+<td class="gt_row gt_left" headers="Western Europe  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 99.1%, transparent 99.1%); padding:2px 6px; border-radius:2px;">84.23</span></td>
+<td class="gt_row gt_right" headers="Western Europe  Ecological Footprint">3.87</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Western Europe  Country">Germany</td>
+<td class="gt_row gt_left" headers="Western Europe  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 85%, transparent 85%); padding:2px 6px; border-radius:2px;">58.08</span></td>
+<td class="gt_row gt_left" headers="Western Europe  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 96.1%, transparent 96.1%); padding:2px 6px; border-radius:2px;">81.71</span></td>
+<td class="gt_row gt_right" headers="Western Europe  Ecological Footprint">3.78</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Western Europe  Country">United Kingdom</td>
+<td class="gt_row gt_left" headers="Western Europe  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 84.6%, transparent 84.6%); padding:2px 6px; border-radius:2px;">57.8</span></td>
+<td class="gt_row gt_left" headers="Western Europe  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 96%, transparent 96%); padding:2px 6px; border-radius:2px;">81.6</span></td>
+<td class="gt_row gt_right" headers="Western Europe  Ecological Footprint">3.41</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Western Europe  Country">Norway</td>
+<td class="gt_row gt_left" headers="Western Europe  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 84.3%, transparent 84.3%); padding:2px 6px; border-radius:2px;">57.61</span></td>
+<td class="gt_row gt_left" headers="Western Europe  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 98.4%, transparent 98.4%); padding:2px 6px; border-radius:2px;">83.61</span></td>
+<td class="gt_row gt_right" headers="Western Europe  Ecological Footprint">4.41</td>
+</tr>
+</tbody><tfoot>
+<tr class="gt_sourcenotes odd">
+<td colspan="4" class="gt_sourcenote" style="font-style: italic">*Source: Happy Planet Index 2025, Hot or Cool Institute</td>
+</tr>
+</tfoot>
+
+</table>
+
+</div>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="john-vasconcelos" class="level1">
+<h1>John Vasconcelos</h1>
+<section id="chart-3.-bar-chart" class="level2">
+<h2 class="anchored" data-anchor-id="chart-3.-bar-chart">Chart 3. Bar Chart</h2>
+<blockquote class="blockquote">
+<p>To use a bar chart, we needed to calculate the average HPI per country across all years with available data. The number of years with available data, however, varies among countries. For better reliability, we removed from the dataset countries with less than 10 years of reported HPI.</p>
+</blockquote>
+<p><em>Data setup</em></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>chart3_data <span class="ot">&lt;-</span> hpi <span class="sc">|&gt;</span> </span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(HPI)) <span class="sc">|&gt;</span> </span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">HPI =</span> <span class="fu">as.numeric</span>(HPI)) <span class="sc">|&gt;</span> </span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Country) <span class="sc">|&gt;</span> </span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">Avg_HPI =</span> <span class="fu">mean</span>(HPI),</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">Count =</span> <span class="fu">length</span>(HPI)) <span class="sc">|&gt;</span> </span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(Count<span class="sc">&gt;=</span><span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><em>Plotting</em></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visual settings</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>base_font   <span class="ot">&lt;-</span> <span class="st">"sans"</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>base_size   <span class="ot">&lt;-</span> <span class="dv">11</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>color_top   <span class="ot">&lt;-</span> <span class="st">"#4A90C2"</span>   <span class="co"># blueish (positive)</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>color_bot   <span class="ot">&lt;-</span> <span class="st">"#D9645A"</span>   <span class="co"># reddish (negative)</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>label_color <span class="ot">&lt;-</span> <span class="st">"white"</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Data</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>top20 <span class="ot">&lt;-</span> chart3_data <span class="sc">|&gt;</span> <span class="fu">slice_max</span>(Avg_HPI, <span class="at">n =</span> <span class="dv">20</span>)</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>bot20 <span class="ot">&lt;-</span> chart3_data <span class="sc">|&gt;</span> <span class="fu">slice_min</span>(Avg_HPI, <span class="at">n =</span> <span class="dv">20</span>)</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Same x scale for both charts, rounded up to the next multiple of 10</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>x_max <span class="ot">&lt;-</span> <span class="fu">ceiling</span>(<span class="fu">max</span>(<span class="fu">c</span>(top20<span class="sc">$</span>Avg_HPI, bot20<span class="sc">$</span>Avg_HPI), <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">/</span> <span class="dv">10</span>) <span class="sc">*</span> <span class="dv">10</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Function that builds one chart </span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>hpi_bar_chart <span class="ot">&lt;-</span> <span class="cf">function</span>(data, fill_color, panel_title) {</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>  data <span class="sc">|&gt;</span></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>      <span class="at">label   =</span> <span class="fu">paste0</span>(Country, <span class="st">"  "</span>, <span class="fu">round</span>(Avg_HPI, <span class="dv">1</span>)),</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">Country =</span> <span class="fu">fct_reorder</span>(Country, Avg_HPI)</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Avg_HPI, <span class="at">y =</span> Country)) <span class="sc">+</span></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_col</span>(<span class="at">fill =</span> fill_color, <span class="at">width =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_text</span>(</span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>      <span class="fu">aes</span>(<span class="at">x =</span> <span class="dv">0</span>, <span class="at">label =</span> label),</span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>      <span class="at">hjust =</span> <span class="dv">0</span>, <span class="at">nudge_x =</span> x_max <span class="sc">*</span> <span class="fl">0.01</span>,   <span class="co"># close to the y axis, inside the bar</span></span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>      <span class="at">vjust =</span> <span class="fl">0.5</span>,                         <span class="co"># vertical middle of the bar</span></span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>      <span class="at">color =</span> label_color, <span class="at">size =</span> base_size <span class="sc">/</span> <span class="fl">3.2</span>, <span class="at">family =</span> base_font</span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_x_continuous</span>(</span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>      <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, x_max),                <span class="co"># identical scale on both charts</span></span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>      <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">0</span>, x_max),                <span class="co"># only zero and the top of the scale</span></span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>      <span class="at">expand =</span> <span class="fu">expansion</span>(<span class="at">mult =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.03</span>))</span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> panel_title, <span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> base_size, <span class="at">base_family =</span> base_font) <span class="sc">+</span></span>
+<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(</span>
+<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a>      <span class="at">axis.text.y =</span> <span class="fu">element_blank</span>(),       <span class="co"># names are in the bar labels</span></span>
+<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a>      <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">color =</span> <span class="st">"grey35"</span>),</span>
+<span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a>      <span class="at">axis.ticks  =</span> <span class="fu">element_blank</span>(),       <span class="co"># no ticks</span></span>
+<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a>      <span class="at">axis.line.x =</span> <span class="fu">element_line</span>(<span class="at">color =</span> <span class="st">"grey35"</span>, <span class="at">linewidth =</span> <span class="fl">0.4</span>),  <span class="co"># keep the horizontal line</span></span>
+<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a>      <span class="at">panel.grid  =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a>      <span class="at">plot.title  =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">size =</span> base_size <span class="sc">+</span> <span class="dv">1</span>)</span>
+<span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb10-45"><a href="#cb10-45" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb10-46"><a href="#cb10-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-47"><a href="#cb10-47" aria-hidden="true" tabindex="-1"></a>p_top <span class="ot">&lt;-</span> <span class="fu">hpi_bar_chart</span>(top20, color_top, <span class="st">"Top 20"</span>)</span>
+<span id="cb10-48"><a href="#cb10-48" aria-hidden="true" tabindex="-1"></a>p_bot <span class="ot">&lt;-</span> <span class="fu">hpi_bar_chart</span>(bot20, color_bot, <span class="st">"Bottom 20"</span>)</span>
+<span id="cb10-49"><a href="#cb10-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-50"><a href="#cb10-50" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine with shared title and subtitle</span></span>
+<span id="cb10-51"><a href="#cb10-51" aria-hidden="true" tabindex="-1"></a>(p_top <span class="sc">|</span> p_bot) <span class="sc">+</span></span>
+<span id="cb10-52"><a href="#cb10-52" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_annotation</span>(</span>
+<span id="cb10-53"><a href="#cb10-53" aria-hidden="true" tabindex="-1"></a>    <span class="at">title    =</span> <span class="st">"Top/bottom 20 countries per HPI"</span>,</span>
+<span id="cb10-54"><a href="#cb10-54" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Based on average HPI from 2006 to 2025"</span>,</span>
+<span id="cb10-55"><a href="#cb10-55" aria-hidden="true" tabindex="-1"></a>    <span class="at">theme =</span> <span class="fu">theme</span>(</span>
+<span id="cb10-56"><a href="#cb10-56" aria-hidden="true" tabindex="-1"></a>      <span class="at">plot.title    =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">size =</span> base_size <span class="sc">+</span> <span class="dv">5</span>, <span class="at">family =</span> base_font),</span>
+<span id="cb10-57"><a href="#cb10-57" aria-hidden="true" tabindex="-1"></a>      <span class="at">plot.subtitle =</span> <span class="fu">element_text</span>(<span class="at">size =</span> base_size <span class="sc">+</span> <span class="dv">1</span>, <span class="at">color =</span> <span class="st">"grey35"</span>, <span class="at">family =</span> base_font)</span>
+<span id="cb10-58"><a href="#cb10-58" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb10-59"><a href="#cb10-59" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="epps6356_assign04_files/figure-html/chart3_plot-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="evandro-gomes" class="level1">
+<h1>Evandro Gomes</h1>
+<section id="chart-4.-column-chart" class="level2">
+<h2 class="anchored" data-anchor-id="chart-4.-column-chart">Chart 4. Column chart</h2>
+<p><em>Data setup</em></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>chart4_data <span class="ot">&lt;-</span> hpi_year <span class="sc">%&gt;%</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Continent_name)) <span class="sc">%&gt;%</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">footprint =</span> <span class="fu">as.numeric</span>(<span class="st">`</span><span class="at">Ecological Footprint</span><span class="st">`</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Continent_name) <span class="sc">%&gt;%</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_footprint =</span> <span class="fu">mean</span>(footprint, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_countries    =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(footprint))</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>   <span class="fu">mutate</span>(<span class="at">Continent_name =</span> <span class="fu">reorder</span>(Continent_name, <span class="sc">-</span>mean_footprint))</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>chart4_data</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 8 × 3
+  Continent_name                mean_footprint n_countries
+  &lt;fct&gt;                                  &lt;dbl&gt;       &lt;int&gt;
+1 Africa                                  1.32          40
+2 East Asia                               3.47          13
+3 Eastern Europe &amp; Central Asia           4.05          25
+4 Latin America                           2.31          21
+5 Middle East                             4.11          17
+6 North America &amp; Oceania                 6.60           4
+7 South Asia                              1.49           7
+8 Western Europe                          5.10          20</code></pre>
+</div>
+</div>
+<p><em>Plotting data</em></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(chart4_data, <span class="fu">aes</span>(<span class="at">x =</span> Continent_name, <span class="at">y =</span> mean_footprint, <span class="at">fill =</span> Continent_name)) <span class="sc">+</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">width =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">sprintf</span>(<span class="st">"%.1f"</span>, mean_footprint)),</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.5</span>, <span class="at">size =</span> <span class="fl">3.5</span>) <span class="sc">+</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> rainbow) <span class="sc">+</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_discrete</span>(<span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">label_wrap</span>(<span class="dv">10</span>)) <span class="sc">+</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">expansion</span>(<span class="at">mult =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.1</span>))) <span class="sc">+</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">title    =</span> <span class="st">"North America &amp; Oceania's footprint is five times Africa's"</span>,</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Mean ecological footprint per person by region, 2025 (unweighted country average)"</span>,</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">x        =</span> <span class="cn">NULL</span>,</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">y        =</span> <span class="st">"Global hectares (gha) per person"</span>,</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption  =</span> <span class="st">"*Source: Happy Planet Index 2025, Hot or Cool Institute"</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">12</span>) <span class="sc">+</span></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position     =</span> <span class="st">"none"</span>,</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid.major.x  =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid.minor    =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title          =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.subtitle       =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">color =</span> <span class="st">"grey35"</span>),</span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.caption        =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="dv">1</span>),</span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title.position =</span> <span class="st">"plot"</span>,</span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.caption.position =</span> <span class="st">"plot"</span>,</span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.title.y        =</span> <span class="fu">element_text</span>(<span class="at">margin =</span> <span class="fu">margin</span>(<span class="at">r =</span> <span class="dv">10</span>))</span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="epps6356_assign04_files/figure-html/chart4_plot-1.png" class="img-fluid figure-img" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="session-info" class="level1">
+<h1>Session Info</h1>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>R version 4.5.2 (2025-10-31 ucrt)
+Platform: x86_64-w64-mingw32/x64
+Running under: Windows 11 x64 (build 26300)
+
+Matrix products: default
+  LAPACK version 3.12.1
+
+locale:
+[1] LC_COLLATE=English_United States.utf8 
+[2] LC_CTYPE=English_United States.utf8   
+[3] LC_MONETARY=English_United States.utf8
+[4] LC_NUMERIC=C                          
+[5] LC_TIME=English_United States.utf8    
+
+time zone: America/Chicago
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] patchwork_1.3.2 glue_1.8.0      lubridate_1.9.4 forcats_1.0.0  
+ [5] stringr_1.5.1   purrr_1.1.0     readr_2.1.5     tidyr_1.3.1    
+ [9] tibble_3.3.0    tidyverse_2.0.0 gtExtras_0.6.2  gt_1.3.0       
+[13] ggplot2_4.0.0   dplyr_1.1.4     readxl_1.4.5   
+
+loaded via a namespace (and not attached):
+ [1] utf8_1.2.6         sass_0.4.10        generics_0.1.4     xml2_1.4.0        
+ [5] stringi_1.8.7      hms_1.1.3          digest_0.6.37      magrittr_2.0.4    
+ [9] evaluate_1.0.5     grid_4.5.2         timechange_0.3.0   RColorBrewer_1.1-3
+[13] fastmap_1.2.0      cellranger_1.1.0   jsonlite_2.0.0     rematch2_2.1.2    
+[17] scales_1.4.0       cli_3.6.6          rlang_1.3.0        litedown_0.11     
+[21] commonmark_2.0.0   base64enc_0.1-3    withr_3.0.2        yaml_2.3.10       
+[25] tools_4.5.2        tzdb_0.5.0         paletteer_1.7.0    vctrs_0.7.1       
+[29] R6_2.6.1           lifecycle_1.0.5    fs_2.1.0           htmlwidgets_1.6.4 
+[33] fontawesome_0.5.3  pkgconfig_2.0.3    pillar_1.11.1      gtable_0.3.6      
+[37] xfun_0.61          tidyselect_1.2.1   rstudioapi_0.17.1  knitr_1.50        
+[41] farver_2.1.2       htmltools_0.5.8.1  rmarkdown_2.30     labeling_0.4.3    
+[45] compiler_4.5.2     S7_0.2.0           markdown_2.0      </code></pre>
+</div>
+</div>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
