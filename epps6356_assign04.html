@@ -2,24 +2,27 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.38">
+<meta name="generator" content="quarto-1.10.18">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Solbee Kim (Coordinator)">
 <meta name="author" content="Evandro M. S. Gomes">
 <meta name="author" content="John Vasconcelos">
-<meta name="dcterms.date" content="2026-10-01">
+<meta name="dcterms.date" content="2026-10-02">
 
 <title>Assignment 4. Hackathon (Team Project)</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
 */
-code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -72,10 +75,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="epps6356_assign04_files/libs/quarto-html/tippy.umd.min.js"></script>
 <script src="epps6356_assign04_files/libs/quarto-html/anchor.min.js"></script>
 <link href="epps6356_assign04_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="epps6356_assign04_files/libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="epps6356_assign04_files/libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="epps6356_assign04_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="epps6356_assign04_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="epps6356_assign04_files/libs/bootstrap/bootstrap-efbb37e9afcc02144ebbc7afd12a776f.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="epps6356_assign04_files/libs/bootstrap/bootstrap-215b371544c282197b31c8aa00ce3677.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 
 
 </head>
@@ -132,7 +135,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">October 1, 2026</p>
+      <p class="date">October 2, 2026</p>
     </div>
   </div>
   
@@ -274,67 +277,63 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>make_bar <span class="ot">&lt;-</span> <span class="cf">function</span>(value, max_value, color) {</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  width_pct <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="dv">100</span> <span class="sc">*</span> value <span class="sc">/</span> max_value, <span class="dv">1</span>)</span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  value_rounded <span class="ot">&lt;-</span> <span class="fu">round</span>(value, <span class="dv">2</span>)</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glue</span>(</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'&lt;div style="display:flex; align-items:center; gap:6px;"&gt;</span></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="st">       &lt;div style="background:{color}; width:{width_pct}px; height:14px;"&gt;&lt;/div&gt;</span></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="st">       &lt;span&gt;{value_rounded}&lt;/span&gt;</span></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="st">     &lt;/div&gt;'</span></span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>chart2_data <span class="ot">&lt;-</span> chart2_data <span class="sc">%&gt;%</span></span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">HPI_bar =</span> <span class="fu">map_chr</span>(HPI, <span class="sc">~</span><span class="fu">make_bar</span>(.x, <span class="fu">max</span>(HPI, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="st">"#FFD6A5"</span>)),</span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">LifeExp_bar =</span> <span class="fu">map_chr</span>(<span class="st">`</span><span class="at">Life Expectancy</span><span class="st">`</span>, <span class="sc">~</span><span class="fu">make_bar</span>(.x, <span class="fu">max</span>(<span class="st">`</span><span class="at">Life Expectancy</span><span class="st">`</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="st">"#A0C4FF"</span>))</span>
-<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Graph</span></span>
-<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>chart2_data <span class="sc">%&gt;%</span></span>
-<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Continent_name, Country, HPI_bar, LifeExp_bar, <span class="st">`</span><span class="at">Ecological Footprint</span><span class="st">`</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>(<span class="at">groupname_col =</span> <span class="st">"Continent_name"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fmt_markdown</span>(<span class="at">columns =</span> <span class="fu">c</span>(HPI_bar, LifeExp_bar)) <span class="sc">%&gt;%</span></span>
-<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fmt_number</span>(<span class="at">columns =</span> <span class="st">`</span><span class="at">Ecological Footprint</span><span class="st">`</span>, <span class="at">decimals =</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_header</span>(</span>
-<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Top 5 countries by HPI score, within each region, 2025"</span></span>
-<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_source_note</span>(<span class="st">"*Source: Happy Planet Index 2025, Hot or Cool Institute"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cols_label</span>(</span>
-<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">Country =</span> <span class="st">"Country"</span>,</span>
-<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">HPI_bar =</span> <span class="st">"HPI Score"</span>,</span>
-<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">LifeExp_bar =</span> <span class="st">"Life Expectancy (yrs)"</span>,</span>
-<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Ecological Footprint</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"Ecological Footprint (gha)"</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glue</span>(<span class="st">'&lt;span style="display:inline-block; width:100px; background:linear-gradient(to right, {color} {width_pct}%, transparent {width_pct}%); padding:2px 6px; border-radius:2px;"&gt;{value_rounded}&lt;/span&gt;'</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>chart2_data <span class="ot">&lt;-</span> chart2_data <span class="sc">%&gt;%</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">HPI_bar =</span> <span class="fu">map_chr</span>(HPI, <span class="sc">~</span><span class="fu">make_bar</span>(.x, <span class="fu">max</span>(HPI, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="st">"#FFD6A5"</span>)),</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">LifeExp_bar =</span> <span class="fu">map_chr</span>(<span class="st">`</span><span class="at">Life Expectancy</span><span class="st">`</span>, <span class="sc">~</span><span class="fu">make_bar</span>(.x, <span class="fu">max</span>(<span class="st">`</span><span class="at">Life Expectancy</span><span class="st">`</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="st">"#A0C4FF"</span>))</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Graph</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>chart2_data <span class="sc">%&gt;%</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Continent_name, Country, HPI_bar, LifeExp_bar, <span class="st">`</span><span class="at">Ecological Footprint</span><span class="st">`</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>(<span class="at">groupname_col =</span> <span class="st">"Continent_name"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fmt_markdown</span>(<span class="at">columns =</span> <span class="fu">c</span>(HPI_bar, LifeExp_bar)) <span class="sc">%&gt;%</span></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fmt_number</span>(<span class="at">columns =</span> <span class="st">`</span><span class="at">Ecological Footprint</span><span class="st">`</span>, <span class="at">decimals =</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_header</span>(</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Top 5 countries by HPI score, within each region, 2025"</span></span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_source_note</span>(<span class="st">"*Source: Happy Planet Index 2025, Hot or Cool Institute"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cols_label</span>(</span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">Country =</span> <span class="st">"Country"</span>,</span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">HPI_bar =</span> <span class="st">"HPI Score"</span>,</span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">LifeExp_bar =</span> <span class="st">"Life Expectancy (yrs)"</span>,</span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Ecological Footprint</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"Ecological Footprint (gha)"</span></span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_style</span>(</span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">style =</span> <span class="fu">cell_text</span>(<span class="at">weight =</span> <span class="st">"bold"</span>, <span class="at">align =</span> <span class="st">"center"</span>),</span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">locations =</span> <span class="fu">cells_title</span>()</span>
 <span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
 <span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_style</span>(</span>
-<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">style =</span> <span class="fu">cell_text</span>(<span class="at">weight =</span> <span class="st">"bold"</span>, <span class="at">align =</span> <span class="st">"center"</span>),</span>
-<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">locations =</span> <span class="fu">cells_title</span>()</span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">style =</span> <span class="fu">cell_text</span>(<span class="at">style =</span> <span class="st">"italic"</span>),</span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">locations =</span> <span class="fu">cells_source_notes</span>()</span>
 <span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
 <span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_style</span>(</span>
-<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">style =</span> <span class="fu">cell_text</span>(<span class="at">style =</span> <span class="st">"italic"</span>),</span>
-<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">locations =</span> <span class="fu">cells_source_notes</span>()</span>
-<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_style</span>(</span>
-<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a>    <span class="at">style =</span> <span class="fu">cell_text</span>(<span class="at">weight =</span> <span class="st">"bold"</span>),</span>
-<span id="cb8-46"><a href="#cb8-46" aria-hidden="true" tabindex="-1"></a>    <span class="at">locations =</span> <span class="fu">cells_row_groups</span>()</span>
-<span id="cb8-47"><a href="#cb8-47" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">style =</span> <span class="fu">cell_text</span>(<span class="at">weight =</span> <span class="st">"bold"</span>),</span>
+<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">locations =</span> <span class="fu">cells_row_groups</span>()</span>
+<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<div id="kuqphqikpp" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#kuqphqikpp table {
+<div id="kmosbiplia" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#kmosbiplia table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#kuqphqikpp thead, #kuqphqikpp tbody, #kuqphqikpp tfoot, #kuqphqikpp tr, #kuqphqikpp td, #kuqphqikpp th {
+#kmosbiplia thead, #kmosbiplia tbody, #kmosbiplia tfoot, #kmosbiplia tr, #kmosbiplia td, #kmosbiplia th {
   border-style: none;
 }
 
-#kuqphqikpp p {
+#kmosbiplia p {
   margin: 0;
   padding: 0;
 }
 
-#kuqphqikpp .gt_table {
+#kmosbiplia .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -360,12 +359,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-left-color: #D3D3D3;
 }
 
-#kuqphqikpp .gt_caption {
+#kmosbiplia .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#kuqphqikpp .gt_title {
+#kmosbiplia .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -377,7 +376,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-width: 0;
 }
 
-#kuqphqikpp .gt_subtitle {
+#kmosbiplia .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -389,7 +388,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-top-width: 0;
 }
 
-#kuqphqikpp .gt_heading {
+#kmosbiplia .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -401,13 +400,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#kuqphqikpp .gt_bottom_border {
+#kmosbiplia .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#kuqphqikpp .gt_col_headings {
+#kmosbiplia .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -422,7 +421,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#kuqphqikpp .gt_col_heading {
+#kmosbiplia .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -442,7 +441,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   overflow-x: hidden;
 }
 
-#kuqphqikpp .gt_column_spanner_outer {
+#kmosbiplia .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -454,15 +453,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 4px;
 }
 
-#kuqphqikpp .gt_column_spanner_outer:first-child {
+#kmosbiplia .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#kuqphqikpp .gt_column_spanner_outer:last-child {
+#kmosbiplia .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#kuqphqikpp .gt_column_spanner {
+#kmosbiplia .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -474,11 +473,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   width: 100%;
 }
 
-#kuqphqikpp .gt_spanner_row {
+#kmosbiplia .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#kuqphqikpp .gt_group_heading {
+#kmosbiplia .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -504,7 +503,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   text-align: left;
 }
 
-#kuqphqikpp .gt_empty_group_heading {
+#kmosbiplia .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -519,15 +518,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   vertical-align: middle;
 }
 
-#kuqphqikpp .gt_from_md > :first-child {
+#kmosbiplia .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#kuqphqikpp .gt_from_md > :last-child {
+#kmosbiplia .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#kuqphqikpp .gt_row {
+#kmosbiplia .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -546,7 +545,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   overflow-x: hidden;
 }
 
-#kuqphqikpp .gt_stub {
+#kmosbiplia .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -559,7 +558,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#kuqphqikpp .gt_stub_row_group {
+#kmosbiplia .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -573,15 +572,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   vertical-align: top;
 }
 
-#kuqphqikpp .gt_row_group_first td {
+#kmosbiplia .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#kuqphqikpp .gt_row_group_first th {
+#kmosbiplia .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#kuqphqikpp .gt_summary_row {
+#kmosbiplia .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -591,16 +590,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#kuqphqikpp .gt_first_summary_row {
+#kmosbiplia .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#kuqphqikpp .gt_first_summary_row.thick {
+#kmosbiplia .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#kuqphqikpp .gt_last_summary_row {
+#kmosbiplia .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -610,7 +609,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-color: #D3D3D3;
 }
 
-#kuqphqikpp .gt_grand_summary_row {
+#kmosbiplia .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -620,7 +619,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#kuqphqikpp .gt_first_grand_summary_row {
+#kmosbiplia .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -630,7 +629,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-top-color: #D3D3D3;
 }
 
-#kuqphqikpp .gt_last_grand_summary_row_top {
+#kmosbiplia .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -640,11 +639,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-color: #D3D3D3;
 }
 
-#kuqphqikpp .gt_striped {
+#kmosbiplia .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#kuqphqikpp .gt_table_body {
+#kmosbiplia .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -653,7 +652,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-color: #D3D3D3;
 }
 
-#kuqphqikpp .gt_footnotes {
+#kmosbiplia .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -667,7 +666,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#kuqphqikpp .gt_footnote {
+#kmosbiplia .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -676,7 +675,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#kuqphqikpp .gt_sourcenotes {
+#kmosbiplia .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -690,7 +689,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#kuqphqikpp .gt_sourcenote {
+#kmosbiplia .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -698,83 +697,77 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#kuqphqikpp .gt_left {
+#kmosbiplia .gt_left {
   text-align: left;
 }
 
-#kuqphqikpp .gt_center {
+#kmosbiplia .gt_center {
   text-align: center;
 }
 
-#kuqphqikpp .gt_right {
+#kmosbiplia .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#kuqphqikpp .gt_font_normal {
+#kmosbiplia .gt_font_normal {
   font-weight: normal;
 }
 
-#kuqphqikpp .gt_font_bold {
+#kmosbiplia .gt_font_bold {
   font-weight: bold;
 }
 
-#kuqphqikpp .gt_font_italic {
+#kmosbiplia .gt_font_italic {
   font-style: italic;
 }
 
-#kuqphqikpp .gt_super {
+#kmosbiplia .gt_super {
   font-size: 65%;
 }
 
-#kuqphqikpp .gt_footnote_marks {
+#kmosbiplia .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#kuqphqikpp .gt_asterisk {
+#kmosbiplia .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#kuqphqikpp .gt_indent_1 {
+#kmosbiplia .gt_indent_1 {
   text-indent: 5px;
 }
 
-#kuqphqikpp .gt_indent_2 {
+#kmosbiplia .gt_indent_2 {
   text-indent: 10px;
 }
 
-#kuqphqikpp .gt_indent_3 {
+#kmosbiplia .gt_indent_3 {
   text-indent: 15px;
 }
 
-#kuqphqikpp .gt_indent_4 {
+#kmosbiplia .gt_indent_4 {
   text-indent: 20px;
 }
 
-#kuqphqikpp .gt_indent_5 {
+#kmosbiplia .gt_indent_5 {
   text-indent: 25px;
 }
 
-#kuqphqikpp .katex-display {
+#kmosbiplia .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#kuqphqikpp div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#kmosbiplia div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
 
 <table class="gt_table caption-top table table-sm table-striped small" data-quarto-bootstrap="false">
-<colgroup>
-<col style="width: 25%">
-<col style="width: 25%">
-<col style="width: 25%">
-<col style="width: 25%">
-</colgroup>
 <thead>
 <tr class="gt_heading header">
 <td colspan="4" class="gt_heading gt_title gt_font_normal gt_bottom_border" style="text-align: center; font-weight: bold;">Top 5 countries by HPI score, within each region, 2025</td>
@@ -792,112 +785,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="gt_row_group_first even">
 <td class="gt_row gt_left" headers="Africa  Country">Mozambique</td>
-<td class="gt_row gt_left" headers="Africa  HPI_bar"><br>
-<span>51.13</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#FFD6A5; width:74.8px; height:14px;">
-
-</div>
-<span>51.13</span>
-</div>
-</td>
-<td class="gt_row gt_left" headers="Africa  LifeExp_bar"><br>
-<span>63.97</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#A0C4FF; width:75.3px; height:14px;">
-
-</div>
-<span>63.97</span>
-</div>
-</td>
+<td class="gt_row gt_left" headers="Africa  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 74.8%, transparent 74.8%); padding:2px 6px; border-radius:2px;">51.13</span></td>
+<td class="gt_row gt_left" headers="Africa  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 75.3%, transparent 75.3%); padding:2px 6px; border-radius:2px;">63.97</span></td>
 <td class="gt_row gt_right" headers="Africa  Ecological Footprint">0.59</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers="Africa  Country">Cameroon</td>
-<td class="gt_row gt_left" headers="Africa  HPI_bar"><br>
-<span>49.34</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#FFD6A5; width:72.2px; height:14px;">
-
-</div>
-<span>49.34</span>
-</div>
-</td>
-<td class="gt_row gt_left" headers="Africa  LifeExp_bar"><br>
-<span>64.25</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#A0C4FF; width:75.6px; height:14px;">
-
-</div>
-<span>64.25</span>
-</div>
-</td>
+<td class="gt_row gt_left" headers="Africa  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 72.2%, transparent 72.2%); padding:2px 6px; border-radius:2px;">49.34</span></td>
+<td class="gt_row gt_left" headers="Africa  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 75.6%, transparent 75.6%); padding:2px 6px; border-radius:2px;">64.25</span></td>
 <td class="gt_row gt_right" headers="Africa  Ecological Footprint">1.03</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers="Africa  Country">Uganda</td>
-<td class="gt_row gt_left" headers="Africa  HPI_bar"><br>
-<span>48.2</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#FFD6A5; width:70.5px; height:14px;">
-
-</div>
-<span>48.2</span>
-</div>
-</td>
-<td class="gt_row gt_left" headers="Africa  LifeExp_bar"><br>
-<span>68.71</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#A0C4FF; width:80.8px; height:14px;">
-
-</div>
-<span>68.71</span>
-</div>
-</td>
+<td class="gt_row gt_left" headers="Africa  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 70.5%, transparent 70.5%); padding:2px 6px; border-radius:2px;">48.2</span></td>
+<td class="gt_row gt_left" headers="Africa  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 80.8%, transparent 80.8%); padding:2px 6px; border-radius:2px;">68.71</span></td>
 <td class="gt_row gt_right" headers="Africa  Ecological Footprint">1.06</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers="Africa  Country">Mauritius</td>
-<td class="gt_row gt_left" headers="Africa  HPI_bar"><br>
-<span>47.31</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#FFD6A5; width:69.2px; height:14px;">
-
-</div>
-<span>47.31</span>
-</div>
-</td>
-<td class="gt_row gt_left" headers="Africa  LifeExp_bar"><br>
-<span>75.27</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#A0C4FF; width:88.6px; height:14px;">
-
-</div>
-<span>75.27</span>
-</div>
-</td>
+<td class="gt_row gt_left" headers="Africa  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 69.2%, transparent 69.2%); padding:2px 6px; border-radius:2px;">47.31</span></td>
+<td class="gt_row gt_left" headers="Africa  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 88.6%, transparent 88.6%); padding:2px 6px; border-radius:2px;">75.27</span></td>
 <td class="gt_row gt_right" headers="Africa  Ecological Footprint">3.96</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers="Africa  Country">Kenya</td>
-<td class="gt_row gt_left" headers="Africa  HPI_bar"><br>
-<span>47.17</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#FFD6A5; width:69px; height:14px;">
-
-</div>
-<span>47.17</span>
-</div>
-</td>
-<td class="gt_row gt_left" headers="Africa  LifeExp_bar"><br>
-<span>64.01</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#A0C4FF; width:75.3px; height:14px;">
-
-</div>
-<span>64.01</span>
-</div>
-</td>
+<td class="gt_row gt_left" headers="Africa  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 69%, transparent 69%); padding:2px 6px; border-radius:2px;">47.17</span></td>
+<td class="gt_row gt_left" headers="Africa  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 75.3%, transparent 75.3%); padding:2px 6px; border-radius:2px;">64.01</span></td>
 <td class="gt_row gt_right" headers="Africa  Ecological Footprint">0.99</td>
 </tr>
 <tr class="gt_group_heading_row odd">
@@ -905,112 +818,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="gt_row_group_first even">
 <td class="gt_row gt_left" headers="East Asia  Country">Philippines</td>
-<td class="gt_row gt_left" headers="East Asia  HPI_bar"><br>
-<span>59.31</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#FFD6A5; width:86.8px; height:14px;">
-
-</div>
-<span>59.31</span>
-</div>
-</td>
-<td class="gt_row gt_left" headers="East Asia  LifeExp_bar"><br>
-<span>70.07</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#A0C4FF; width:82.4px; height:14px;">
-
-</div>
-<span>70.07</span>
-</div>
-</td>
+<td class="gt_row gt_left" headers="East Asia  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 86.8%, transparent 86.8%); padding:2px 6px; border-radius:2px;">59.31</span></td>
+<td class="gt_row gt_left" headers="East Asia  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 82.4%, transparent 82.4%); padding:2px 6px; border-radius:2px;">70.07</span></td>
 <td class="gt_row gt_right" headers="East Asia  Ecological Footprint">1.37</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers="East Asia  Country">Laos</td>
-<td class="gt_row gt_left" headers="East Asia  HPI_bar"><br>
-<span>58.84</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#FFD6A5; width:86.1px; height:14px;">
-
-</div>
-<span>58.84</span>
-</div>
-</td>
-<td class="gt_row gt_left" headers="East Asia  LifeExp_bar"><br>
-<span>69.47</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#A0C4FF; width:81.7px; height:14px;">
-
-</div>
-<span>69.47</span>
-</div>
-</td>
+<td class="gt_row gt_left" headers="East Asia  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 86.1%, transparent 86.1%); padding:2px 6px; border-radius:2px;">58.84</span></td>
+<td class="gt_row gt_left" headers="East Asia  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 81.7%, transparent 81.7%); padding:2px 6px; border-radius:2px;">69.47</span></td>
 <td class="gt_row gt_right" headers="East Asia  Ecological Footprint">0.94</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers="East Asia  Country">Vietnam</td>
-<td class="gt_row gt_left" headers="East Asia  HPI_bar"><br>
-<span>58.06</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#FFD6A5; width:85px; height:14px;">
-
-</div>
-<span>58.06</span>
-</div>
-</td>
-<td class="gt_row gt_left" headers="East Asia  LifeExp_bar"><br>
-<span>74.88</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#A0C4FF; width:88.1px; height:14px;">
-
-</div>
-<span>74.88</span>
-</div>
-</td>
+<td class="gt_row gt_left" headers="East Asia  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 85%, transparent 85%); padding:2px 6px; border-radius:2px;">58.06</span></td>
+<td class="gt_row gt_left" headers="East Asia  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 88.1%, transparent 88.1%); padding:2px 6px; border-radius:2px;">74.88</span></td>
 <td class="gt_row gt_right" headers="East Asia  Ecological Footprint">2.30</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers="East Asia  Country">Thailand</td>
-<td class="gt_row gt_left" headers="East Asia  HPI_bar"><br>
-<span>57.08</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#FFD6A5; width:83.5px; height:14px;">
-
-</div>
-<span>57.08</span>
-</div>
-</td>
-<td class="gt_row gt_left" headers="East Asia  LifeExp_bar"><br>
-<span>76.83</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#A0C4FF; width:90.4px; height:14px;">
-
-</div>
-<span>76.83</span>
-</div>
-</td>
+<td class="gt_row gt_left" headers="East Asia  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 83.5%, transparent 83.5%); padding:2px 6px; border-radius:2px;">57.08</span></td>
+<td class="gt_row gt_left" headers="East Asia  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 90.4%, transparent 90.4%); padding:2px 6px; border-radius:2px;">76.83</span></td>
 <td class="gt_row gt_right" headers="East Asia  Ecological Footprint">2.46</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers="East Asia  Country">Japan</td>
-<td class="gt_row gt_left" headers="East Asia  HPI_bar"><br>
-<span>54.6</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#FFD6A5; width:79.9px; height:14px;">
-
-</div>
-<span>54.6</span>
-</div>
-</td>
-<td class="gt_row gt_left" headers="East Asia  LifeExp_bar"><br>
-<span>85</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#A0C4FF; width:100px; height:14px;">
-
-</div>
-<span>85</span>
-</div>
-</td>
+<td class="gt_row gt_left" headers="East Asia  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 79.9%, transparent 79.9%); padding:2px 6px; border-radius:2px;">54.6</span></td>
+<td class="gt_row gt_left" headers="East Asia  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 100%, transparent 100%); padding:2px 6px; border-radius:2px;">85</span></td>
 <td class="gt_row gt_right" headers="East Asia  Ecological Footprint">3.94</td>
 </tr>
 <tr class="gt_group_heading_row odd">
@@ -1018,112 +851,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="gt_row_group_first even">
 <td class="gt_row gt_left" headers="Eastern Europe &amp; Central Asia  Country">Tajikistan</td>
-<td class="gt_row gt_left" headers="Eastern Europe &amp; Central Asia  HPI_bar"><br>
-<span>60.67</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#FFD6A5; width:88.8px; height:14px;">
-
-</div>
-<span>60.67</span>
-</div>
-</td>
-<td class="gt_row gt_left" headers="Eastern Europe &amp; Central Asia  LifeExp_bar"><br>
-<span>72.05</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#A0C4FF; width:84.8px; height:14px;">
-
-</div>
-<span>72.05</span>
-</div>
-</td>
+<td class="gt_row gt_left" headers="Eastern Europe &amp; Central Asia  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 88.8%, transparent 88.8%); padding:2px 6px; border-radius:2px;">60.67</span></td>
+<td class="gt_row gt_left" headers="Eastern Europe &amp; Central Asia  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 84.8%, transparent 84.8%); padding:2px 6px; border-radius:2px;">72.05</span></td>
 <td class="gt_row gt_right" headers="Eastern Europe &amp; Central Asia  Ecological Footprint">1.03</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers="Eastern Europe &amp; Central Asia  Country">Albania</td>
-<td class="gt_row gt_left" headers="Eastern Europe &amp; Central Asia  HPI_bar"><br>
-<span>58.32</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#FFD6A5; width:85.4px; height:14px;">
-
-</div>
-<span>58.32</span>
-</div>
-</td>
-<td class="gt_row gt_left" headers="Eastern Europe &amp; Central Asia  LifeExp_bar"><br>
-<span>79.95</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#A0C4FF; width:94.1px; height:14px;">
-
-</div>
-<span>79.95</span>
-</div>
-</td>
+<td class="gt_row gt_left" headers="Eastern Europe &amp; Central Asia  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 85.4%, transparent 85.4%); padding:2px 6px; border-radius:2px;">58.32</span></td>
+<td class="gt_row gt_left" headers="Eastern Europe &amp; Central Asia  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 94.1%, transparent 94.1%); padding:2px 6px; border-radius:2px;">79.95</span></td>
 <td class="gt_row gt_right" headers="Eastern Europe &amp; Central Asia  Ecological Footprint">2.40</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers="Eastern Europe &amp; Central Asia  Country">Romania</td>
-<td class="gt_row gt_left" headers="Eastern Europe &amp; Central Asia  HPI_bar"><br>
-<span>55.64</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#FFD6A5; width:81.4px; height:14px;">
-
-</div>
-<span>55.64</span>
-</div>
-</td>
-<td class="gt_row gt_left" headers="Eastern Europe &amp; Central Asia  LifeExp_bar"><br>
-<span>76.25</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#A0C4FF; width:89.7px; height:14px;">
-
-</div>
-<span>76.25</span>
-</div>
-</td>
+<td class="gt_row gt_left" headers="Eastern Europe &amp; Central Asia  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 81.4%, transparent 81.4%); padding:2px 6px; border-radius:2px;">55.64</span></td>
+<td class="gt_row gt_left" headers="Eastern Europe &amp; Central Asia  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 89.7%, transparent 89.7%); padding:2px 6px; border-radius:2px;">76.25</span></td>
 <td class="gt_row gt_right" headers="Eastern Europe &amp; Central Asia  Ecological Footprint">3.05</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers="Eastern Europe &amp; Central Asia  Country">Uzbekistan</td>
-<td class="gt_row gt_left" headers="Eastern Europe &amp; Central Asia  HPI_bar"><br>
-<span>54.9</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#FFD6A5; width:80.4px; height:14px;">
-
-</div>
-<span>54.9</span>
-</div>
-</td>
-<td class="gt_row gt_left" headers="Eastern Europe &amp; Central Asia  LifeExp_bar"><br>
-<span>72.66</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#A0C4FF; width:85.5px; height:14px;">
-
-</div>
-<span>72.66</span>
-</div>
-</td>
+<td class="gt_row gt_left" headers="Eastern Europe &amp; Central Asia  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 80.4%, transparent 80.4%); padding:2px 6px; border-radius:2px;">54.9</span></td>
+<td class="gt_row gt_left" headers="Eastern Europe &amp; Central Asia  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 85.5%, transparent 85.5%); padding:2px 6px; border-radius:2px;">72.66</span></td>
 <td class="gt_row gt_right" headers="Eastern Europe &amp; Central Asia  Ecological Footprint">2.30</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers="Eastern Europe &amp; Central Asia  Country">Bosnia and Herzegovina</td>
-<td class="gt_row gt_left" headers="Eastern Europe &amp; Central Asia  HPI_bar"><br>
-<span>54.18</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#FFD6A5; width:79.3px; height:14px;">
-
-</div>
-<span>54.18</span>
-</div>
-</td>
-<td class="gt_row gt_left" headers="Eastern Europe &amp; Central Asia  LifeExp_bar"><br>
-<span>78.24</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#A0C4FF; width:92px; height:14px;">
-
-</div>
-<span>78.24</span>
-</div>
-</td>
+<td class="gt_row gt_left" headers="Eastern Europe &amp; Central Asia  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 79.3%, transparent 79.3%); padding:2px 6px; border-radius:2px;">54.18</span></td>
+<td class="gt_row gt_left" headers="Eastern Europe &amp; Central Asia  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 92%, transparent 92%); padding:2px 6px; border-radius:2px;">78.24</span></td>
 <td class="gt_row gt_right" headers="Eastern Europe &amp; Central Asia  Ecological Footprint">3.88</td>
 </tr>
 <tr class="gt_group_heading_row odd">
@@ -1131,112 +884,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="gt_row_group_first even">
 <td class="gt_row gt_left" headers="Latin America  Country">Costa Rica</td>
-<td class="gt_row gt_left" headers="Latin America  HPI_bar"><br>
-<span>68.32</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#FFD6A5; width:100px; height:14px;">
-
-</div>
-<span>68.32</span>
-</div>
-</td>
-<td class="gt_row gt_left" headers="Latin America  LifeExp_bar"><br>
-<span>81.19</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#A0C4FF; width:95.5px; height:14px;">
-
-</div>
-<span>81.19</span>
-</div>
-</td>
+<td class="gt_row gt_left" headers="Latin America  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 100%, transparent 100%); padding:2px 6px; border-radius:2px;">68.32</span></td>
+<td class="gt_row gt_left" headers="Latin America  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 95.5%, transparent 95.5%); padding:2px 6px; border-radius:2px;">81.19</span></td>
 <td class="gt_row gt_right" headers="Latin America  Ecological Footprint">2.62</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers="Latin America  Country">Guatemala</td>
-<td class="gt_row gt_left" headers="Latin America  HPI_bar"><br>
-<span>60.71</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#FFD6A5; width:88.9px; height:14px;">
-
-</div>
-<span>60.71</span>
-</div>
-</td>
-<td class="gt_row gt_left" headers="Latin America  LifeExp_bar"><br>
-<span>72.89</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#A0C4FF; width:85.8px; height:14px;">
-
-</div>
-<span>72.89</span>
-</div>
-</td>
+<td class="gt_row gt_left" headers="Latin America  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 88.9%, transparent 88.9%); padding:2px 6px; border-radius:2px;">60.71</span></td>
+<td class="gt_row gt_left" headers="Latin America  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 85.8%, transparent 85.8%); padding:2px 6px; border-radius:2px;">72.89</span></td>
 <td class="gt_row gt_right" headers="Latin America  Ecological Footprint">1.79</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers="Latin America  Country">Colombia</td>
-<td class="gt_row gt_left" headers="Latin America  HPI_bar"><br>
-<span>60.57</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#FFD6A5; width:88.7px; height:14px;">
-
-</div>
-<span>60.57</span>
-</div>
-</td>
-<td class="gt_row gt_left" headers="Latin America  LifeExp_bar"><br>
-<span>78.09</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#A0C4FF; width:91.9px; height:14px;">
-
-</div>
-<span>78.09</span>
-</div>
-</td>
+<td class="gt_row gt_left" headers="Latin America  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 88.7%, transparent 88.7%); padding:2px 6px; border-radius:2px;">60.57</span></td>
+<td class="gt_row gt_left" headers="Latin America  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 91.9%, transparent 91.9%); padding:2px 6px; border-radius:2px;">78.09</span></td>
 <td class="gt_row gt_right" headers="Latin America  Ecological Footprint">1.85</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers="Latin America  Country">Ecuador</td>
-<td class="gt_row gt_left" headers="Latin America  HPI_bar"><br>
-<span>60.33</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#FFD6A5; width:88.3px; height:14px;">
-
-</div>
-<span>60.33</span>
-</div>
-</td>
-<td class="gt_row gt_left" headers="Latin America  LifeExp_bar"><br>
-<span>77.76</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#A0C4FF; width:91.5px; height:14px;">
-
-</div>
-<span>77.76</span>
-</div>
-</td>
+<td class="gt_row gt_left" headers="Latin America  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 88.3%, transparent 88.3%); padding:2px 6px; border-radius:2px;">60.33</span></td>
+<td class="gt_row gt_left" headers="Latin America  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 91.5%, transparent 91.5%); padding:2px 6px; border-radius:2px;">77.76</span></td>
 <td class="gt_row gt_right" headers="Latin America  Ecological Footprint">2.26</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers="Latin America  Country">Nicaragua</td>
-<td class="gt_row gt_left" headers="Latin America  HPI_bar"><br>
-<span>59.59</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#FFD6A5; width:87.2px; height:14px;">
-
-</div>
-<span>59.59</span>
-</div>
-</td>
-<td class="gt_row gt_left" headers="Latin America  LifeExp_bar"><br>
-<span>75.27</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#A0C4FF; width:88.5px; height:14px;">
-
-</div>
-<span>75.27</span>
-</div>
-</td>
+<td class="gt_row gt_left" headers="Latin America  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 87.2%, transparent 87.2%); padding:2px 6px; border-radius:2px;">59.59</span></td>
+<td class="gt_row gt_left" headers="Latin America  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 88.5%, transparent 88.5%); padding:2px 6px; border-radius:2px;">75.27</span></td>
 <td class="gt_row gt_right" headers="Latin America  Ecological Footprint">1.80</td>
 </tr>
 <tr class="gt_group_heading_row odd">
@@ -1244,112 +917,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="gt_row_group_first even">
 <td class="gt_row gt_left" headers="Middle East  Country">Jordan</td>
-<td class="gt_row gt_left" headers="Middle East  HPI_bar"><br>
-<span>55.88</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#FFD6A5; width:81.8px; height:14px;">
-
-</div>
-<span>55.88</span>
-</div>
-</td>
-<td class="gt_row gt_left" headers="Middle East  LifeExp_bar"><br>
-<span>78.13</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#A0C4FF; width:91.9px; height:14px;">
-
-</div>
-<span>78.13</span>
-</div>
-</td>
+<td class="gt_row gt_left" headers="Middle East  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 81.8%, transparent 81.8%); padding:2px 6px; border-radius:2px;">55.88</span></td>
+<td class="gt_row gt_left" headers="Middle East  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 91.9%, transparent 91.9%); padding:2px 6px; border-radius:2px;">78.13</span></td>
 <td class="gt_row gt_right" headers="Middle East  Ecological Footprint">1.38</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers="Middle East  Country">Tunisia</td>
-<td class="gt_row gt_left" headers="Middle East  HPI_bar"><br>
-<span>54.26</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#FFD6A5; width:79.4px; height:14px;">
-
-</div>
-<span>54.26</span>
-</div>
-</td>
-<td class="gt_row gt_left" headers="Middle East  LifeExp_bar"><br>
-<span>76.9</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#A0C4FF; width:90.5px; height:14px;">
-
-</div>
-<span>76.9</span>
-</div>
-</td>
+<td class="gt_row gt_left" headers="Middle East  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 79.4%, transparent 79.4%); padding:2px 6px; border-radius:2px;">54.26</span></td>
+<td class="gt_row gt_left" headers="Middle East  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 90.5%, transparent 90.5%); padding:2px 6px; border-radius:2px;">76.9</span></td>
 <td class="gt_row gt_right" headers="Middle East  Ecological Footprint">1.63</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers="Middle East  Country">Iraq</td>
-<td class="gt_row gt_left" headers="Middle East  HPI_bar"><br>
-<span>52.8</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#FFD6A5; width:77.3px; height:14px;">
-
-</div>
-<span>52.8</span>
-</div>
-</td>
-<td class="gt_row gt_left" headers="Middle East  LifeExp_bar"><br>
-<span>72.53</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#A0C4FF; width:85.3px; height:14px;">
-
-</div>
-<span>72.53</span>
-</div>
-</td>
+<td class="gt_row gt_left" headers="Middle East  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 77.3%, transparent 77.3%); padding:2px 6px; border-radius:2px;">52.8</span></td>
+<td class="gt_row gt_left" headers="Middle East  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 85.3%, transparent 85.3%); padding:2px 6px; border-radius:2px;">72.53</span></td>
 <td class="gt_row gt_right" headers="Middle East  Ecological Footprint">2.02</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers="Middle East  Country">Algeria</td>
-<td class="gt_row gt_left" headers="Middle East  HPI_bar"><br>
-<span>52.8</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#FFD6A5; width:77.3px; height:14px;">
-
-</div>
-<span>52.8</span>
-</div>
-</td>
-<td class="gt_row gt_left" headers="Middle East  LifeExp_bar"><br>
-<span>76.69</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#A0C4FF; width:90.2px; height:14px;">
-
-</div>
-<span>76.69</span>
-</div>
-</td>
+<td class="gt_row gt_left" headers="Middle East  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 77.3%, transparent 77.3%); padding:2px 6px; border-radius:2px;">52.8</span></td>
+<td class="gt_row gt_left" headers="Middle East  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 90.2%, transparent 90.2%); padding:2px 6px; border-radius:2px;">76.69</span></td>
 <td class="gt_row gt_right" headers="Middle East  Ecological Footprint">2.73</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers="Middle East  Country">Morocco</td>
-<td class="gt_row gt_left" headers="Middle East  HPI_bar"><br>
-<span>49.68</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#FFD6A5; width:72.7px; height:14px;">
-
-</div>
-<span>49.68</span>
-</div>
-</td>
-<td class="gt_row gt_left" headers="Middle East  LifeExp_bar"><br>
-<span>75.68</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#A0C4FF; width:89px; height:14px;">
-
-</div>
-<span>75.68</span>
-</div>
-</td>
+<td class="gt_row gt_left" headers="Middle East  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 72.7%, transparent 72.7%); padding:2px 6px; border-radius:2px;">49.68</span></td>
+<td class="gt_row gt_left" headers="Middle East  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 89%, transparent 89%); padding:2px 6px; border-radius:2px;">75.68</span></td>
 <td class="gt_row gt_right" headers="Middle East  Ecological Footprint">1.87</td>
 </tr>
 <tr class="gt_group_heading_row odd">
@@ -1357,90 +950,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="gt_row_group_first even">
 <td class="gt_row gt_left" headers="North America &amp; Oceania  Country">New Zealand</td>
-<td class="gt_row gt_left" headers="North America &amp; Oceania  HPI_bar"><br>
-<span>53.25</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#FFD6A5; width:77.9px; height:14px;">
-
-</div>
-<span>53.25</span>
-</div>
-</td>
-<td class="gt_row gt_left" headers="North America &amp; Oceania  LifeExp_bar"><br>
-<span>82.39</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#A0C4FF; width:96.9px; height:14px;">
-
-</div>
-<span>82.39</span>
-</div>
-</td>
+<td class="gt_row gt_left" headers="North America &amp; Oceania  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 77.9%, transparent 77.9%); padding:2px 6px; border-radius:2px;">53.25</span></td>
+<td class="gt_row gt_left" headers="North America &amp; Oceania  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 96.9%, transparent 96.9%); padding:2px 6px; border-radius:2px;">82.39</span></td>
 <td class="gt_row gt_right" headers="North America &amp; Oceania  Ecological Footprint">5.00</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers="North America &amp; Oceania  Country">Canada</td>
-<td class="gt_row gt_left" headers="North America &amp; Oceania  HPI_bar"><br>
-<span>45.49</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#FFD6A5; width:66.6px; height:14px;">
-
-</div>
-<span>45.49</span>
-</div>
-</td>
-<td class="gt_row gt_left" headers="North America &amp; Oceania  LifeExp_bar"><br>
-<span>82.88</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#A0C4FF; width:97.5px; height:14px;">
-
-</div>
-<span>82.88</span>
-</div>
-</td>
+<td class="gt_row gt_left" headers="North America &amp; Oceania  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 66.6%, transparent 66.6%); padding:2px 6px; border-radius:2px;">45.49</span></td>
+<td class="gt_row gt_left" headers="North America &amp; Oceania  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 97.5%, transparent 97.5%); padding:2px 6px; border-radius:2px;">82.88</span></td>
 <td class="gt_row gt_right" headers="North America &amp; Oceania  Ecological Footprint">6.62</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers="North America &amp; Oceania  Country">Australia</td>
-<td class="gt_row gt_left" headers="North America &amp; Oceania  HPI_bar"><br>
-<span>43.33</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#FFD6A5; width:63.4px; height:14px;">
-
-</div>
-<span>43.33</span>
-</div>
-</td>
-<td class="gt_row gt_left" headers="North America &amp; Oceania  LifeExp_bar"><br>
-<span>84.21</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#A0C4FF; width:99.1px; height:14px;">
-
-</div>
-<span>84.21</span>
-</div>
-</td>
+<td class="gt_row gt_left" headers="North America &amp; Oceania  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 63.4%, transparent 63.4%); padding:2px 6px; border-radius:2px;">43.33</span></td>
+<td class="gt_row gt_left" headers="North America &amp; Oceania  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 99.1%, transparent 99.1%); padding:2px 6px; border-radius:2px;">84.21</span></td>
 <td class="gt_row gt_right" headers="North America &amp; Oceania  Ecological Footprint">7.75</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers="North America &amp; Oceania  Country">United States of America</td>
-<td class="gt_row gt_left" headers="North America &amp; Oceania  HPI_bar"><br>
-<span>43.23</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#FFD6A5; width:63.3px; height:14px;">
-
-</div>
-<span>43.23</span>
-</div>
-</td>
-<td class="gt_row gt_left" headers="North America &amp; Oceania  LifeExp_bar"><br>
-<span>79.61</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#A0C4FF; width:93.7px; height:14px;">
-
-</div>
-<span>79.61</span>
-</div>
-</td>
+<td class="gt_row gt_left" headers="North America &amp; Oceania  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 63.3%, transparent 63.3%); padding:2px 6px; border-radius:2px;">43.23</span></td>
+<td class="gt_row gt_left" headers="North America &amp; Oceania  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 93.7%, transparent 93.7%); padding:2px 6px; border-radius:2px;">79.61</span></td>
 <td class="gt_row gt_right" headers="North America &amp; Oceania  Ecological Footprint">7.05</td>
 </tr>
 <tr class="gt_group_heading_row even">
@@ -1448,112 +977,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="gt_row_group_first odd">
 <td class="gt_row gt_left" headers="South Asia  Country">Bangladesh</td>
-<td class="gt_row gt_left" headers="South Asia  HPI_bar"><br>
-<span>56.34</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#FFD6A5; width:82.5px; height:14px;">
-
-</div>
-<span>56.34</span>
-</div>
-</td>
-<td class="gt_row gt_left" headers="South Asia  LifeExp_bar"><br>
-<span>75.19</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#A0C4FF; width:88.5px; height:14px;">
-
-</div>
-<span>75.19</span>
-</div>
-</td>
+<td class="gt_row gt_left" headers="South Asia  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 82.5%, transparent 82.5%); padding:2px 6px; border-radius:2px;">56.34</span></td>
+<td class="gt_row gt_left" headers="South Asia  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 88.5%, transparent 88.5%); padding:2px 6px; border-radius:2px;">75.19</span></td>
 <td class="gt_row gt_right" headers="South Asia  Ecological Footprint">0.91</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers="South Asia  Country">Nepal</td>
-<td class="gt_row gt_left" headers="South Asia  HPI_bar"><br>
-<span>53.99</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#FFD6A5; width:79px; height:14px;">
-
-</div>
-<span>53.99</span>
-</div>
-</td>
-<td class="gt_row gt_left" headers="South Asia  LifeExp_bar"><br>
-<span>70.9</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#A0C4FF; width:83.4px; height:14px;">
-
-</div>
-<span>70.9</span>
-</div>
-</td>
+<td class="gt_row gt_left" headers="South Asia  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 79%, transparent 79%); padding:2px 6px; border-radius:2px;">53.99</span></td>
+<td class="gt_row gt_left" headers="South Asia  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 83.4%, transparent 83.4%); padding:2px 6px; border-radius:2px;">70.9</span></td>
 <td class="gt_row gt_right" headers="South Asia  Ecological Footprint">0.89</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers="South Asia  Country">Pakistan</td>
-<td class="gt_row gt_left" headers="South Asia  HPI_bar"><br>
-<span>53.13</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#FFD6A5; width:77.8px; height:14px;">
-
-</div>
-<span>53.13</span>
-</div>
-</td>
-<td class="gt_row gt_left" headers="South Asia  LifeExp_bar"><br>
-<span>67.94</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#A0C4FF; width:79.9px; height:14px;">
-
-</div>
-<span>67.94</span>
-</div>
-</td>
+<td class="gt_row gt_left" headers="South Asia  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 77.8%, transparent 77.8%); padding:2px 6px; border-radius:2px;">53.13</span></td>
+<td class="gt_row gt_left" headers="South Asia  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 79.9%, transparent 79.9%); padding:2px 6px; border-radius:2px;">67.94</span></td>
 <td class="gt_row gt_right" headers="South Asia  Ecological Footprint">0.72</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers="South Asia  Country">Sri Lanka</td>
-<td class="gt_row gt_left" headers="South Asia  HPI_bar"><br>
-<span>52.07</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#FFD6A5; width:76.2px; height:14px;">
-
-</div>
-<span>52.07</span>
-</div>
-</td>
-<td class="gt_row gt_left" headers="South Asia  LifeExp_bar"><br>
-<span>77.85</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#A0C4FF; width:91.6px; height:14px;">
-
-</div>
-<span>77.85</span>
-</div>
-</td>
+<td class="gt_row gt_left" headers="South Asia  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 76.2%, transparent 76.2%); padding:2px 6px; border-radius:2px;">52.07</span></td>
+<td class="gt_row gt_left" headers="South Asia  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 91.6%, transparent 91.6%); padding:2px 6px; border-radius:2px;">77.85</span></td>
 <td class="gt_row gt_right" headers="South Asia  Ecological Footprint">1.27</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers="South Asia  Country">India</td>
-<td class="gt_row gt_left" headers="South Asia  HPI_bar"><br>
-<span>49.58</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#FFD6A5; width:72.6px; height:14px;">
-
-</div>
-<span>49.58</span>
-</div>
-</td>
-<td class="gt_row gt_left" headers="South Asia  LifeExp_bar"><br>
-<span>72.48</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#A0C4FF; width:85.3px; height:14px;">
-
-</div>
-<span>72.48</span>
-</div>
-</td>
+<td class="gt_row gt_left" headers="South Asia  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 72.6%, transparent 72.6%); padding:2px 6px; border-radius:2px;">49.58</span></td>
+<td class="gt_row gt_left" headers="South Asia  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 85.3%, transparent 85.3%); padding:2px 6px; border-radius:2px;">72.48</span></td>
 <td class="gt_row gt_right" headers="South Asia  Ecological Footprint">1.13</td>
 </tr>
 <tr class="gt_group_heading_row even">
@@ -1561,112 +1010,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="gt_row_group_first odd">
 <td class="gt_row gt_left" headers="Western Europe  Country">Spain</td>
-<td class="gt_row gt_left" headers="Western Europe  HPI_bar"><br>
-<span>60.6</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#FFD6A5; width:88.7px; height:14px;">
-
-</div>
-<span>60.6</span>
-</div>
-</td>
-<td class="gt_row gt_left" headers="Western Europe  LifeExp_bar"><br>
-<span>83.96</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#A0C4FF; width:98.8px; height:14px;">
-
-</div>
-<span>83.96</span>
-</div>
-</td>
+<td class="gt_row gt_left" headers="Western Europe  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 88.7%, transparent 88.7%); padding:2px 6px; border-radius:2px;">60.6</span></td>
+<td class="gt_row gt_left" headers="Western Europe  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 98.8%, transparent 98.8%); padding:2px 6px; border-radius:2px;">83.96</span></td>
 <td class="gt_row gt_right" headers="Western Europe  Ecological Footprint">3.18</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers="Western Europe  Country">Switzerland</td>
-<td class="gt_row gt_left" headers="Western Europe  HPI_bar"><br>
-<span>60.36</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#FFD6A5; width:88.3px; height:14px;">
-
-</div>
-<span>60.36</span>
-</div>
-</td>
-<td class="gt_row gt_left" headers="Western Europe  LifeExp_bar"><br>
-<span>84.23</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#A0C4FF; width:99.1px; height:14px;">
-
-</div>
-<span>84.23</span>
-</div>
-</td>
+<td class="gt_row gt_left" headers="Western Europe  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 88.3%, transparent 88.3%); padding:2px 6px; border-radius:2px;">60.36</span></td>
+<td class="gt_row gt_left" headers="Western Europe  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 99.1%, transparent 99.1%); padding:2px 6px; border-radius:2px;">84.23</span></td>
 <td class="gt_row gt_right" headers="Western Europe  Ecological Footprint">3.87</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers="Western Europe  Country">Germany</td>
-<td class="gt_row gt_left" headers="Western Europe  HPI_bar"><br>
-<span>58.08</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#FFD6A5; width:85px; height:14px;">
-
-</div>
-<span>58.08</span>
-</div>
-</td>
-<td class="gt_row gt_left" headers="Western Europe  LifeExp_bar"><br>
-<span>81.71</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#A0C4FF; width:96.1px; height:14px;">
-
-</div>
-<span>81.71</span>
-</div>
-</td>
+<td class="gt_row gt_left" headers="Western Europe  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 85%, transparent 85%); padding:2px 6px; border-radius:2px;">58.08</span></td>
+<td class="gt_row gt_left" headers="Western Europe  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 96.1%, transparent 96.1%); padding:2px 6px; border-radius:2px;">81.71</span></td>
 <td class="gt_row gt_right" headers="Western Europe  Ecological Footprint">3.78</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers="Western Europe  Country">United Kingdom</td>
-<td class="gt_row gt_left" headers="Western Europe  HPI_bar"><br>
-<span>57.8</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#FFD6A5; width:84.6px; height:14px;">
-
-</div>
-<span>57.8</span>
-</div>
-</td>
-<td class="gt_row gt_left" headers="Western Europe  LifeExp_bar"><br>
-<span>81.6</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#A0C4FF; width:96px; height:14px;">
-
-</div>
-<span>81.6</span>
-</div>
-</td>
+<td class="gt_row gt_left" headers="Western Europe  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 84.6%, transparent 84.6%); padding:2px 6px; border-radius:2px;">57.8</span></td>
+<td class="gt_row gt_left" headers="Western Europe  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 96%, transparent 96%); padding:2px 6px; border-radius:2px;">81.6</span></td>
 <td class="gt_row gt_right" headers="Western Europe  Ecological Footprint">3.41</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers="Western Europe  Country">Norway</td>
-<td class="gt_row gt_left" headers="Western Europe  HPI_bar"><br>
-<span>57.61</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#FFD6A5; width:84.3px; height:14px;">
-
-</div>
-<span>57.61</span>
-</div>
-</td>
-<td class="gt_row gt_left" headers="Western Europe  LifeExp_bar"><br>
-<span>83.61</span>
-<div style="display:flex; align-items:center; gap:6px;">
-<div style="background:#A0C4FF; width:98.4px; height:14px;">
-
-</div>
-<span>83.61</span>
-</div>
-</td>
+<td class="gt_row gt_left" headers="Western Europe  HPI_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #FFD6A5 84.3%, transparent 84.3%); padding:2px 6px; border-radius:2px;">57.61</span></td>
+<td class="gt_row gt_left" headers="Western Europe  LifeExp_bar"><span style="display:inline-block; width:100px; background:linear-gradient(to right, #A0C4FF 98.4%, transparent 98.4%); padding:2px 6px; border-radius:2px;">83.61</span></td>
 <td class="gt_row gt_right" headers="Western Europe  Ecological Footprint">4.41</td>
 </tr>
 </tbody><tfoot>
@@ -1805,30 +1174,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p><em>Plotting data</em></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(chart4_data, <span class="fu">aes</span>(<span class="at">x =</span> Continent_name, <span class="at">y =</span> mean_footprint)) <span class="sc">+</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">"#4A90C2"</span>, <span class="at">width =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(chart4_data, <span class="fu">aes</span>(<span class="at">x =</span> Continent_name, <span class="at">y =</span> mean_footprint, <span class="at">fill =</span> Continent_name)) <span class="sc">+</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">width =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">sprintf</span>(<span class="st">"%.1f"</span>, mean_footprint)),</span>
 <span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.5</span>, <span class="at">size =</span> <span class="fl">3.5</span>) <span class="sc">+</span></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_discrete</span>(<span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">label_wrap</span>(<span class="dv">10</span>)) <span class="sc">+</span></span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">expansion</span>(<span class="at">mult =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.1</span>))) <span class="sc">+</span></span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">title    =</span> <span class="st">"North America &amp; Oceania's footprint is five times Africa's"</span>,</span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Mean ecological footprint per person by region, 2025 (unweighted country average)"</span>,</span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">x        =</span> <span class="cn">NULL</span>,</span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">y        =</span> <span class="st">"Global hectares (gha) per person"</span>,</span>
-<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption  =</span> <span class="st">"*Source: Happy Planet Index 2025, Hot or Cool Institute"</span></span>
-<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">12</span>) <span class="sc">+</span></span>
-<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
-<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid.major.x  =</span> <span class="fu">element_blank</span>(),</span>
-<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid.minor    =</span> <span class="fu">element_blank</span>(),</span>
-<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title          =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
-<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.subtitle       =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">color =</span> <span class="st">"grey35"</span>),</span>
-<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.caption        =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="dv">1</span>),</span>
-<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title.position =</span> <span class="st">"plot"</span>,</span>
-<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.caption.position =</span> <span class="st">"plot"</span>,</span>
-<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.title.y        =</span> <span class="fu">element_text</span>(<span class="at">margin =</span> <span class="fu">margin</span>(<span class="at">r =</span> <span class="dv">10</span>))</span>
-<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> rainbow) <span class="sc">+</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_discrete</span>(<span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">label_wrap</span>(<span class="dv">10</span>)) <span class="sc">+</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">expansion</span>(<span class="at">mult =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.1</span>))) <span class="sc">+</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">title    =</span> <span class="st">"North America &amp; Oceania's footprint is five times Africa's"</span>,</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Mean ecological footprint per person by region, 2025 (unweighted country average)"</span>,</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">x        =</span> <span class="cn">NULL</span>,</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">y        =</span> <span class="st">"Global hectares (gha) per person"</span>,</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption  =</span> <span class="st">"*Source: Happy Planet Index 2025, Hot or Cool Institute"</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">12</span>) <span class="sc">+</span></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position     =</span> <span class="st">"none"</span>,</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid.major.x  =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid.minor    =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title          =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.subtitle       =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">color =</span> <span class="st">"grey35"</span>),</span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.caption        =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="dv">1</span>),</span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title.position =</span> <span class="st">"plot"</span>,</span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.caption.position =</span> <span class="st">"plot"</span>,</span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.title.y        =</span> <span class="fu">element_text</span>(<span class="at">margin =</span> <span class="fu">margin</span>(<span class="at">r =</span> <span class="dv">10</span>))</span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1845,17 +1216,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>R version 4.5.1 (2025-06-13 ucrt)
+<pre><code>R version 4.5.2 (2025-10-31 ucrt)
 Platform: x86_64-w64-mingw32/x64
-Running under: Windows 11 x64 (build 22000)
+Running under: Windows 11 x64 (build 26300)
 
 Matrix products: default
   LAPACK version 3.12.1
 
 locale:
-[1] LC_COLLATE=Portuguese_Brazil.utf8  LC_CTYPE=Portuguese_Brazil.utf8   
-[3] LC_MONETARY=Portuguese_Brazil.utf8 LC_NUMERIC=C                      
-[5] LC_TIME=Portuguese_Brazil.utf8    
+[1] LC_COLLATE=English_United States.utf8 
+[2] LC_CTYPE=English_United States.utf8   
+[3] LC_MONETARY=English_United States.utf8
+[4] LC_NUMERIC=C                          
+[5] LC_TIME=English_United States.utf8    
 
 time zone: America/Chicago
 tzcode source: internal
@@ -1864,24 +1237,24 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] patchwork_1.3.2 glue_1.8.0      lubridate_1.9.4 forcats_1.0.1  
- [5] stringr_1.5.2   purrr_1.1.0     readr_2.1.5     tidyr_1.3.1    
+ [1] patchwork_1.3.2 glue_1.8.0      lubridate_1.9.4 forcats_1.0.0  
+ [5] stringr_1.5.1   purrr_1.1.0     readr_2.1.5     tidyr_1.3.1    
  [9] tibble_3.3.0    tidyverse_2.0.0 gtExtras_0.6.2  gt_1.3.0       
 [13] ggplot2_4.0.0   dplyr_1.1.4     readxl_1.4.5   
 
 loaded via a namespace (and not attached):
- [1] utf8_1.2.6         sass_0.4.10        generics_0.1.4     xml2_1.4.1        
- [5] stringi_1.8.7      hms_1.1.4          digest_0.6.38      magrittr_2.0.4    
- [9] evaluate_1.0.5     grid_4.5.1         timechange_0.4.0   RColorBrewer_1.1-3
+ [1] utf8_1.2.6         sass_0.4.10        generics_0.1.4     xml2_1.4.0        
+ [5] stringi_1.8.7      hms_1.1.3          digest_0.6.37      magrittr_2.0.4    
+ [9] evaluate_1.0.5     grid_4.5.2         timechange_0.3.0   RColorBrewer_1.1-3
 [13] fastmap_1.2.0      cellranger_1.1.0   jsonlite_2.0.0     rematch2_2.1.2    
-[17] scales_1.4.0       cli_3.6.5          rlang_1.1.6        litedown_0.11     
+[17] scales_1.4.0       cli_3.6.6          rlang_1.3.0        litedown_0.11     
 [21] commonmark_2.0.0   base64enc_0.1-3    withr_3.0.2        yaml_2.3.10       
-[25] otel_0.2.0         tools_4.5.1        tzdb_0.5.0         paletteer_1.7.0   
-[29] vctrs_0.6.5        R6_2.6.1           lifecycle_1.0.4    fs_1.6.6          
-[33] htmlwidgets_1.6.4  fontawesome_0.5.3  pkgconfig_2.0.3    pillar_1.11.1     
-[37] gtable_0.3.6       xfun_0.61          tidyselect_1.2.1   rstudioapi_0.17.1 
-[41] knitr_1.52         farver_2.1.2       htmltools_0.5.8.1  labeling_0.4.3    
-[45] rmarkdown_2.32     compiler_4.5.1     S7_0.2.0           markdown_2.0      </code></pre>
+[25] tools_4.5.2        tzdb_0.5.0         paletteer_1.7.0    vctrs_0.7.1       
+[29] R6_2.6.1           lifecycle_1.0.5    fs_2.1.0           htmlwidgets_1.6.4 
+[33] fontawesome_0.5.3  pkgconfig_2.0.3    pillar_1.11.1      gtable_0.3.6      
+[37] xfun_0.61          tidyselect_1.2.1   rstudioapi_0.17.1  knitr_1.50        
+[41] farver_2.1.2       htmltools_0.5.8.1  rmarkdown_2.30     labeling_0.4.3    
+[45] compiler_4.5.2     S7_0.2.0           markdown_2.0      </code></pre>
 </div>
 </div>
 </section>
