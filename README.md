@@ -20,8 +20,8 @@ The file `Happy-Planet-Index-2006-2025-public-data-set.xlsx` is included in this
 
 - **Chart 1** (Solbee Kim): Variable-width column chart, continent population vs. mean HPI score
 - **Chart 2** (Solbee Kim): Table with embedded bar charts, top 5 countries by HPI within each region
-- **Chart 3** ([Teammate]): [chart type and description]
-- **Chart 4** ([Teammate]): [chart type and description]
+- **Chart 3** (John Vasconcelos): Bar chart
+- **Chart 4** (Evandro Gomes): Column chart
 
 
 ## How to Reproduce
