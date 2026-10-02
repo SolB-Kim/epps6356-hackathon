@@ -284,15 +284,48 @@ p_bot <- hpi_bar_chart(bot20, color_bot, "Bottom 20")
 
 ```{r chart4_data}
 
-# script here
+chart4_data <- hpi_year %>%
+  dplyr::filter(!is.na(Continent_name)) %>%
+  mutate(footprint = as.numeric(`Ecological Footprint`)) %>%
+  group_by(Continent_name) %>%
+  summarise(
+    mean_footprint = mean(footprint, na.rm = TRUE),
+    n_countries    = sum(!is.na(footprint))
+  ) %>%
+   mutate(Continent_name = reorder(Continent_name, -mean_footprint))
+
+chart4_data
 
 ```
 
 *Plotting data*
 
-```{r chart4_plot}
+```{r chart4_plot, fig.width=9, fig.height=5}
 
-# script here
+ggplot(chart4_data, aes(x = Continent_name, y = mean_footprint)) +
+  geom_col(fill = "#4A90C2", width = 0.7) +
+  geom_text(aes(label = sprintf("%.1f", mean_footprint)),
+            vjust = -0.5, size = 3.5) +
+  scale_x_discrete(labels = scales::label_wrap(10)) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.1))) +
+  labs(
+    title    = "North America & Oceania's footprint is five times Africa's",
+    subtitle = "Mean ecological footprint per person by region, 2025 (unweighted country average)",
+    x        = NULL,
+    y        = "Global hectares (gha) per person",
+    caption  = "*Source: Happy Planet Index 2025, Hot or Cool Institute"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    panel.grid.major.x  = element_blank(),
+    panel.grid.minor    = element_blank(),
+    plot.title          = element_text(hjust = 0.5, face = "bold"),
+    plot.subtitle       = element_text(hjust = 0.5, color = "grey35"),
+    plot.caption        = element_text(hjust = 1),
+    plot.title.position = "plot",
+    plot.caption.position = "plot",
+    axis.title.y        = element_text(margin = margin(r = 10))
+  )
 
 ```
 

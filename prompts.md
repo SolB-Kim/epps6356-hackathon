@@ -44,3 +44,27 @@ editor_options: markdown: wrap: 72 ---
 7. Insert the title: "Top/bottom 20 countries per HPI" 
 8. Insert a subtitle: "Based on average HPI from 2006 to 2025" 
 9. Keep the same scale for the x axis on both graphs
+
+
+
+------------------------------------------------------------------------
+
+## Evandro: Tool Information
+
+- **Tool:** Claude (Anthropic)
+- **Model:** Claude Opus 5.5
+- **Date:** October 2, 2026
+
+### Chart 4: Column Chart
+
+**Prompts used:** (translated from Portuguese and condensed; screenshots described in brackets)
+1. Request for step-by-step guidance on the assignment [screenshots: assignment sheet with the chart table and rules; the team's GitHub Desktop guide pasted as text]
+2. "I can't find the way to clone" [screenshots: the repository page on GitHub, the Code menu, the "Git Not Found" message in RStudio, GitHub Desktop after installation]
+3. Pasted the full `epps6356_assign04.Rmd` so the Chart 4 chunks could be written using the team's objects (`hpi_year`, `Continent_name`)
+4. "Nothing appeared" [screenshots: console errors, `litedown` package missing and `chart4_data` not found; then `fct_reorder` function not found]
+5. "But it appeared below the code" [screenshots: summary table with the 8 regions; first chart, with overlapping x-axis labels and a cut-off y-axis title]
+6. [screenshot: revised chart, for confirmation]
+7. Render errors [screenshots: `timechange` package missing; `xfun` 0.54 loaded but 0.55 required]
+8. Request to draft this disclosure entry in English, following the team's format
+
+**What had to be fixed:** The first version used `fct_reorder()`, which failed on my machine because tidyverse was not loaded; it was replaced with base R `reorder()`. The first plot had overlapping x-axis labels and a cut-off y-axis title, so the figure was widened (`fig.width = 9`), the region labels were wrapped more tightly, and the axis title was shortened. The descriptive title was replaced with one that states the finding (North America & Oceania's footprint is about five times Africa's).
