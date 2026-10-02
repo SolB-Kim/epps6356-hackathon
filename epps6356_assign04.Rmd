@@ -8,18 +8,19 @@ date: "2026-10-01"
 format:
   html:
     toc: true
+execute:
+  message: false
+  warning: false
 editor: visual
 ---
 
-# Setting
+## Setting
 
 ```{r cleaning}
 rm(list = ls())
 ```
 
-\
-
-## Library
+## Libraries
 
 ```{r library}
 library(readxl)
@@ -33,9 +34,11 @@ library(gt)
 library(gtExtras)
 library(tidyverse)
 library(glue)
-```
 
-\
+# Graph 3
+library(tidyverse)
+library(patchwork) 
+```
 
 ## File
 
@@ -65,13 +68,13 @@ continent_map <- c(
 hpi_year$Continent_name <- factor(continent_map[as.character(hpi_year$Continent)])
 ```
 
-\
-\
-\
+------------------------------------------------------------------------
 
 # Solbee Kim
 
 ## Chart 1. Variable-width column
+
+*Data setup*
 
 ```{r chart1_data}
 chart1_data <- hpi_year %>%
@@ -88,7 +91,7 @@ chart1_data <- hpi_year %>%
   )
 ```
 
-\
+*Plotting*
 
 ```{r chart1_plot}
 rainbow <- c("#FFADAD", "#FFC6FF", "#F0E68C", "#CAFCCF", 
@@ -121,10 +124,9 @@ ggplot(chart1_data) +
         axis.title.y = element_text(margin = margin(r = 10)))
 ```
 
-\
-\
-
 ## Chart 2. Table with Embedded Charts
+
+*Data setup*
 
 ```{r char2_data}
 chart2_data <- hpi_year %>%
@@ -136,7 +138,7 @@ chart2_data <- hpi_year %>%
 
 ```
 
-\
+*Plotting*
 
 ```{r chart2_plot}
 # Rounded to two decimal places 
@@ -188,28 +190,116 @@ chart2_data %>%
   )
 ```
 
+------------------------------------------------------------------------
 
-\
-\
-\
+# John Vasconcelos
 
-# 
+## Chart 3. Bar Chart
 
+> To use a bar chart, we needed to calculate the average HPI per country across all years with available data. The number of years with available data, however, varies among countries. For better reliability, we removed from the dataset countries with less than 10 years of reported HPI.
 
+*Data setup*
 
-\
-\
-\
+```{r chart3_data}
+chart3_data <- hpi |> 
+  dplyr::filter(!is.na(HPI)) |> 
+  mutate(HPI = as.numeric(HPI)) |> 
+  group_by(Country) |> 
+  summarise(Avg_HPI = mean(HPI),
+            Count = length(HPI)) |> 
+  dplyr::filter(Count>=10)
+```
 
-# 
+*Plotting*
 
+```{r chart3_plot}
+# Visual settings
+base_font   <- "sans"
+base_size   <- 11
+color_top   <- "#4A90C2"   # blueish (positive)
+color_bot   <- "#D9645A"   # reddish (negative)
+label_color <- "white"
 
-\
-\
-\
+# Data
+top20 <- chart3_data |> slice_max(Avg_HPI, n = 20)
+bot20 <- chart3_data |> slice_min(Avg_HPI, n = 20)
+
+# Same x scale for both charts, rounded up to the next multiple of 10
+x_max <- ceiling(max(c(top20$Avg_HPI, bot20$Avg_HPI), na.rm = TRUE) / 10) * 10
+
+# Function that builds one chart 
+hpi_bar_chart <- function(data, fill_color, panel_title) {
+  data |>
+    mutate(
+      label   = paste0(Country, "  ", round(Avg_HPI, 1)),
+      Country = fct_reorder(Country, Avg_HPI)
+    ) |>
+    ggplot(aes(x = Avg_HPI, y = Country)) +
+    geom_col(fill = fill_color, width = 0.8) +
+    geom_text(
+      aes(x = 0, label = label),
+      hjust = 0, nudge_x = x_max * 0.01,   # close to the y axis, inside the bar
+      vjust = 0.5,                         # vertical middle of the bar
+      color = label_color, size = base_size / 3.2, family = base_font
+    ) +
+    scale_x_continuous(
+      limits = c(0, x_max),                # identical scale on both charts
+      breaks = c(0, x_max),                # only zero and the top of the scale
+      expand = expansion(mult = c(0, 0.03))
+    ) +
+    labs(title = panel_title, x = NULL, y = NULL) +
+    theme_minimal(base_size = base_size, base_family = base_font) +
+    theme(
+      axis.text.y = element_blank(),       # names are in the bar labels
+      axis.text.x = element_text(color = "grey35"),
+      axis.ticks  = element_blank(),       # no ticks
+      axis.line.x = element_line(color = "grey35", linewidth = 0.4),  # keep the horizontal line
+      panel.grid  = element_blank(),
+      plot.title  = element_text(face = "bold", size = base_size + 1)
+    )
+}
+
+p_top <- hpi_bar_chart(top20, color_top, "Top 20")
+p_bot <- hpi_bar_chart(bot20, color_bot, "Bottom 20")
+
+# Combine with shared title and subtitle
+(p_top | p_bot) +
+  plot_annotation(
+    title    = "Top/bottom 20 countries per HPI",
+    subtitle = "Based on average HPI from 2006 to 2025",
+    theme = theme(
+      plot.title    = element_text(face = "bold", size = base_size + 5, family = base_font),
+      plot.subtitle = element_text(size = base_size + 1, color = "grey35", family = base_font)
+    )
+  )
+```
+
+------------------------------------------------------------------------
+
+# Evandro Gomes
+
+## Chart 4. Column chart
+
+*Data setup*
+
+```{r chart4_data}
+
+# script here
+
+```
+
+*Plotting data*
+
+```{r chart4_plot}
+
+# script here
+
+```
+
+------------------------------------------------------------------------
+
+# Session Info
 
 ```{r }
 sessionInfo()
 ```
-
-
