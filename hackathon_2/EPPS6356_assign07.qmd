@@ -80,6 +80,15 @@ num_vars18 <- c(
 countries18 <- sort(unique(hpi$Country))
 default_countries18 <- c("Brazil", "China", "Germany", "India", "Japan",
                          "Mexico", "Nigeria", "United States of America")
+
+# ---- Facet options ----
+facet_vars2 <- c("Continent", "Footprint category", "Country")
+
+footprint_lookup <- c(
+  "1" = "Within biocapacity",
+  "2" = "Up to 2x biocapacity",
+  "3" = "Over 2x biocapacity"
+)
 ```
 
 ------------------------------------------------------------------------
@@ -140,6 +149,20 @@ ui <- fluidPage(
                        multiple = TRUE,
                        options = list(placeholder = "Type to add countries"))
         
+      ),
+      conditionalPanel(
+        condition = "input.tabs == 'chart2'",
+        selectInput("yvar2", "Chart 2 - Y variable:",
+                    choices = num_vars18, selected = "HPI"),
+        selectInput("facet2", "Chart 2 - Facets by:",
+                    choices = facet_vars2, selected = "Continent"),
+        conditionalPanel(
+          condition = "input.facet2 == 'Country'",
+          selectizeInput("country2", "Chart 2 - Countries:",
+                         choices = countries18, selected = default_countries18,
+                         multiple = TRUE,
+                         options = list(placeholder = "Type to add countries"))
+        )
       )
     ),
     
@@ -147,11 +170,13 @@ ui <- fluidPage(
       tabsetPanel(
         id = "tabs",
         tabPanel("Chart 9: Scatter", value = "chart9",  plotOutput("chart9_scatter")),
-        tabPanel("Chart 18: Bubble", value = "chart18", plotOutput("chart18_bubble"))
+        tabPanel("Chart 18: Bubble", value = "chart18", plotOutput("chart18_bubble")),
+        tabPanel("Chart 2: Embedded Charts", value = "chart2", plotOutput("chart2_facets"))
       )
     )
   )
 )
+
 ```
 
 ------------------------------------------------------------------------
@@ -237,15 +262,65 @@ This chart compares Life Expectancy against Life Satisfaction (or other variable
   })
 ```
 
-## Chart 2: Table of charts -
+## Chart 2: Table with Embedded Charts - Comparison Among Many Categories
 
 **Evandro Gomes**
 
-This chart...
+This chart is a table of small multiples. It suits comparing one variable across many categories. The user picks a Y variable and how to split the panels by Continent, Footprint category, or Country. The panels show the mean of the selected variable for that group in every year from 2006 up to the year chosen on the slider. The panels grow as the slider moves.
 
 ```{r chart_2}
 
-#Insert here
+# --- Chart 2: Table of charts (Evandro) ---
+output$chart2_facets <- renderPlot({
+  facet_var <- input$facet2
+  df <- hpi %>% filter(Year <= input$year)
+  
+  if (facet_var == "Country") {
+    validate(need(length(input$country2) > 0, "Select at least one country."))
+    df <- df %>% filter(Country %in% input$country2)
+  }
+  
+  if (facet_var == "Footprint category") {
+    df$Group <- footprint_lookup[as.character(df$`Footprint category`)]
+  } else {
+    df$Group <- df[[facet_var]]
+  }
+  
+  df_mean <- df %>%
+    filter(!is.na(Group)) %>%
+    group_by(Group, Year) %>%
+    summarise(value = mean(.data[[input$yvar2]], na.rm = TRUE), .groups = "drop") %>%
+    filter(!is.nan(value))
+  
+  validate(need(nrow(df_mean) > 0, "No data for this selection."))
+  
+  lab_y <- names(num_vars18)[num_vars18 == input$yvar2]
+  
+  groups2 <- sort(unique(df_mean$Group))
+  pal2 <- if (facet_var == "Continent") {
+    rainbow
+  } else {
+    setNames(rep(unname(rainbow), length.out = length(groups2)), groups2)
+  }
+  
+  ggplot(df_mean, aes(x = Year, y = value)) +
+    geom_col(aes(fill = Group), color = "grey30", linewidth = 0.4, width = 0.8, show.legend = FALSE) +
+    scale_fill_manual(values = pal2) +
+    facet_wrap(~ Group) +
+    scale_x_continuous(breaks = function(lims) unique(floor(pretty(lims, n = 4)))) +
+    scale_y_continuous(labels = scales::label_comma()) +
+    labs(title = paste("\nMean", lab_y, "by", facet_var, "-", min(df_mean$Year), "to", input$year, "\n"),
+         x = "Year", y = paste("Mean", lab_y),
+         caption = "Source: Happy Planet Index 2006-2025 Data File (happyplanetindex.org)") +
+    theme_minimal(base_size = 14)+
+    theme(strip.text = element_text(size = 12, face = "bold"),
+          axis.title   = element_text(size = 14),   
+          axis.text    = element_text(size = 14),   
+          legend.title = element_text(size = 14),   
+          legend.text  = element_text(size = 14),
+          plot.caption = element_text(hjust = 0,margin = margin(t = 20)),
+          plot.caption.position = "plot") 
+})
 
 ```
 

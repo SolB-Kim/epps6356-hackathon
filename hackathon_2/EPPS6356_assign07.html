@@ -98,7 +98,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#chart-9-scatter-distribution-of-two-variables" id="toc-chart-9-scatter-distribution-of-two-variables" class="nav-link" data-scroll-target="#chart-9-scatter-distribution-of-two-variables">Chart 9: Scatter — Distribution of Two Variables</a></li>
   <li><a href="#chart-18-bubble---relationship-among-three-variables" id="toc-chart-18-bubble---relationship-among-three-variables" class="nav-link" data-scroll-target="#chart-18-bubble---relationship-among-three-variables">Chart 18: Bubble - Relationship Among Three Variables</a></li>
-  <li><a href="#chart-2-table-of-charts--" id="toc-chart-2-table-of-charts--" class="nav-link" data-scroll-target="#chart-2-table-of-charts--">Chart 2: Table of charts -</a></li>
+  <li><a href="#chart-2-table-with-embedded-charts---comparison-among-many-categories" id="toc-chart-2-table-with-embedded-charts---comparison-among-many-categories" class="nav-link" data-scroll-target="#chart-2-table-with-embedded-charts---comparison-among-many-categories">Chart 2: Table with Embedded Charts - Comparison Among Many Categories</a></li>
   </ul></li>
   <li><a href="#published-app" id="toc-published-app" class="nav-link" data-scroll-target="#published-app">Published App</a></li>
   <li><a href="#synergy" id="toc-synergy" class="nav-link" data-scroll-target="#synergy">Synergy</a></li>
@@ -202,7 +202,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>countries18 <span class="ot">&lt;-</span> <span class="fu">sort</span>(<span class="fu">unique</span>(hpi<span class="sc">$</span>Country))</span>
 <span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>default_countries18 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Brazil"</span>, <span class="st">"China"</span>, <span class="st">"Germany"</span>, <span class="st">"India"</span>, <span class="st">"Japan"</span>,</span>
-<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>                         <span class="st">"Mexico"</span>, <span class="st">"Nigeria"</span>, <span class="st">"United States of America"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>                         <span class="st">"Mexico"</span>, <span class="st">"Nigeria"</span>, <span class="st">"United States of America"</span>)</span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- Facet options ----</span></span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>facet_vars2 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Continent"</span>, <span class="st">"Footprint category"</span>, <span class="st">"Country"</span>)</span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a>footprint_lookup <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a>  <span class="st">"1"</span> <span class="ot">=</span> <span class="st">"Within biocapacity"</span>,</span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a>  <span class="st">"2"</span> <span class="ot">=</span> <span class="st">"Up to 2x biocapacity"</span>,</span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a>  <span class="st">"3"</span> <span class="ot">=</span> <span class="st">"Over 2x biocapacity"</span></span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <hr>
 </section>
@@ -263,18 +272,33 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a>                       <span class="at">multiple =</span> <span class="cn">TRUE</span>,</span>
 <span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a>                       <span class="at">options =</span> <span class="fu">list</span>(<span class="at">placeholder =</span> <span class="st">"Type to add countries"</span>))</span>
 <span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a>      )</span>
-<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mainPanel</span>(</span>
-<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a>      <span class="fu">tabsetPanel</span>(</span>
-<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a>        <span class="at">id =</span> <span class="st">"tabs"</span>,</span>
-<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a>        <span class="fu">tabPanel</span>(<span class="st">"Chart 9: Scatter"</span>, <span class="at">value =</span> <span class="st">"chart9"</span>,  <span class="fu">plotOutput</span>(<span class="st">"chart9_scatter"</span>)),</span>
-<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a>        <span class="fu">tabPanel</span>(<span class="st">"Chart 18: Bubble"</span>, <span class="at">value =</span> <span class="st">"chart18"</span>, <span class="fu">plotOutput</span>(<span class="st">"chart18_bubble"</span>))</span>
-<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a>      )</span>
-<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a>      ),</span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a>      <span class="fu">conditionalPanel</span>(</span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a>        <span class="at">condition =</span> <span class="st">"input.tabs == 'chart2'"</span>,</span>
+<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a>        <span class="fu">selectInput</span>(<span class="st">"yvar2"</span>, <span class="st">"Chart 2 - Y variable:"</span>,</span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a>                    <span class="at">choices =</span> num_vars18, <span class="at">selected =</span> <span class="st">"HPI"</span>),</span>
+<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a>        <span class="fu">selectInput</span>(<span class="st">"facet2"</span>, <span class="st">"Chart 2 - Facets by:"</span>,</span>
+<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a>                    <span class="at">choices =</span> facet_vars2, <span class="at">selected =</span> <span class="st">"Continent"</span>),</span>
+<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a>        <span class="fu">conditionalPanel</span>(</span>
+<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a>          <span class="at">condition =</span> <span class="st">"input.facet2 == 'Country'"</span>,</span>
+<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a>          <span class="fu">selectizeInput</span>(<span class="st">"country2"</span>, <span class="st">"Chart 2 - Countries:"</span>,</span>
+<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a>                         <span class="at">choices =</span> countries18, <span class="at">selected =</span> default_countries18,</span>
+<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a>                         <span class="at">multiple =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a>                         <span class="at">options =</span> <span class="fu">list</span>(<span class="at">placeholder =</span> <span class="st">"Type to add countries"</span>))</span>
+<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mainPanel</span>(</span>
+<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a>      <span class="fu">tabsetPanel</span>(</span>
+<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a>        <span class="at">id =</span> <span class="st">"tabs"</span>,</span>
+<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a>        <span class="fu">tabPanel</span>(<span class="st">"Chart 9: Scatter"</span>, <span class="at">value =</span> <span class="st">"chart9"</span>,  <span class="fu">plotOutput</span>(<span class="st">"chart9_scatter"</span>)),</span>
+<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a>        <span class="fu">tabPanel</span>(<span class="st">"Chart 18: Bubble"</span>, <span class="at">value =</span> <span class="st">"chart18"</span>, <span class="fu">plotOutput</span>(<span class="st">"chart18_bubble"</span>)),</span>
+<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a>        <span class="fu">tabPanel</span>(<span class="st">"Chart 2: Embedded Charts"</span>, <span class="at">value =</span> <span class="st">"chart2"</span>, <span class="fu">plotOutput</span>(<span class="st">"chart2_facets"</span>))</span>
+<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <hr>
 </section>
@@ -353,12 +377,62 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>  })</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
-<section id="chart-2-table-of-charts--" class="level2">
-<h2 class="anchored" data-anchor-id="chart-2-table-of-charts--">Chart 2: Table of charts -</h2>
+<section id="chart-2-table-with-embedded-charts---comparison-among-many-categories" class="level2">
+<h2 class="anchored" data-anchor-id="chart-2-table-with-embedded-charts---comparison-among-many-categories">Chart 2: Table with Embedded Charts - Comparison Among Many Categories</h2>
 <p><strong>Evandro Gomes</strong></p>
-<p>This chart…</p>
+<p>This chart is a table of small multiples. It suits comparing one variable across many categories. The user picks a Y variable and how to split the panels by Continent, Footprint category, or Country. The panels show the mean of the selected variable for that group in every year from 2006 up to the year chosen on the slider. The panels grow as the slider moves.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Insert here</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Chart 2: Table of charts (Evandro) ---</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>output<span class="sc">$</span>chart2_facets <span class="ot">&lt;-</span> <span class="fu">renderPlot</span>({</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  facet_var <span class="ot">&lt;-</span> input<span class="sc">$</span>facet2</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> hpi <span class="sc">%&gt;%</span> <span class="fu">filter</span>(Year <span class="sc">&lt;=</span> input<span class="sc">$</span>year)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (facet_var <span class="sc">==</span> <span class="st">"Country"</span>) {</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">validate</span>(<span class="fu">need</span>(<span class="fu">length</span>(input<span class="sc">$</span>country2) <span class="sc">&gt;</span> <span class="dv">0</span>, <span class="st">"Select at least one country."</span>))</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> <span class="fu">filter</span>(Country <span class="sc">%in%</span> input<span class="sc">$</span>country2)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (facet_var <span class="sc">==</span> <span class="st">"Footprint category"</span>) {</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    df<span class="sc">$</span>Group <span class="ot">&lt;-</span> footprint_lookup[<span class="fu">as.character</span>(df<span class="sc">$</span><span class="st">`</span><span class="at">Footprint category</span><span class="st">`</span>)]</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    df<span class="sc">$</span>Group <span class="ot">&lt;-</span> df[[facet_var]]</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>  df_mean <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Group)) <span class="sc">%&gt;%</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(Group, Year) <span class="sc">%&gt;%</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="at">value =</span> <span class="fu">mean</span>(.data[[input<span class="sc">$</span>yvar2]], <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.nan</span>(value))</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">validate</span>(<span class="fu">need</span>(<span class="fu">nrow</span>(df_mean) <span class="sc">&gt;</span> <span class="dv">0</span>, <span class="st">"No data for this selection."</span>))</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>  lab_y <span class="ot">&lt;-</span> <span class="fu">names</span>(num_vars18)[num_vars18 <span class="sc">==</span> input<span class="sc">$</span>yvar2]</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>  groups2 <span class="ot">&lt;-</span> <span class="fu">sort</span>(<span class="fu">unique</span>(df_mean<span class="sc">$</span>Group))</span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>  pal2 <span class="ot">&lt;-</span> <span class="cf">if</span> (facet_var <span class="sc">==</span> <span class="st">"Continent"</span>) {</span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>    rainbow</span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>    <span class="fu">setNames</span>(<span class="fu">rep</span>(<span class="fu">unname</span>(rainbow), <span class="at">length.out =</span> <span class="fu">length</span>(groups2)), groups2)</span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(df_mean, <span class="fu">aes</span>(<span class="at">x =</span> Year, <span class="at">y =</span> value)) <span class="sc">+</span></span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_col</span>(<span class="fu">aes</span>(<span class="at">fill =</span> Group), <span class="at">color =</span> <span class="st">"grey30"</span>, <span class="at">linewidth =</span> <span class="fl">0.4</span>, <span class="at">width =</span> <span class="fl">0.8</span>, <span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> pal2) <span class="sc">+</span></span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span> Group) <span class="sc">+</span></span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="cf">function</span>(lims) <span class="fu">unique</span>(<span class="fu">floor</span>(<span class="fu">pretty</span>(lims, <span class="at">n =</span> <span class="dv">4</span>)))) <span class="sc">+</span></span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">label_comma</span>()) <span class="sc">+</span></span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="fu">paste</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">Mean"</span>, lab_y, <span class="st">"by"</span>, facet_var, <span class="st">"-"</span>, <span class="fu">min</span>(df_mean<span class="sc">$</span>Year), <span class="st">"to"</span>, input<span class="sc">$</span>year, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>),</span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a>         <span class="at">x =</span> <span class="st">"Year"</span>, <span class="at">y =</span> <span class="fu">paste</span>(<span class="st">"Mean"</span>, lab_y),</span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a>         <span class="at">caption =</span> <span class="st">"Source: Happy Planet Index 2006-2025 Data File (happyplanetindex.org)"</span>) <span class="sc">+</span></span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">14</span>)<span class="sc">+</span></span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">strip.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a>          <span class="at">axis.title   =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>),   </span>
+<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a>          <span class="at">axis.text    =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>),   </span>
+<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a>          <span class="at">legend.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>),   </span>
+<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a>          <span class="at">legend.text  =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>),</span>
+<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a>          <span class="at">plot.caption =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="dv">0</span>,<span class="at">margin =</span> <span class="fu">margin</span>(<span class="at">t =</span> <span class="dv">20</span>)),</span>
+<span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a>          <span class="at">plot.caption.position =</span> <span class="st">"plot"</span>) </span>
+<span id="cb7-51"><a href="#cb7-51" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="er">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>

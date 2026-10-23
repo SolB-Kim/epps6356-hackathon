@@ -56,6 +56,15 @@ ___
 # AI Prompts Log (prompts_2): Evandro Gomes, Chart 2
 
 
+**Tool used:** Claude - Opus 5.5 (Anthropic), for coding help on my part only (Chart 2: table with embedded charts).
+
+*Summary of multiple requests - the agent helped summarize the whole conversation:*
+
+I wanted to add **Chart 2** as a new tab next to Charts 9 and 18, but without changing our team's `app.R` directly, so I asked Claude for the code pieces to insert, step by step. My idea was to build **small multiples with the years on the X axis**, driven by the Year slider we already had rather than a new one. I also wanted a **Y-variable selector** covering the numeric variables in the HPI file, and a **"Facets by" selector** so each panel shows one group, with the option to pick specific countries when Country is chosen. Since each group has several countries per year, I asked whether the chart could show the **group mean for each year**. I had first pictured sparklines in a `gt` table, but asked whether `facet_wrap()` with bars would read better. Finally, I wanted it to **look like Charts 9 and 18**: the same pastel palette, the same grey outline, and larger facet titles.
+
+- *AI helped with:* Identifying the usable categorical variables (Continent, Footprint category, Country) and turning the Footprint category codes (1-3) into readable labels. It wrote a `renderPlot()` that averages the selected variable by group and year, from the first year up to the slider's year, and draws it as faceted bars with `facet_wrap()`. It added a country selector that appears only when Country is the facet, mapped our palette onto the facets (recycling colors when there are more than 8 groups), and styled the bars and facet titles (`strip.text`) to match the other charts. It also drafted the short description of Chart 2 on the website page, which I reviewed.
+
+**What I verified myself:** I ran the app and confirmed that the chart updates with the Year slider and the Y and facet selectors, that the country selector appears only for the Country facet, and that the colors and fonts match Charts 9 and 18.
 
 
 
