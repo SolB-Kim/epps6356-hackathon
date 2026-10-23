@@ -4,6 +4,7 @@ library(thematic)
 library(readxl)
 library(dplyr)
 library(ggplot2)
+options(scipen = 999)
 
 # ---- Data setup ----
 hpi_raw <- read_excel("Happy-Planet-Index-2006-2025-public-data-set.xlsx",
@@ -34,6 +35,28 @@ rainbow <- c(
   "Western Europe" = "#FFD6A5"
 )
 
+num_vars18 <- c(
+  "HPI"                              = "HPI",
+  "HPI rank"                         = "HPI rank",
+  "Life Expectancy"                  = "Life_Expectancy",
+  "Life Satisfaction"                = "Life_Satisfaction",
+  "Ecological Footprint"             = "Ecological_Footprint",
+  "Population (thousands)"           = "Population",
+  "GDP per capita (cleaned)"         = "GDP_per_capita",
+  "GDP per capita (raw)"             = "GDP per capita",
+  "CoV adjusted ladder"              = "CoV adjusted ladder",
+  "Adj Lad x Life Exp"               = "Adj Lad x Life Exp",
+  "Extra HPLY (above min)"           = "Extra HPLY (above min)",
+  "CoV Adj Footprint"                = "CoV Adj Footprint",
+  "HPLY/EF"                          = "HPLY/EF",
+  "Footprint category"               = "Footprint category",
+  "EF biocapacity for year"          = "EF biocapacity for year"
+)
+
+countries18 <- sort(unique(hpi$Country))
+default_countries18 <- c("Brazil", "China", "Germany", "India", "Japan",
+                         "Mexico", "Nigeria", "United States of America")
+
 # ---- UI ----
 ui <- fluidPage(
   theme = bs_theme(bootswatch = "flatly", base_font = font_google("Quicksand")),
@@ -53,26 +76,48 @@ ui <- fluidPage(
                   value = max(hpi$Year), step = 1, sep = ""),
       
       # --- Chart 9 inputs (Solbee) ---
-      selectInput("xvar9", "Chart 9 - X variable:",
-                  choices = c("GDP per capita" = "GDP_per_capita",
-                              "Life Expectancy" = "Life_Expectancy",
-                              "HPI" = "HPI"),
-                  selected = "GDP_per_capita"),
-      selectInput("yvar9", "Chart 9 - Y variable:",
-                  choices = c("Life Satisfaction" = "Life_Satisfaction",
-                              "Life Expectancy" = "Life_Expectancy",
-                              "HPI" = "HPI"),
-                  selected = "Life_Satisfaction")
+      conditionalPanel(
+        condition = "input.tabs == 'chart9'",
+        selectInput("xvar9", "Chart 9 - X variable:",
+                    choices = c("GDP per capita" = "GDP_per_capita",
+                                "Life Expectancy" = "Life_Expectancy",
+                                "HPI" = "HPI"),
+                    selected = "GDP_per_capita"),
+        selectInput("yvar9", "Chart 9 - Y variable:",
+                    choices = c("Life Satisfaction" = "Life_Satisfaction",
+                                "Life Expectancy" = "Life_Expectancy",
+                                "HPI" = "HPI"),
+                    selected = "Life_Satisfaction")
+      ),
       
-      # --- TEAMMATE: add Chart 18 (bubble) inputs here ---
-      # --- TEAMMATE: add Chart 3 (your choice) inputs here ---
+      # --- Chart 18 inputs (bubble) ---
+      conditionalPanel(
+        condition = "input.tabs == 'chart18'",
+        selectInput("xvar18", "Chart 18 - X variable:",
+                    choices = c("GDP per capita" = "GDP_per_capita",
+                                "Life Expectancy" = "Life_Expectancy",
+                                "HPI" = "HPI"),
+                    selected = "Life_Expectancy"),
+        selectInput("yvar18", "Chart 18 - Y variable:",
+                    choices = c("Life Satisfaction" = "Life_Satisfaction",
+                                "Life Expectancy" = "Life_Expectancy",
+                                "HPI" = "HPI"),
+                    selected = "Life_Satisfaction"),
+        selectInput("sizevar18", "Chart 18 - Bubble size:",
+                    choices = num_vars18, selected = "Population"),
+        selectizeInput("country18", "Chart 18 - Countries:",
+                       choices = countries18, selected = default_countries18,
+                       multiple = TRUE,
+                       options = list(placeholder = "Type to add countries"))
+        
+      )
     ),
     
     mainPanel(
       tabsetPanel(
-        tabPanel("Chart 9: Scatter", plotOutput("chart9_scatter")),
-        tabPanel("Chart 18: Bubble", plotOutput("chart18_bubble"))  # TEAMMATE: build this output
-        # TEAMMATE: add tabPanel for Chart 3 here
+        id = "tabs",
+        tabPanel("Chart 9: Scatter", value = "chart9",  plotOutput("chart9_scatter")),
+        tabPanel("Chart 18: Bubble", value = "chart18", plotOutput("chart18_bubble"))
       )
     )
   )
@@ -90,22 +135,57 @@ server <- function(input, output) {
   # --- Chart 9: scatter (Solbee) ---
   output$chart9_scatter <- renderPlot({     
     df <- filtered_data()
-    ggplot(df, aes(x = .data[[input$xvar9]], y = .data[[input$yvar9]], color = Continent)) +
-      geom_point(size = 2.5, alpha = 0.8) +
-      scale_color_manual(values = rainbow) +
-      labs(title = paste("Distribution:", input$xvar9, "vs", input$yvar9, "-", input$year),
+    ggplot(df, aes(x = .data[[input$xvar9]], y = .data[[input$yvar9]], fill = Continent)) +
+      geom_point(shape = 21, color = "grey30", size = 3, stroke = 0.4, alpha = 1) +
+      scale_fill_manual(values = rainbow) +
+      labs(title = paste("\nDistribution:", input$xvar9, "vs", input$yvar9, "-", input$year, "\n"),
            x = input$xvar9, y = input$yvar9,
            caption = "Source: Happy Planet Index 2006-2025 Data File (happyplanetindex.org)") +
-      theme_minimal()
+      theme_minimal(base_size = 14)+
+      theme(axis.title   = element_text(size = 14),   
+            axis.text    = element_text(size = 14),   
+            legend.title = element_text(size = 14),   
+            legend.text  = element_text(size = 14),
+            plot.caption = element_text(hjust = 0,margin = margin(t = 20)),
+            plot.caption.position = "plot")   
   })
   
-  # --- TEAMMATE: Chart 18 (bubble) server logic here ---
-  # output$chart18_bubble <- renderPlot({
-  #   df <- filtered_data()
-  #   ggplot(df, aes(x = ..., y = ..., size = ..., color = Continent)) + ...
-  # })
+  # --- Chart 18: bubble (John) ---
+  output$chart18_bubble <- renderPlot({
+    validate(need(length(input$country18) > 0, "Select at least one country."))
+    
+    df <- filtered_data() %>%
+      filter(Country %in% input$country18,
+             !is.na(.data[[input$xvar18]]),
+             !is.na(.data[[input$yvar18]]),
+             !is.na(.data[[input$sizevar18]]))
+    
+    validate(need(nrow(df) > 0,
+                  "No data for the selected countries and variables in this year."))
+    
+    lab_x    <- names(num_vars18)[num_vars18 == input$xvar18]
+    lab_y    <- names(num_vars18)[num_vars18 == input$yvar18]
+    lab_size <- names(num_vars18)[num_vars18 == input$sizevar18]
+    
+    ggplot(df, aes(x = .data[[input$xvar18]], y = .data[[input$yvar18]],
+                   size = .data[[input$sizevar18]], fill = Country)) +
+      geom_point(shape = 21, color = "grey30", stroke = 0.4, alpha = 0.6) +
+      scale_size(range = c(3, 18), name = lab_size, labels = scales::label_comma()) +
+      guides(fill = guide_legend(override.aes = list(size = 4))) +
+      labs(title = paste("\nBubble:", lab_x, "vs", lab_y, "(size:", lab_size, ") -", input$year, "\n"),
+           x = lab_x, y = lab_y, fill = "Country",
+           caption = "Source: Happy Planet Index 2006-2025 Data File (happyplanetindex.org)") +
+      theme_minimal(base_size = 14)+
+      theme(axis.title   = element_text(size = 14),   
+            axis.text    = element_text(size = 14),   
+            legend.title = element_text(size = 14),   
+            legend.text  = element_text(size = 14),
+            plot.caption = element_text(hjust = 0,margin = margin(t = 20)),
+            plot.caption.position = "plot") 
+  })
   
-  # --- TEAMMATE: Chart 3 (your choice) server logic here ---
+  # --- Chart 2: Table of charts (Evandro) ---
+  
 }
 
 shinyApp(ui = ui, server = server)

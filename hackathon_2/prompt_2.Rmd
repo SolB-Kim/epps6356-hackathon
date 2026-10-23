@@ -1,0 +1,61 @@
+---
+title: "Prompts 2"
+author:
+  - "Solbee Kim (Coordinator)"
+  - "Evandro M. S. Gomes"
+  - "John Vasconcelos"
+date: "2026-10-23"
+output: html_document
+---
+
+# AI Prompts Log (prompts_2): Solbee Kim, Chart 9
+
+**Tool used:** Claude - Sonnet 5.5 (Anthropic), for coding help on my part only (setup and Chart 9).
+
+**Prompt 1: Chart 9 scatter chart**
+- *Asked:* Write Chart 9 (scatter, distribution of two variables) using the Happy Planet Index data.
+- *AI helped with:* Reading the Excel file, finding the `All Data` sheet (all countries, 2006-2025), and drafting an `app.R` skeleton with a shared year-filter `reactive()` and placeholders for Charts 18 and 3.
+
+
+**Prompt 2: Chart 9 scatter chart**
+- *Asked:* Why the app failed when I ran it.
+- *AI helped with:* Explaining that the sheet has two header rows and adding `skip = 1` to `read_excel()`.
+
+
+**Prompt 3: Colors and font**
+- *Asked:* Apply my own pastel palette and change the font.
+- *AI helped with:* Mapping my 8 colors to the 8 continents with `scale_color_manual()` and setting `font_google("Quicksand")` in `bs_theme()`.
+
+
+
+**What I verified myself:** The app runs, the chart updates with the year slider and the X/Y selectors, and the source citation is correct.
+
+___
+
+# AI Prompts Log (prompts_2): John Vasconcelos, Chart 18
+
+**Tool used:** Claude - Opus 5.5 (Anthropic), for coding help on my part only and consolidating the prior work by other team members.
+
+*Summary of multiple requests - the agent helped summaryze the whole conversation:* 
+
+I'm working on a Shiny app (`app.R`) for a team project using the Happy Planet Index dataset, and I'd like help adding a **Chart 18: bubble chart** in a new tab next to the existing Chart 9. I don't want to change Chart 9's logic, and I'd rather not have my original file modified. Could you guide me through the code pieces I need to insert or replace, step by step?
+
+Here's what I'm trying to achieve:
+
+1. How can I add **X and Y selectors** ("Chart 18 - X variable" / "Chart 18 - Y variable") using the same numeric variables as Chart 9 (X: GDP per capita, Life Expectancy, HPI; Y: Life Satisfaction, Life Expectancy, HPI)?
+2. I'd also like a **bubble size selector** ("Chart 18 - Bubble size") with all the numeric variables in the Excel file, with Population as the default. Is that possible?
+3. How could I add a **country selector** (searchable, multiple choice) so the bubbles are colored by country and the legend shows the selected countries?
+4. I want to **keep the existing Year slider** shared between both charts. Can Chart 18 use the same `filtered_data()` reactive?
+5. Is there a way for each chart's inputs to **show only on its own tab**, so the sidebar doesn't get cluttered?
+6. For **visual consistency with Chart 9**, how do I keep the same plot area size, increase the axis and legend fonts, avoid scientific notation and underscores in the labels, left-align the caption with some space above it, and give the bubbles the same grey outline as Chart 9 with a bit of transparency?
+
+- *AI helped with:* Reading the Excel file, finding the `All Data` sheet (all countries, 2006-2025), and drafting an `app.R` skeleton with a shared year-filter `reactive()` and placeholders for Charts 18 and 3.
+
+___
+
+# AI Prompts Log (prompts_2): Evandro Gomes, Chart 2
+
+
+
+
+

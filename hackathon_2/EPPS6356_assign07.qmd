@@ -1,21 +1,23 @@
 ---
-  title: "Assignment 7. Hackathon 2.0 (Team Project)"
+title: "Assignment 7. Hackathon 2.0 (Team Project)"
 author:
   - "Solbee Kim (Coordinator)"
-- "Evandro M. S. Gomes"
-- "John Vasconcelos"
+  - "Evandro M. S. Gomes"
+  - "John Vasconcelos"
 date: "2026-10-23"
 format:
   html:
-  toc: true
+    toc: true
 execute:
+  eval: false
   message: false
-warning: false
+  warning: false
 editor: visual
 ---
 
+# Settings
 
-# Setting
+## a) Libraries
 
 ```{r}
 library(shiny)
@@ -24,20 +26,14 @@ library(thematic)
 library(readxl)
 library(dplyr)
 library(ggplot2)
+
 ```
 
-## The Data
+## b) The Data
 
 Source: Abdallah, S. & Barberà Mas, E. (2026). *The Happy Planet Index 2026 Data File*. Accessed from [www.happyplanetindex.org](https://happyplanetindex.org). Covers all countries, 2006-2025, with Life Expectancy, Life Satisfaction, Ecological Footprint, HPI, GDP per capita, and Continent grouping.
 
-
-# Chart 9: Scatter — Distribution of Two Variables
-
-**Solbee Kim**
-
-This chart shows the distribution of GDP per capita against Life Satisfaction (or other variable pairs, user-selectable) across all countries for a selected year, colored by continent. It uses a shared `reactive()` that filters the dataset by year, which also feeds Charts 18 and 3 below — so all three charts always reflect the same year's data.
-
-```{r chart9-code, eval=FALSE}
+```{r data_setup}
 # ---- Data setup ----
 hpi_raw <- read_excel("Happy-Planet-Index-2006-2025-public-data-set.xlsx",
                        sheet = "All Data", skip = 1)
@@ -63,50 +59,212 @@ rainbow <- c(
   "South Asia" = "#BDB2FF", "Western Europe" = "#FFD6A5"
 )
 
-# ---- Reactive (shared across all three charts) ----
-filtered_data <- reactive({
-  hpi %>% filter(Year == input$year)
-})
+num_vars18 <- c(
+  "HPI"                              = "HPI",
+  "HPI rank"                         = "HPI rank",
+  "Life Expectancy"                  = "Life_Expectancy",
+  "Life Satisfaction"                = "Life_Satisfaction",
+  "Ecological Footprint"             = "Ecological_Footprint",
+  "Population (thousands)"           = "Population",
+  "GDP per capita (cleaned)"         = "GDP_per_capita",
+  "GDP per capita (raw)"             = "GDP per capita",
+  "CoV adjusted ladder"              = "CoV adjusted ladder",
+  "Adj Lad x Life Exp"               = "Adj Lad x Life Exp",
+  "Extra HPLY (above min)"           = "Extra HPLY (above min)",
+  "CoV Adj Footprint"                = "CoV Adj Footprint",
+  "HPLY/EF"                          = "HPLY/EF",
+  "Footprint category"               = "Footprint category",
+  "EF biocapacity for year"          = "EF biocapacity for year"
+)
 
-# ---- Chart 9 ----
-output$chart9_scatter <- renderPlot({
-  df <- filtered_data()
-  ggplot(df, aes(x = .data[[input$xvar9]], y = .data[[input$yvar9]], color = Continent)) +
-    geom_point(size = 2.5, alpha = 0.8) +
-    scale_color_manual(values = rainbow) +
-    labs(title = paste("Distribution:", input$xvar9, "vs", input$yvar9, "-", input$year),
-         x = input$xvar9, y = input$yvar9,
-         caption = "Source: Happy Planet Index 2006-2025 Data File (happyplanetindex.org)") +
-    theme_minimal()
-})
+countries18 <- sort(unique(hpi$Country))
+default_countries18 <- c("Brazil", "China", "Germany", "India", "Japan",
+                         "Mexico", "Nigeria", "United States of America")
 ```
 
+------------------------------------------------------------------------
 
-# Chart 18: Bubble — Relationship Among Three Variables
+# The UI
 
-**(Teammate: add description + code here)**
+```{r the_ui}
+# ---- UI ----
+ui <- fluidPage(
+  theme = bs_theme(bootswatch = "flatly", base_font = font_google("Quicksand")),
+  
+  titlePanel("Happy Planet Index: Team Hackathon 2.0"),
+  
+  wellPanel(
+    strong("About: "),
+    "Data source: Abdallah, S. & Barberà Mas, E. (2026). The Happy Planet Index 2026 Data File. ",
+    "Accessed from www.happyplanetindex.org. Covers 2006-2025 across all countries."
+  ),
+  
+  sidebarLayout(
+    sidebarPanel(
+      sliderInput("year", "Year:",
+                  min = min(hpi$Year), max = max(hpi$Year),
+                  value = max(hpi$Year), step = 1, sep = ""),
+      
+      # --- Chart 9 inputs (Solbee) ---
+      conditionalPanel(
+        condition = "input.tabs == 'chart9'",
+        selectInput("xvar9", "Chart 9 - X variable:",
+                    choices = c("GDP per capita" = "GDP_per_capita",
+                                "Life Expectancy" = "Life_Expectancy",
+                                "HPI" = "HPI"),
+                    selected = "GDP_per_capita"),
+        selectInput("yvar9", "Chart 9 - Y variable:",
+                    choices = c("Life Satisfaction" = "Life_Satisfaction",
+                                "Life Expectancy" = "Life_Expectancy",
+                                "HPI" = "HPI"),
+                    selected = "Life_Satisfaction")
+      ),
+      
+      # --- Chart 18 inputs (bubble) ---
+      conditionalPanel(
+        condition = "input.tabs == 'chart18'",
+        selectInput("xvar18", "Chart 18 - X variable:",
+                    choices = c("GDP per capita" = "GDP_per_capita",
+                                "Life Expectancy" = "Life_Expectancy",
+                                "HPI" = "HPI"),
+                    selected = "Life_Expectancy"),
+        selectInput("yvar18", "Chart 18 - Y variable:",
+                    choices = c("Life Satisfaction" = "Life_Satisfaction",
+                                "Life Expectancy" = "Life_Expectancy",
+                                "HPI" = "HPI"),
+                    selected = "Life_Satisfaction"),
+        selectInput("sizevar18", "Chart 18 - Bubble size:",
+                    choices = num_vars18, selected = "Population"),
+        selectizeInput("country18", "Chart 18 - Countries:",
+                       choices = countries18, selected = default_countries18,
+                       multiple = TRUE,
+                       options = list(placeholder = "Type to add countries"))
+        
+      )
+    ),
+    
+    mainPanel(
+      tabsetPanel(
+        id = "tabs",
+        tabPanel("Chart 9: Scatter", value = "chart9",  plotOutput("chart9_scatter")),
+        tabPanel("Chart 18: Bubble", value = "chart18", plotOutput("chart18_bubble"))
+      )
+    )
+  )
+)
+```
 
+------------------------------------------------------------------------
 
+# The Server
 
-# Chart 3: [Team's Choice — specify number and why]
+```{r the_server}
+server <- function(input, output) {
+  thematic::thematic_shiny()
+  
+  # Shared reactive used by ALL THREE charts - everyone filters off this
+  filtered_data <- reactive({
+    hpi %>% filter(Year == input$year)
+  })
+```
 
-**(Teammate: add description + code here)**
+## Chart 9: Scatter — Distribution of Two Variables
 
+**Solbee Kim**
 
+This chart shows the distribution of GDP per capita against Life Satisfaction (or other variable pairs, user-selectable) across all countries for a selected year, colored by continent. It uses a shared `reactive()` that filters the dataset by year, which also feeds Charts 18 and 3 below — so all three charts always reflect the same year's data.
 
+```{r chart_9}
+  # --- Chart 9: scatter (Solbee) ---
+  output$chart9_scatter <- renderPlot({     
+    df <- filtered_data()
+    ggplot(df, aes(x = .data[[input$xvar9]], y = .data[[input$yvar9]], fill = Continent)) +
+      geom_point(shape = 21, color = "grey30", size = 3, stroke = 0.4, alpha = 1) +
+      scale_fill_manual(values = rainbow) +
+      labs(title = paste("\nDistribution:", input$xvar9, "vs", input$yvar9, "-", input$year, "\n"),
+           x = input$xvar9, y = input$yvar9,
+           caption = "Source: Happy Planet Index 2006-2025 Data File (happyplanetindex.org)") +
+      theme_minimal(base_size = 14)+
+      theme(axis.title   = element_text(size = 14),   
+            axis.text    = element_text(size = 14),   
+            legend.title = element_text(size = 14),   
+            legend.text  = element_text(size = 14),
+            plot.caption = element_text(hjust = 0,margin = margin(t = 20)),
+            plot.caption.position = "plot")   
+  })
+```
+
+## Chart 18: Bubble - Relationship Among Three Variables
+
+**John Vasconcelos**
+
+This chart compares Life Expectancy against Life Satisfaction (or other variable pairs, user-selectable) for a selected group of countries in a given year, with bubble size representing a third variable (Population by default, or any of the numeric variables in the dataset). Each bubble is colored by country, and users can add or remove countries through a searchable selector. Like Chart 9, it draws from the shared reactive() that filters the dataset by year, so the bubble chart always reflects the same year selected on the slider.
+
+```{r chart_18}
+  
+  # --- Chart 18: bubble (John) ---
+  output$chart18_bubble <- renderPlot({
+    validate(need(length(input$country18) > 0, "Select at least one country."))
+    
+    df <- filtered_data() %>%
+      filter(Country %in% input$country18,
+             !is.na(.data[[input$xvar18]]),
+             !is.na(.data[[input$yvar18]]),
+             !is.na(.data[[input$sizevar18]]))
+    
+    validate(need(nrow(df) > 0,
+                  "No data for the selected countries and variables in this year."))
+    
+    lab_x    <- names(num_vars18)[num_vars18 == input$xvar18]
+    lab_y    <- names(num_vars18)[num_vars18 == input$yvar18]
+    lab_size <- names(num_vars18)[num_vars18 == input$sizevar18]
+    
+    ggplot(df, aes(x = .data[[input$xvar18]], y = .data[[input$yvar18]],
+                   size = .data[[input$sizevar18]], fill = Country)) +
+      geom_point(shape = 21, color = "grey30", stroke = 0.4, alpha = 0.6) +
+      scale_size(range = c(3, 18), name = lab_size, labels = scales::label_comma()) +
+      guides(fill = guide_legend(override.aes = list(size = 4))) +
+      labs(title = paste("\nBubble:", lab_x, "vs", lab_y, "(size:", lab_size, ") -", input$year, "\n"),
+           x = lab_x, y = lab_y, fill = "Country",
+           caption = "Source: Happy Planet Index 2006-2025 Data File (happyplanetindex.org)") +
+      theme_minimal(base_size = 14)+
+      theme(axis.title   = element_text(size = 14),   
+            axis.text    = element_text(size = 14),   
+            legend.title = element_text(size = 14),   
+            legend.text  = element_text(size = 14),
+            plot.caption = element_text(hjust = 0,margin = margin(t = 20)),
+            plot.caption.position = "plot") 
+  })
+```
+
+## Chart 2: Table of charts -
+
+**Evandro Gomes**
+
+This chart...
+
+```{r chart_2}
+
+#Insert here
+
+```
+
+```{r server_end}
+}
+```
+
+```{r app}
+shinyApp(ui = ui, server = server)
+```
 
 # Published App
 
-Published at: [Connect Cloud URL here]
+Published at: \[Connect Cloud URL here\]
 
-<iframe src="CONNECT_CLOUD_URL_HERE"
-        width="100%" height="650" style="border: none;"></iframe>
+<iframe src="CONNECT_CLOUD_URL_HERE" width="100%" height="650" style="border: none;">
+
+</iframe>
 
 # Synergy
 
 See `SYNERGY.md` in the repository for the team's full synergy report.
-
-
-
-
-
