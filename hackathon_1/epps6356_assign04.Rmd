@@ -328,6 +328,9 @@ ggplot(chart4_data, aes(x = Continent_name, y = mean_footprint, fill = Continent
 
 ------------------------------------------------------------------------
 
+**AI assistance disclosure:** This work was assisted by AI (Claude Sonnet 5.5, Anthropic). The prompts used are documented in the [prompts log](https://github.com/SolB-Kim/epps6356-hackathon/blob/main/hackathon_1/prompts.md).
+
+
 # Session Info
 
 ```{r }
