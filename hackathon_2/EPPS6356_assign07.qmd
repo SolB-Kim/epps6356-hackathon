@@ -1,0 +1,112 @@
+---
+  title: "Assignment 7. Hackathon 2.0 (Team Project)"
+author:
+  - "Solbee Kim (Coordinator)"
+- "Evandro M. S. Gomes"
+- "John Vasconcelos"
+date: "2026-10-23"
+format:
+  html:
+  toc: true
+execute:
+  message: false
+warning: false
+editor: visual
+---
+
+
+# Setting
+
+```{r}
+library(shiny)
+library(bslib)
+library(thematic)
+library(readxl)
+library(dplyr)
+library(ggplot2)
+```
+
+## The Data
+
+Source: Abdallah, S. & Barberà Mas, E. (2026). *The Happy Planet Index 2026 Data File*. Accessed from [www.happyplanetindex.org](https://happyplanetindex.org). Covers all countries, 2006-2025, with Life Expectancy, Life Satisfaction, Ecological Footprint, HPI, GDP per capita, and Continent grouping.
+
+
+# Chart 9: Scatter — Distribution of Two Variables
+
+**Solbee Kim**
+
+This chart shows the distribution of GDP per capita against Life Satisfaction (or other variable pairs, user-selectable) across all countries for a selected year, colored by continent. It uses a shared `reactive()` that filters the dataset by year, which also feeds Charts 18 and 3 below — so all three charts always reflect the same year's data.
+
+```{r chart9-code, eval=FALSE}
+# ---- Data setup ----
+hpi_raw <- read_excel("Happy-Planet-Index-2006-2025-public-data-set.xlsx",
+                       sheet = "All Data", skip = 1)
+
+continent_lookup <- c(
+  "1" = "Latin America", "2" = "N America & Oceania", "3" = "Western Europe",
+  "4" = "Middle East & N. Africa", "5" = "Africa", "6" = "South Asia",
+  "7" = "Eastern Europe & Central Asia", "8" = "East Asia"
+)
+
+hpi <- hpi_raw %>%
+  rename(GDP_per_capita = `GDP per capita (cleaned) - 2024 used for 2025`,
+         Life_Expectancy = `Life Expectancy`,
+         Life_Satisfaction = `Life Satisfaction`,
+         Ecological_Footprint = `Ecological Footprint`) %>%
+  filter(!is.na(Continent), !is.na(Year)) %>%
+  mutate(Continent = continent_lookup[as.character(Continent)])
+
+rainbow <- c(
+  "Africa" = "#FFADAD", "East Asia" = "#FFC6FF",
+  "Eastern Europe & Central Asia" = "#F0E68C", "Latin America" = "#CAFCCF",
+  "Middle East & N. Africa" = "#9BF6FF", "N America & Oceania" = "#A0C4FF",
+  "South Asia" = "#BDB2FF", "Western Europe" = "#FFD6A5"
+)
+
+# ---- Reactive (shared across all three charts) ----
+filtered_data <- reactive({
+  hpi %>% filter(Year == input$year)
+})
+
+# ---- Chart 9 ----
+output$chart9_scatter <- renderPlot({
+  df <- filtered_data()
+  ggplot(df, aes(x = .data[[input$xvar9]], y = .data[[input$yvar9]], color = Continent)) +
+    geom_point(size = 2.5, alpha = 0.8) +
+    scale_color_manual(values = rainbow) +
+    labs(title = paste("Distribution:", input$xvar9, "vs", input$yvar9, "-", input$year),
+         x = input$xvar9, y = input$yvar9,
+         caption = "Source: Happy Planet Index 2006-2025 Data File (happyplanetindex.org)") +
+    theme_minimal()
+})
+```
+
+
+# Chart 18: Bubble — Relationship Among Three Variables
+
+**(Teammate: add description + code here)**
+
+
+
+# Chart 3: [Team's Choice — specify number and why]
+
+**(Teammate: add description + code here)**
+
+
+
+
+# Published App
+
+Published at: [Connect Cloud URL here]
+
+<iframe src="CONNECT_CLOUD_URL_HERE"
+        width="100%" height="650" style="border: none;"></iframe>
+
+# Synergy
+
+See `SYNERGY.md` in the repository for the team's full synergy report.
+
+
+
+
+
