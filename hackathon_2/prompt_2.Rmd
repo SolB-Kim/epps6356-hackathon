@@ -1,0 +1,35 @@
+---
+title: "Prompts 2"
+author:
+  - "Solbee Kim (Coordinator)"
+  - "Evandro M. S. Gomes"
+  - "John Vasconcelos"
+date: "2026-10-23"
+output: html_document
+---
+
+# AI Prompts Log (prompts_2): Solbee Kim, Chart 9
+
+**Tool used:** Claude - Sonnet 5.5 (Anthropic), for coding help on my part only (setup and Chart 9).
+
+**Prompt 1: Chart 9 scatter chart**
+- *Asked:* Write Chart 9 (scatter, distribution of two variables) using the Happy Planet Index data.
+- *AI helped with:* Reading the Excel file, finding the `All Data` sheet (all countries, 2006-2025), and drafting an `app.R` skeleton with a shared year-filter `reactive()` and placeholders for Charts 18 and 3.
+
+
+**Prompt 2: Chart 9 scatter chart**
+- *Asked:* Why the app failed when I ran it.
+- *AI helped with:* Explaining that the sheet has two header rows and adding `skip = 1` to `read_excel()`.
+
+
+**Prompt 3: Colors and font**
+- *Asked:* Apply my own pastel palette and change the font.
+- *AI helped with:* Mapping my 8 colors to the 8 continents with `scale_color_manual()` and setting `font_google("Quicksand")` in `bs_theme()`.
+
+
+
+**What I verified myself:** The app runs, the chart updates with the year slider and the X/Y selectors, and the source citation is correct.
+
+
+
+

@@ -1,0 +1,29 @@
+---
+title: "SYNERGY Report: Hackathon 2.0"
+author:
+  - "Solbee Kim (Coordinator)"
+  - "Evandro M. S. Gomes"
+  - "John Vasconcelos"
+date: "2026-10-23"
+output: html_document
+---
+
+
+**Team:** Solbee Kim (Coordinator), Evandro M. S. Gomes, John Vasconcelos
+
+## Who did what
+- **Solbee Kim:** coordinated; set up the repo folder (`hackathon_2`), data loading and cleaning, the shared year-filter `reactive()`, theme and color palette, Chart 9 (scatter), and the documentation file.
+- **Evandro M. S. Gomes:** [Chart 18 (bubble)? confirm]
+- **John Vasconcelos:** [Chart 3 / deployment / slides? confirm]
+
+## How the parts were combined
+[e.g., Everyone worked in one repo and committed their own work. Each chart plugged into the shared `ui`/`server` skeleton and reused the same `filtered_data()` reactive and palette, so all three charts show the same year's data.]
+
+## What we did better together
+[e.g., One person set up the data and theme, so the chart builders could work in parallel. Teammates caught errors in each other's code. The charts look consistent.]
+
+## What we would do differently
+
+
+
+
