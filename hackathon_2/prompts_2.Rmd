@@ -28,7 +28,7 @@ output: html_document
 
 
 
-**What I verified myself:** The app runs, the chart updates with the year slider and the X/Y selectors, and the source citation is correct.
+**What I verified myself:** Ran the app and checked that it loads without errors. Used the Year slider and the X/Y selectors on Chart 9 and saw the chart update. Checked that the colors and the font changed. Opened the published Connect Cloud app and clicked through the three tabs (only if you really did).
 
 ___
 
