@@ -328,6 +328,7 @@ output$chart2_facets <- renderPlot({
 }
 ```
 
+
 ```{r app}
 shinyApp(ui = ui, server = server)
 ```
@@ -340,9 +341,7 @@ Published at: <https://solbee-kim-epps6356-hackathon.share.connect.posit.cloud>
 
 </iframe>
 
-# Synergy
-
-The team's full synergy report is here: [Synergy report](https://github.com/SolB-Kim/epps6356-hackathon/blob/main/hackathon_2/synergy_2.Rmd).
+------------------------------------------------------------------------
 
 # Session Info
 
