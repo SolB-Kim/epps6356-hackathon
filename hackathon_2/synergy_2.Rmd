@@ -26,5 +26,6 @@ One person set up the data and theme, so the chart builders could work in parall
 We would have liked to have more time to discuss how to make the charts more visually appealing and sophisticated.
 
 
-
+## Final integration and publishing
+After John and Evandro pushed their charts, Solbee pulled their commits, ran the complete `app.R` to check that all three tabs drew and that they all responded to the shared Year slider, and then prepared the project for publishing. She generated a `manifest.json` (listing the R packages the app needs) with `rsconnect::writeManifest()` so that Posit Connect Cloud could build the app, and pushed it to the shared GitHub repository. She then published `hackathon_2/app.R` from GitHub to Connect Cloud, and rendered the documentation page that embeds the live app. Because publishing is linked to the repository, any later push to `main` redeploys the app automatically, so the team agreed to treat `app.R` as the single source of truth and to push changes only after testing them locally.
 
