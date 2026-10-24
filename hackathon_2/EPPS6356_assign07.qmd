@@ -55,7 +55,7 @@ hpi <- hpi_raw %>%
 rainbow <- c(
   "Africa" = "#FFADAD", "East Asia" = "#FFC6FF",
   "Eastern Europe & Central Asia" = "#F0E68C", "Latin America" = "#CAFCCF",
-  "Middle East & N. Africa" = "#9BF6FF", "N America & Oceania" = "#A0C4FF",
+  "Middle East & North Africa" = "#9BF6FF", "North America & Oceania" = "#A0C4FF",
   "South Asia" = "#BDB2FF", "Western Europe" = "#FFD6A5"
 )
 
@@ -334,9 +334,9 @@ shinyApp(ui = ui, server = server)
 
 # Published App
 
-Published at: <https://CONNECT-CLOUD-URL>
+Published at: <https://solbee-kim-epps6356-hackathon.share.connect.posit.cloud>
 
-<iframe src="https://CONNECT-CLOUD-URL" width="100%" height="650" style="border: none;"></iframe>
+<iframe src="https://solbee-kim-epps6356-hackathon.share.connect.posit.cloud" width="100%" height="650" style="border: none;"></iframe>
 
 
 
