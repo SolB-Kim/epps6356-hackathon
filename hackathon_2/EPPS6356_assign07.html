@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.38">
+<meta name="generator" content="quarto-1.10.18">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -16,10 +16,13 @@
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
 */
-code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -72,10 +75,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="EPPS6356_assign07_files/libs/quarto-html/tippy.umd.min.js"></script>
 <script src="EPPS6356_assign07_files/libs/quarto-html/anchor.min.js"></script>
 <link href="EPPS6356_assign07_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="EPPS6356_assign07_files/libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="EPPS6356_assign07_files/libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="EPPS6356_assign07_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="EPPS6356_assign07_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="EPPS6356_assign07_files/libs/bootstrap/bootstrap-efbb37e9afcc02144ebbc7afd12a776f.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="EPPS6356_assign07_files/libs/bootstrap/bootstrap-215b371544c282197b31c8aa00ce3677.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 
 
 </head>
@@ -102,6 +105,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </ul></li>
   <li><a href="#published-app" id="toc-published-app" class="nav-link" data-scroll-target="#published-app">Published App</a></li>
   <li><a href="#synergy" id="toc-synergy" class="nav-link" data-scroll-target="#synergy">Synergy</a></li>
+  <li><a href="#session-info" id="toc-session-info" class="nav-link" data-scroll-target="#session-info">Session Info</a></li>
   </ul>
 </nav>
 </div>
@@ -444,13 +448,48 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="published-app" class="level1">
 <h1>Published App</h1>
-<p>Published at: [Connect Cloud URL here]</p>
-<iframe src="CONNECT_CLOUD_URL_HERE" width="100%" height="650" style="border: none;">
+<p>Published at: <a href="https://CONNECT-CLOUD-URL" class="uri">https://CONNECT-CLOUD-URL</a></p>
+<iframe src="https://CONNECT-CLOUD-URL" width="100%" height="650" style="border: none;">
 </iframe>
 </section>
 <section id="synergy" class="level1">
 <h1>Synergy</h1>
-<p>See <code>SYNERGY.md</code> in the repository for the team’s full synergy report.</p>
+<p>The team’s full synergy report is here: <a href="https://github.com/SolB-Kim/epps6356-hackathon/blob/main/hackathon_2/synergy_2.Rmd">Synergy report</a>.</p>
+</section>
+<section id="session-info" class="level1">
+<h1>Session Info</h1>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>R version 4.5.3 (2026-03-11 ucrt)
+Platform: x86_64-w64-mingw32/x64
+Running under: Windows 11 x64 (build 26300)
+
+Matrix products: default
+  LAPACK version 3.12.1
+
+locale:
+[1] LC_COLLATE=English_United States.utf8 
+[2] LC_CTYPE=English_United States.utf8   
+[3] LC_MONETARY=English_United States.utf8
+[4] LC_NUMERIC=C                          
+[5] LC_TIME=English_United States.utf8    
+
+time zone: America/Chicago
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+loaded via a namespace (and not attached):
+ [1] htmlwidgets_1.6.4 compiler_4.5.3    fastmap_1.2.0     cli_3.6.6        
+ [5] tools_4.5.3       htmltools_0.5.9   otel_0.2.0        rstudioapi_0.18.0
+ [9] yaml_2.3.12       rmarkdown_2.31    knitr_1.51        jsonlite_2.0.0   
+[13] xfun_0.57         digest_0.6.39     rlang_1.3.0       evaluate_1.0.5   </code></pre>
+</div>
+</div>
+<hr>
+<p><strong>AI assistance disclosure:</strong> This work was assisted by AI (Claude Sonnet 5.5, Anthropic). The prompts used are documented in the <a href="https://github.com/SolB-Kim/epps6356-hackathon/blob/main/hackathon_2/prompts_2.Rmd">prompts log</a>.</p>
 </section>
 
 </main>

@@ -17,7 +17,7 @@ output: html_document
 - *AI helped with:* Reading the Excel file, finding the `All Data` sheet (all countries, 2006-2025), and drafting an `app.R` skeleton with a shared year-filter `reactive()` and placeholders for Charts 18 and 3.
 
 
-**Prompt 2: Chart 9 scatter chart**
+**Prompt 2: Fixing the run error**
 - *Asked:* Why the app failed when I ran it.
 - *AI helped with:* Explaining that the sheet has two header rows and adding `skip = 1` to `read_excel()`.
 

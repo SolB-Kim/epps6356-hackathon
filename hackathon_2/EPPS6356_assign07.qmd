@@ -183,7 +183,7 @@ ui <- fluidPage(
 
 # The Server
 
-```{r the_server}
+```{r server}
 server <- function(input, output) {
   thematic::thematic_shiny()
   
@@ -334,12 +334,26 @@ shinyApp(ui = ui, server = server)
 
 # Published App
 
-Published at: \[Connect Cloud URL here\]
+Published at: <https://CONNECT-CLOUD-URL>
 
-<iframe src="CONNECT_CLOUD_URL_HERE" width="100%" height="650" style="border: none;">
+<iframe src="https://CONNECT-CLOUD-URL" width="100%" height="650" style="border: none;"></iframe>
 
-</iframe>
+
+
 
 # Synergy
 
-See `SYNERGY.md` in the repository for the team's full synergy report.
+The team's full synergy report is here: [Synergy report](https://github.com/SolB-Kim/epps6356-hackathon/blob/main/hackathon_2/synergy_2.Rmd).
+
+# Session Info
+
+```{r session_info}
+#| eval: true
+sessionInfo()
+```
+
+
+------------------------------------------------------------------------
+
+
+**AI assistance disclosure:** This work was assisted by AI (Claude Sonnet 5.5, Anthropic). The prompts used are documented in the [prompts log](https://github.com/SolB-Kim/epps6356-hackathon/blob/main/hackathon_2/prompts_2.Rmd).
