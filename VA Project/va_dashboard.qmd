@@ -52,7 +52,7 @@ execute:
 #| label: setup
 library(dplyr)
 library(tidyr)
-va <- read.csv("va_data.csv")
+va <- read.csv(if (file.exists("va_data.csv")) "va_data.csv" else "pages_epps_6356/va_data.csv")
 latest <- va |> filter(is_latest == 1) |> select(series_id, fiscal_year, value) |>
   pivot_wider(names_from = series_id, values_from = value) |> arrange(fiscal_year)
 disc_gap <- va |> filter(series_id == "tot_discretionary_derived", vintage_lag == 0, latest_is_final == 1, fiscal_year >= 2010)
