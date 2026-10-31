@@ -21,7 +21,7 @@ The **research questions, the choice of data source, the study window and all ed
 3. **Visual design.** Proposed and applied colour palettes and fonts. The team rejected two palettes, then chose one from a reference image. The final U.S. veterans theme (flag navy, red, gold, Oswald and Source Sans 3) was requested by the team using a reference poster.
 4. **Dashboard.** Converted the report into a Quarto dashboard with two bslib Shiny apps running in Shinylive (webR). This included value boxes, sidebar inputs, tabbed charts, narrative text and message-style chart titles that recompute with the filters.
 5. **Iterative refinement.** Implemented about 40 rounds of the team's feedback on layout, font sizes, legend placement, labels, chart proportions and which controls appear on each tab.
-6. **Assignment check.** Compared the dashboard with the Assignment 8 instructions. It then added message titles, axis titles with units and a source note to every chart, and drafted `PLAN.md` and `README.md`.
+6. **Assignment check.** Compared the dashboard with the Assignment 8 instructions. It then added message titles, axis titles with units and a source note to every chart and drafted `README.md`.
 7. **Setup help.** Explained how to install packages, add the Shinylive extension, preview the dashboard and publish it on GitHub Pages.
 
 ## 3. Prompt log (condensed, in order)
@@ -53,13 +53,12 @@ The **research questions, the choice of data source, the study window and all ed
 | 24 | Make the dots 50% larger; when will the charts be interactive? | Enlarged the dots and proposed further interactivity (tooltips, click-to-highlight, administration filter, inflation toggle, CSV download). |
 | 25 | The comparison buttons do nothing on the "Request vs. enacted" tab. | Made the sidebar tab-aware so it shows only relevant controls. |
 | 26 | Check whether the project meets Assignment 8. | Reviewed the requirements and listed the gaps. |
-| 27 | Fix items 1–4 (message titles, axis units, source notes, PLAN.md). | Implemented them and drafted `PLAN.md`. |
+| 27 | Fix the gaps (message titles, axis units, source notes). | Implemented them. |
 | 28 | Update the README; create this AI-use statement. | Wrote `README.md` and this file. |
 
 ## 4. What the team is responsible for
-- **Verification.** AI-generated code and transcribed figures can contain errors. The team is responsible for checking the dataset against the original VA budget volumes and for checking every number shown in the dashboard and in `PLAN.md`.
+- **Verification.** AI-generated code and transcribed figures can contain errors. The team is responsible for checking the dataset against the original VA budget volumes and for checking every number shown in the dashboard.
 - **Interpretation.** Conclusions about the executive and legislative branches are the team's own. The automatic chart titles and text describe the data mechanically and should be read with that in mind.
-- **Open items in PLAN.md.** The Abela Thought-Starter numbers were left for the team to fill in.
 
 ## 5. Other assistance in the same session (not part of this project)
 During the same session the assistant also helped John with unrelated tasks. It edited his personal website (layouts of the statistical-table apps and a new "StatTables" menu), styled a class slide deck, gave English phrasing and course-logistics answers, set up a hypothesis test, and answered questions about home internet. These are listed only for completeness and did not involve this project.

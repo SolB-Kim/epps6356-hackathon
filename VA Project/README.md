@@ -9,8 +9,6 @@ An interactive dashboard on how the executive and legislative branches differ in
 - **RQ1, requested vs. enacted.** How far do VA's budget requests fall from what Congress enacts? Does the gap change by year, and is it larger for some accounts (medical care, IT, construction)?
 - **RQ2, discretionary vs. mandatory.** When did mandatory funding overtake discretionary funding, which programs drove it, and is the discretionary share shrinking mostly because mandatory funding grows faster?
 
-The project plan is in [PLAN.md](PLAN.md).
-
 ## What is in the dashboard
 | Page | Content |
 |---|---|
@@ -24,15 +22,11 @@ The project plan is in [PLAN.md](PLAN.md).
 ## Files
 | File | Purpose |
 |---|---|
-| `va_dashboard.qmd` | The Quarto dashboard. The two Shiny apps and the data are embedded in it for Shinylive. |
-| `app_rq1.R`, `app_rq2.R` | Stand-alone copies of the two Shiny apps, for testing in RStudio. |
+| `va_dashboard.qmd` | The Quarto dashboard. The two Shiny apps (RQ1 and RQ2) and the data are embedded in it for Shinylive. |
 | `va_data.csv` | The dataset: 20 budget series × fiscal year × budget edition (965 rows). |
-| `PLAN.md` | Project plan (Assignment 8, Part A). |
 | `IA prompts.md` | Statement on how generative AI was used in this project. |
 | `VA_Project.Rproj` | RStudio project file. |
 | `_extensions/` | The `quarto-ext/shinylive` extension. Created by `quarto add`. |
-
-> **Note:** the app code lives in two places: inside `va_dashboard.qmd` and in `app_rq1.R` / `app_rq2.R`. Edit both, or edit the `.R` file and copy it back into the matching `{shinylive-r}` chunk.
 
 ## Data
 - **Source:** U.S. Department of Veterans Affairs, *Congressional Budget Submission*, Volumes I–V, FY2008–FY2027 editions.
@@ -55,10 +49,6 @@ The project plan is in [PLAN.md](PLAN.md).
    quarto preview va_dashboard.qmd
    ```
    The first load of the RQ1 and RQ2 pages takes 10–30 seconds while R starts in the browser (webR). Do not open the rendered `.html` file by double-clicking it, because Shinylive needs to be served over http.
-4. To test one app quickly in R:
-   ```r
-   shiny::runApp(shiny::shinyAppFile("app_rq1.R"))
-   ```
 
 ## Deployment
 Rendered as a static Quarto dashboard with Shinylive and published on GitHub Pages as part of the course website. Shinylive runs the Shiny apps in the visitor's browser, so no server is needed.
