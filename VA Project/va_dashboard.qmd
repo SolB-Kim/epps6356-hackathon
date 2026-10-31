@@ -1,0 +1,2719 @@
+---
+title: "VA Budget, FY2008–FY2026"
+author: "Evandro M. S. Gomes · Solbee Kim · John Vasconcelos"
+format:
+  dashboard:
+    orientation: rows
+    scrolling: true
+    mainfont: "Source Sans 3, sans-serif"
+    include-in-header:
+      text: |
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+        <style>
+          :root { --va-navy: #0A1F44; --va-blue: #0A3161; --va-red: #B31942; --va-gold: #D4A62A; --va-ink: #13233F; }
+          body, .card { font-family: "Source Sans 3", sans-serif; color: var(--va-ink); }
+          body { background: #F4F5F7; }
+          .navbar { background: var(--va-navy) !important; border-bottom: 6px solid; border-image: repeating-linear-gradient(90deg, var(--va-red) 0 26px, #ffffff 26px 52px) 1; }
+          .navbar .navbar-title, .navbar .navbar-brand, .navbar .nav-link, .navbar .menu-text { color: #ffffff !important; }
+          .navbar-title-text a { font-family: Oswald, sans-serif; text-transform: uppercase; letter-spacing: .06em; font-weight: 600; }
+          .navbar-title-text a::before { content: "\2605  "; color: var(--va-red); }
+          .navbar .nav-link { font-family: Oswald, sans-serif; text-transform: uppercase; letter-spacing: .06em; }
+          .navbar .nav-link.active { background: var(--va-red) !important; }
+          .navbar-title { display: flex !important; flex-direction: column !important; align-items: flex-start !important; }
+          .navbar-title .navbar-author { margin: 0 !important; padding: 0 !important; text-align: left !important; align-self: flex-start !important; font-size: .9rem; opacity: .85; }
+          .navbar .nav-link-text { white-space: nowrap; }
+          .card { border: 0; border-top: 4px solid var(--va-red); box-shadow: 0 1px 3px rgba(10,31,68,.12); }
+          .card-header { font-family: Oswald, sans-serif; text-transform: uppercase; letter-spacing: .06em; font-weight: 500; color: var(--va-navy); background: #ffffff; }
+          .card-header { justify-content: flex-start !important; gap: .5rem; }
+          .card-header::before { content: "\2605"; color: var(--va-red); }
+          .va-hero { border-top: 0 !important; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='46' height='46'%3E%3Cpolygon points='23,8 26.5,18.5 37.5,18.5 28.5,25 32,35.5 23,29 14,35.5 17.5,25 8.5,18.5 19.5,18.5' fill='%23ffffff' fill-opacity='0.10'/%3E%3C/svg%3E"), linear-gradient(100deg, var(--va-navy) 0%, var(--va-blue) 62%, rgba(10,49,97,.92) 100%) !important; color: #fff !important; overflow: hidden; position: relative; }
+          .va-hero::after { content: ""; position: absolute; right: -60px; top: 0; bottom: 0; width: 42%; background: repeating-linear-gradient(-28deg, rgba(179,25,66,.55) 0 22px, rgba(255,255,255,.10) 22px 44px); -webkit-mask-image: linear-gradient(90deg, transparent, #000 60%); mask-image: linear-gradient(90deg, transparent, #000 60%); }
+          .va-hero-body { height: 100%; display: flex !important; flex-direction: column; justify-content: center; align-items: center; text-align: center; position: relative; z-index: 1; padding: 1.6rem 1rem; }
+          .va-kicker { font-family: Oswald, sans-serif; letter-spacing: .35em; text-transform: uppercase; font-size: 1rem; color: #ffffff; opacity: .85; }
+          .va-title { font-family: Oswald, sans-serif; font-weight: 700; text-transform: uppercase; color: #ffffff; font-size: clamp(2.4rem, 6vw, 4.4rem); line-height: 1; letter-spacing: .03em; margin: .35rem 0; text-shadow: 0 3px 0 rgba(0,0,0,.25); }
+          .va-sub { font-family: Oswald, sans-serif; text-transform: uppercase; letter-spacing: .25em; font-size: 1.25rem; color: #ffffff; }
+          .va-sub .st { color: var(--va-red); letter-spacing: .1em; margin: 0 .6rem; }
+          .va-ribbon { display: inline-block; margin-top: .9rem; background: var(--va-red); color: #fff; font-family: Oswald, sans-serif; text-transform: uppercase; letter-spacing: .08em; font-weight: 500; padding: .35rem 1.1rem; font-size: 1.05rem; box-shadow: 0 2px 0 rgba(0,0,0,.25); }
+          .va-hero, .va-hero * { color: #ffffff; }
+          .va-hero-body > div { display: block !important; flex: 0 0 auto !important; }
+          .va-hero-body .va-sub .st { color: var(--va-red) !important; }
+          .va-hero .bslib-full-screen-enter { display: none !important; }
+        </style>
+filters:
+  - shinylive
+execute:
+  echo: false
+  message: false
+  warning: false
+---
+
+```{r}
+#| label: setup
+library(dplyr)
+library(tidyr)
+va <- read.csv("va_data.csv")
+latest <- va |> filter(is_latest == 1) |> select(series_id, fiscal_year, value) |>
+  pivot_wider(names_from = series_id, values_from = value) |> arrange(fiscal_year)
+disc_gap <- va |> filter(series_id == "tot_discretionary_derived", vintage_lag == 0, latest_is_final == 1, fiscal_year >= 2010)
+cross <- latest |> filter(tot_mandatory > tot_va - tot_mandatory) |> slice(1)
+share <- function(i) (latest$tot_va[i] - latest$tot_mandatory[i]) / latest$tot_va[i]
+pct <- function(x) paste0(round(100 * x), "%")
+```
+
+# Overview
+
+## Row {height="270px"}
+
+::: {.card .va-hero}
+```{=html}
+<div class="va-hero-body">
+<div class="va-kicker">Veterans Affairs Budget Analysis</div>
+<div class="va-title">VA Budget</div>
+<div class="va-sub"><span class="st">&#9733; &#9733;</span>FY2008 &ndash; FY2026<span class="st">&#9733; &#9733;</span></div>
+<div class="va-ribbon">Requested vs. enacted &middot; Discretionary vs. mandatory</div>
+</div>
+```
+:::
+
+## Row
+
+::: {.card title="About this dashboard"}
+The **executive branch** (the President's budget, prepared by VA) asks Congress for money account by account, and the **legislative branch** decides what to enact. Each year VA publishes a five-volume Congressional Budget Submission, and each edition reports the same fiscal year as a **request**, then as **enacted or estimated**, and finally as **enacted or actual**.
+
+This dashboard links those editions for FY2008–FY2026 and answers two questions:
+
+- **RQ1 · Requested vs. enacted.** How far are VA's requests from what Congress enacts, does the gap change by year, and is it larger for some accounts (medical care, IT, construction)?
+- **RQ2 · Discretionary vs. mandatory.** When did mandatory funding overtake discretionary funding, which programs drove it, and is the discretionary share shrinking mostly because mandatory grows faster?
+
+Use the controls on the left of each page. The cards, charts and text update together. The first load takes a few seconds while R starts in your browser.
+:::
+
+::: {.card title="How to read the numbers"}
+- **Request** = value printed in the edition for its own fiscal year. **Enacted** = value in the latest edition that reports that year.
+- **Gap** = (enacted − requested) ÷ requested. A positive gap means more was provided than requested.
+- **Discretionary** = total VA funding − mandatory funding (includes MCCF collections and the Transformational Fund).
+- Budget authority in nominal **dollars**; not outlays.
+- Source: VA Congressional Budget Submissions, FY2008–FY2027, transcribed by the team.
+:::
+
+# RQ1 · Requested vs. enacted
+
+```{shinylive-r}
+#| standalone: true
+#| viewerHeight: 1150
+## file: app.R
+library(shiny)
+library(bslib)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(scales)
+library(ggrepel)
+library(patchwork)
+
+# ---------------------------------------------------------------- data
+va <- read.csv("va_data.csv")
+FY_MIN <- 2008; FY_MAX <- 2026
+
+gaps_all <- va |>
+  filter(vintage_lag == 0, latest_is_final == 1, !is.na(gap_pct_of_request))
+
+accts <- c(
+  acct_medical_services = "Medical Services", acct_medical_community_care = "Medical Community Care",
+  acct_medical_support_compliance = "Medical Support & Compliance", acct_medical_facilities = "Medical Facilities",
+  acct_medical_research = "Medical & Prosthetic Research", acct_it_systems = "IT Systems",
+  acct_ehrm = "EHR Modernization", acct_construction_major = "Construction, Major",
+  acct_construction_minor = "Construction, Minor", acct_grants_state_ext_care = "Grants, State Extended Care",
+  acct_goe_vba = "General Operating Exp., VBA", acct_general_admin = "General Administration",
+  acct_nca = "National Cemetery Admin.", acct_oig = "Inspector General")
+grp_of <- c(
+  acct_medical_services = "Medical care", acct_medical_community_care = "Medical care",
+  acct_medical_support_compliance = "Medical care", acct_medical_facilities = "Medical care",
+  acct_medical_research = "Other", acct_it_systems = "IT", acct_ehrm = "IT",
+  acct_construction_major = "Construction", acct_construction_minor = "Construction",
+  acct_grants_state_ext_care = "Construction", acct_goe_vba = "Other", acct_general_admin = "Other",
+  acct_nca = "Other", acct_oig = "Other")
+GROUPS <- c("Medical care", "IT", "Construction", "Other")
+
+acct_gaps_all <- gaps_all |>
+  filter(series_id %in% names(accts)) |>
+  mutate(account = unname(accts[series_id]),
+         group   = factor(unname(grp_of[series_id]), levels = GROUPS))
+
+FTYPE <- c("Discretionary" = "tot_discretionary_derived", "Mandatory" = "tot_mandatory", "Total VA" = "tot_va")
+admin_of <- function(fy) case_when(fy <= 2009 ~ "Bush", fy <= 2017 ~ "Obama", fy <= 2021 ~ "Trump I",
+                                   fy <= 2025 ~ "Biden", TRUE ~ "Trump II")
+
+# ---------------------------------------------------------------- look
+pal <- c(blue = "#0A3161", purple = "#B31942", sky = "#6C9BD2", yellow = "#D4A62A",
+         orange = "#6E7B3E", pink = "#B31942", mint = "#A9B3C1", grey = "#B8C0CC")
+grp_cols <- c("Medical care" = pal[["blue"]], IT = pal[["pink"]], Construction = pal[["orange"]], Other = pal[["grey"]])
+ink <- "#13233F"; muted <- "#5A6578"
+theme_va <- function() {
+  theme_minimal(base_size = 8.5) +
+    theme(text = element_text(colour = ink),
+          axis.text = element_text(size = 8.5, colour = muted),
+          axis.title = element_text(size = 8.5, colour = muted),
+          legend.text = element_text(size = 8.5), legend.title = element_blank(),
+          legend.position = "top", legend.justification = "left",
+          strip.text = element_text(size = 8.5, face = "bold", colour = ink),
+          panel.grid.minor = element_blank(),
+          plot.margin = margin(8, 14, 8, 8))
+}
+leg_in <- function(x, y, key = 0.72, just = c(x, y)) {
+  th <- theme(legend.direction = "vertical", legend.justification = just,
+              legend.key.size = unit(key, "lines"),
+              legend.background = element_rect(fill = alpha("white", 0.88), colour = NA),
+              legend.margin = margin(3, 6, 3, 6))
+  if (utils::packageVersion("ggplot2") >= "3.5.0") th + theme(legend.position = "inside", legend.position.inside = c(x, y))
+  else th + theme(legend.position = c(x, y))
+}
+pct  <- function(x, d = 1) paste0(formatC(100 * x, format = "f", digits = d), "%")
+spct <- function(x, d = 1) paste0(ifelse(x > 0, "+", ""), formatC(100 * x, format = "f", digits = d), "%")
+mn   <- function(x) paste0("$", formatC(x, format = "f", digits = 0, big.mark = ","), "M")
+
+# ---------------------------------------------------------------- UI
+plot_card <- function(plot_id, text_id, height = "360px") {
+  card(full_screen = TRUE, card_header(textOutput(paste0(plot_id, "_ttl"), inline = TRUE)),
+       plotOutput(plot_id, height = height),
+       card_footer(uiOutput(text_id), div(class = "src", "Source: U.S. Department of Veterans Affairs, Congressional Budget Submissions (Vols. I–V), FY2008–FY2027 editions; compiled by the authors. Nominal budget authority.")))
+}
+
+ui <- page_sidebar(
+  fillable = FALSE,
+  theme = bs_theme(version = 5, primary = pal[["blue"]], base_font = font_google("Source Sans 3", local = FALSE), heading_font = font_google("Oswald", local = FALSE), fg = ink, bg = "#ffffff"),
+  sidebar = sidebar(
+    width = 290,
+    sliderInput("years", "Fiscal years", min = FY_MIN, max = FY_MAX, value = c(FY_MIN, FY_MAX), step = 1, sep = ""),
+    conditionalPanel("input.tab == 'Request vs. enacted' || input.tab == 'Gap by year'",
+      radioButtons("ftype", "Funding type", choices = names(FTYPE), selected = "Discretionary")),
+    conditionalPanel("input.tab != 'Request vs. enacted' && input.tab != 'Gap by year'",
+      checkboxGroupInput("groups", "Account groups", choices = GROUPS, selected = GROUPS)),
+    conditionalPanel("input.tab == 'By account'",
+      radioButtons("measure", "Compare accounts by",
+                   choices = c("Median absolute gap" = "median_abs", "Mean signed gap" = "mean_signed",
+                               "Share of years changed (>1%)" = "changed"),
+                   selected = "median_abs")),
+    helpText("Gap = (enacted − requested) ÷ requested. Request = the edition for that fiscal year; enacted = the latest edition.")
+  ),
+  tags$head(tags$style(HTML("
+    .bslib-value-box { min-height: 0 !important; }
+    .bslib-value-box .card-body { padding: .3rem .4rem !important; }
+    .bslib-value-box .value-box-area { padding: .35rem .8rem !important; gap: 0 !important; }
+    .bslib-value-box .value-box-title { font-size: .85rem !important; margin-bottom: .1rem !important; }
+    .bslib-value-box .value-box-value { font-size: 1.55rem !important; line-height: 1.15 !important; margin-bottom: .1rem !important; }
+    .bslib-sidebar-layout > .sidebar { font-size: .9rem; }
+    .bslib-sidebar-layout > .sidebar .control-label, .bslib-sidebar-layout > .sidebar .form-label { font-size: .9rem; }
+    .vb-row { margin-bottom: 1.4rem !important; }
+    .vb-row + * { margin-top: 0 !important; }
+    .bslib-value-box { border: 0 !important; border-top: 4px solid #B31942 !important; border-radius: 6px !important; }
+    .bslib-value-box .value-box-title { font-family: Oswald, sans-serif; text-transform: uppercase; letter-spacing: .06em; }
+    .bslib-value-box .value-box-title::before { content: '\\2605  '; color: #B31942; }
+    .bslib-value-box .value-box-value { font-family: Oswald, sans-serif; font-weight: 600 !important; letter-spacing: .02em; }
+    .card-header { font-family: Oswald, sans-serif; letter-spacing: .02em; font-weight: 500; font-size: 1.05rem; color: #0A1F44; border-bottom: 2px solid #B31942; }
+    .card-footer .src { font-size: .75rem; color: #5A6578; margin-top: .35rem; border-top: 1px solid #E3E7EC; padding-top: .3rem; }
+    .nav-underline .nav-link, .nav-tabs .nav-link { font-family: Oswald, sans-serif; text-transform: uppercase; letter-spacing: .05em; }
+    .nav-underline .nav-link.active { color: #B31942 !important; border-bottom-color: #B31942 !important; }
+    .bslib-value-box p { font-size: .8rem !important; margin: 0 !important; opacity: .9; }
+  "))),
+  layout_columns(
+    fill = FALSE, class = "vb-row",
+    value_box(title = "Largest gap in the window", value = textOutput("vb_max"), showcase = NULL,
+              theme = value_box_theme(bg = "#0A1F44", fg = "white"), p(textOutput("vb_max_note"))),
+    value_box(title = "Median gap, selected accounts", value = textOutput("vb_med"),
+              theme = value_box_theme(bg = "#0A1F44", fg = "white"), p(textOutput("vb_med_note"))),
+    value_box(title = "Most revised account", value = textOutput("vb_top"),
+              theme = value_box_theme(bg = "#0A1F44", fg = "white"), p(textOutput("vb_top_note")))
+  ),
+  navset_card_underline(
+    id = "tab",
+    nav_panel("Request vs. enacted", plot_card("p_dumbbell", "t_dumbbell", "600px")),
+    nav_panel("Gap by year",         plot_card("p_diverging", "t_diverging")),
+    nav_panel("By account",          plot_card("p_accounts", "t_accounts")),
+    nav_panel("Account × year",      plot_card("p_heatmap", "t_heatmap", "440px")),
+    nav_panel("How often & which way", plot_card("p_bubbles", "t_bubbles", "440px")),
+    nav_panel("All account-years",   plot_card("p_curve", "t_curve"))
+  )
+)
+
+# ---------------------------------------------------------------- server
+server <- function(input, output, session) {
+
+  yr  <- reactive(input$years)
+  tot <- reactive({
+    gaps_all |> filter(series_id == FTYPE[[input$ftype]], between(fiscal_year, yr()[1], yr()[2]))
+  })
+  ag <- reactive({
+    validate(need(length(input$groups) > 0, "Select at least one account group."))
+    acct_gaps_all |> filter(group %in% input$groups, between(fiscal_year, yr()[1], yr()[2]))
+  })
+  acct_sum <- reactive({
+    ag() |>
+      group_by(account, group) |>
+      summarise(years = n(), median_abs = median(abs(gap_pct_of_request)),
+                mean_signed = mean(gap_pct_of_request), changed = mean(abs(gap_pct_of_request) > 0.01),
+                med_signed = median(gap_pct_of_request), size = mean(value_latest) / 1000, .groups = "drop")
+  })
+
+
+  # ---- message titles (update with the filters)
+  output$p_dumbbell_ttl <- renderText({
+    d <- tot(); k <- sum(abs(d$gap_pct_of_request) <= 0.025)
+    paste0(input$ftype, " funding: Congress enacted within ±2.5% of the request in ", k, " of ", nrow(d), " years")
+  })
+  output$p_diverging_ttl <- renderText({
+    d <- tot(); up <- sum(d$gap_pct_of_request > 0.0005); dn <- sum(d$gap_pct_of_request < -0.0005)
+    paste0("Congress gave more than requested in ", up, " years and less in ", dn,
+           " (average gap ", spct(mean(d$gap_pct_of_request)), ")")
+  })
+  output$p_accounts_ttl <- renderText({
+    a <- acct_sum(); a$val <- a[[input$measure]]
+    hi <- a$account[which.max(a$val)]; lo <- a$account[which.min(a$val)]
+    switch(input$measure,
+      median_abs  = paste0(hi, " departs most from the request; ", lo, " the least"),
+      mean_signed = paste0(hi, " gets the most extra money on average; ", lo, " is cut the most"),
+      changed     = paste0(hi, " is changed most often; ", lo, " the least"))
+  })
+  output$p_heatmap_ttl <- renderText({
+    g <- ag() |> group_by(group) |> summarise(big = sum(abs(gap_pct_of_request) > 0.10), .groups = "drop") |> arrange(desc(big))
+    if (sum(g$big) == 0) "No account-year departs from the request by more than 10%" else
+      paste0(g$group[1], " accounts hold ", g$big[1], " of the ", sum(g$big), " account-years that miss the request by more than 10%")
+  })
+  output$p_bubbles_ttl <- renderText({
+    b <- acct_sum(); rare <- sum(b$changed < 0.5); cut <- sum(b$changed >= 0.5 & b$med_signed < -0.005)
+    paste0(rare, " of ", nrow(b), " accounts are rarely changed; ", cut, " are often changed and usually cut")
+  })
+  output$p_curve_ttl <- renderText({
+    q <- quantile(abs(ag()$gap_pct_of_request), c(.5, .9))
+    paste0("Half of all account-years miss the request by less than ", pct(q[1]), "; the top 10% miss by more than ", pct(q[2], 0))
+  })
+
+  # ---- value boxes
+  output$vb_max <- renderText({ d <- tot(); i <- which.max(abs(d$gap_pct_of_request)); spct(d$gap_pct_of_request[i]) })
+  output$vb_max_note <- renderText({ d <- tot(); i <- which.max(abs(d$gap_pct_of_request))
+    paste0(input$ftype, ", FY", d$fiscal_year[i]) })
+  output$vb_med <- renderText(pct(median(abs(ag()$gap_pct_of_request))))
+  output$vb_med_note <- renderText(paste0(nrow(ag()), " account-years, FY", yr()[1], "–FY", yr()[2]))
+  output$vb_top <- renderText({ a <- acct_sum() |> slice_max(median_abs, n = 1, with_ties = FALSE); a$account })
+  output$vb_top_note <- renderText({ a <- acct_sum() |> slice_max(median_abs, n = 1, with_ties = FALSE)
+    paste0("median gap ", pct(a$median_abs)) })
+
+  # ---- dumbbell
+  output$p_dumbbell <- renderPlot({
+    d <- tot() |>
+      transmute(fiscal_year, admin = factor(admin_of(fiscal_year), levels = c("Bush", "Obama", "Trump I", "Biden", "Trump II")),
+                Requested = value_request / 1000, Enacted = value_latest / 1000,
+                change = round(Enacted - Requested, 1) + 0,
+                fy = factor(fiscal_year, levels = rev(sort(unique(fiscal_year)))))
+    lo <- floor(min(d$Requested, d$Enacted) / 10) * 10; hi <- ceiling(max(d$Requested, d$Enacted) / 10) * 10
+    chg <- hi + (hi - lo) * 0.16
+    ggplot(d, aes(y = fy)) +
+      geom_segment(aes(x = lo, xend = hi, yend = fy), colour = "#EEF0F3", linewidth = 5, lineend = "round") +
+      geom_segment(aes(x = Requested, xend = Enacted, yend = fy), colour = "#7D8796", linewidth = 0.8) +
+      geom_point(aes(x = Requested), colour = pal[["yellow"]], size = 4.6) +
+      geom_point(aes(x = Enacted), colour = pal[["blue"]], size = 4.6) +
+      geom_text(aes(x = chg, label = sprintf("%+.1f", change)), hjust = 1, size = 3, colour = ink) +
+      geom_text(data = d |> filter(fiscal_year == min(fiscal_year)), aes(x = chg, label = "Change ($B)"),
+                hjust = 1, vjust = -1.4, size = 3, fontface = "bold", colour = ink) +
+      facet_grid(admin ~ ., scales = "free_y", space = "free_y", switch = "y") +
+      scale_x_continuous(position = "top", limits = c(lo, chg), breaks = pretty(c(lo, hi), 4)[pretty(c(lo, hi), 4) <= hi],
+                         labels = label_dollar(suffix = "B"), expand = c(0, 0)) +
+      coord_cartesian(clip = "off") +
+      labs(x = "Budget authority ($ billions)", y = "Fiscal year", subtitle = "Gold = requested · navy = enacted") +
+      theme_va() +
+      theme(panel.grid.major.y = element_blank(),
+            panel.grid.major.x = element_line(colour = "#D5DAE1", linetype = "dashed", linewidth = 0.4),
+            strip.placement = "outside",
+            strip.text.y.left = element_text(angle = 0, hjust = 0, vjust = 1, face = "plain", colour = muted),
+            plot.subtitle = element_text(colour = muted, size = 8.5, margin = margin(b = 18)))
+  }, res = 96)
+  output$t_dumbbell <- renderUI({
+    d <- tot(); big <- d |> filter(abs(gap_pct_of_request) > 0.025)
+    p(HTML(paste0("For <b>", tolower(input$ftype), "</b> funding in FY", yr()[1], "–FY", yr()[2],
+      ", the enacted total stayed within ±2.5% of the request in <b>", sum(abs(d$gap_pct_of_request) <= 0.025),
+      " of ", nrow(d), "</b> years.",
+      if (nrow(big)) paste0(" Larger gaps: ", paste0("FY", big$fiscal_year, " (", spct(big$gap_pct_of_request), ")", collapse = ", "), ".") else "",
+      if (input$ftype != "Discretionary") " Mandatory gaps reflect re-estimates of benefit costs, not congressional cuts." else "")))
+  })
+
+  # ---- gap by year
+  output$p_diverging <- renderPlot({
+    d <- tot() |> mutate(dir = if_else(gap_pct_of_request >= 0, "Enacted above request", "Enacted below request"))
+    ggplot(d, aes(fiscal_year, gap_pct_of_request, fill = dir)) +
+      geom_hline(yintercept = 0, colour = "#9AA5B4") +
+      geom_col(width = 0.72) +
+      scale_fill_manual(values = c("Enacted above request" = pal[["blue"]], "Enacted below request" = pal[["pink"]])) +
+      scale_y_continuous(labels = label_percent(accuracy = 1), expand = expansion(mult = c(0.05, 0.05))) +
+      scale_x_continuous(breaks = pretty_breaks(6)) +
+      labs(x = "Fiscal year", y = "Gap (% of request)") + theme_va() +
+      leg_in(0.995, 1.05 / 1.10, just = c(1, 1)) + theme(legend.margin = margin(0, 4, 3, 6))
+  }, res = 96)
+  output$t_diverging <- renderUI({
+    d <- tot()
+    p(HTML(paste0("Average gap ", spct(mean(d$gap_pct_of_request)), " · enacted above the request in <b>",
+      sum(d$gap_pct_of_request > 0.0005), "</b> years, below in <b>", sum(d$gap_pct_of_request < -0.0005), "</b>.",
+      " Largest: FY", d$fiscal_year[which.max(abs(d$gap_pct_of_request))], " (",
+      spct(d$gap_pct_of_request[which.max(abs(d$gap_pct_of_request))]), ").")))
+  })
+
+  # ---- by account
+  m_lab <- c(median_abs = "Median absolute gap (% of request)", mean_signed = "Mean signed gap (% of request)", changed = "Years changed by more than 1% (% of years)")
+  output$p_accounts <- renderPlot({
+    a <- acct_sum(); a$val <- a[[input$measure]]
+    ggplot(a, aes(val, reorder(account, val), fill = group)) +
+      geom_col(width = 0.7) +
+      geom_text(aes(label = if (input$measure == "mean_signed") spct(val) else pct(val),
+                    hjust = ifelse(val >= 0, -0.12, 1.12)), size = 3, colour = ink) +
+      scale_fill_manual(values = grp_cols) +
+      scale_x_continuous(labels = label_percent(accuracy = 1), expand = expansion(mult = c(0.12, 0.18))) +
+      labs(x = m_lab[[input$measure]], y = "Account") + theme_va() +
+      theme(panel.grid.major.y = element_blank()) + leg_in(0.99, 0.02)
+  }, res = 96)
+  output$t_accounts <- renderUI({
+    g <- ag() |> group_by(group) |> summarise(m = median(abs(gap_pct_of_request)), .groups = "drop") |> arrange(m)
+    p(HTML(paste0("Median absolute gap by group: ",
+      paste0("<b>", g$group, "</b> ", pct(g$m), collapse = " · "),
+      ". The two branches agree most on the accounts at the bottom of the chart (small gaps) and disagree most on those at the top.")))
+  })
+
+  # ---- heatmap
+  output$p_heatmap <- renderPlot({
+    a <- ag(); ord <- acct_sum() |> arrange(median_abs) |> pull(account); lim <- 0.25
+    ggplot(a, aes(fiscal_year, factor(account, levels = ord), fill = pmax(pmin(gap_pct_of_request, lim), -lim))) +
+      geom_tile(colour = "white", linewidth = 0.7) +
+      scale_fill_gradient2(low = pal[["pink"]], mid = "#F7F7F5", high = pal[["blue"]], midpoint = 0,
+                           limits = c(-lim, lim), labels = label_percent(accuracy = 1)) +
+      scale_x_continuous(breaks = pretty_breaks(6), expand = c(0, 0)) +
+      labs(x = "Fiscal year", y = "Account", fill = "Gap (% of request)") + theme_va() +
+      theme(panel.grid = element_blank(), legend.position = "bottom", legend.justification = "center",
+            legend.key.width = unit(2, "cm"), legend.title = element_text(size = 8.5, colour = muted, vjust = 0.8))
+  }, res = 96)
+  output$t_heatmap <- renderUI({
+    a <- ag(); top <- a |> slice_max(abs(gap_pct_of_request), n = 3, with_ties = FALSE)
+    p(HTML(paste0("Navy = Congress enacted more than requested, red = less (capped at ±25%). Biggest departures in the selection: ",
+      paste0("<b>", top$account, "</b> FY", top$fiscal_year, " (", spct(top$gap_pct_of_request, 0), ")", collapse = "; "), ".")))
+  })
+
+  # ---- bubbles
+  output$p_bubbles <- renderPlot({
+    b <- acct_sum() |> mutate(y = pmax(pmin(med_signed, 0.15), -0.15))
+    p <- ggplot(b, aes(changed, y)) +
+      geom_hline(yintercept = 0, linetype = "dashed", colour = "#9AA5B4") +
+      geom_vline(xintercept = 0.5, linetype = "dashed", colour = "#9AA5B4") +
+      annotate("text", x = 0.99, y = 0.15, label = "Often changed,\nusually raised", hjust = 1, vjust = 1, fontface = "italic", size = 2.8, colour = muted) +
+      annotate("text", x = 0.99, y = -0.15, label = "Often changed,\nusually cut", hjust = 1, vjust = 0, fontface = "italic", size = 2.8, colour = muted) +
+      annotate("text", x = 0.01, y = 0.15, label = "Rarely changed", hjust = 0, vjust = 1, fontface = "italic", size = 2.8, colour = muted) +
+      geom_point(aes(size = size, colour = group, alpha = group == "Medical care")) +
+      scale_alpha_manual(values = c(`TRUE` = 0.45, `FALSE` = 0.85), guide = "none") +
+      scale_colour_manual(values = grp_cols) +
+      scale_size_area(max_size = 24, guide = "none") +
+      scale_x_continuous(labels = label_percent(accuracy = 1), limits = c(0, 1)) +
+      scale_y_continuous(labels = label_percent(accuracy = 1), limits = c(-0.155, 0.155)) +
+      guides(colour = guide_legend(override.aes = list(size = 6))) +
+      labs(x = "Years changed by more than 1% (% of years)", y = "Median gap (% of request)") + theme_va()
+    if (requireNamespace("ggrepel", quietly = TRUE)) {
+      p + ggrepel::geom_text_repel(aes(label = account), size = 2.3, colour = ink, box.padding = 0.35, point.size = NA,
+                                   segment.colour = muted, segment.size = 0.3,
+                                   min.segment.length = 0.3, seed = 7, max.overlaps = Inf)
+    } else p + geom_text(aes(label = account), size = 2.3, colour = ink, vjust = -1.2)
+  }, res = 96)
+  output$t_bubbles <- renderUI({
+    b <- acct_sum()
+    rare <- b |> filter(changed < 0.5) |> pull(account); cut <- b |> filter(changed >= 0.5, med_signed < -0.005) |> pull(account)
+    p(HTML(paste0("Bubble size = average enacted funding. <b>Rarely changed:</b> ", if (length(rare)) paste(rare, collapse = ", ") else "none",
+      ". <b>Often changed and usually cut:</b> ", if (length(cut)) paste(cut, collapse = ", ") else "none", ".")))
+  })
+
+  # ---- ranked curve
+  output$p_curve <- renderPlot({
+    cap <- 0.6
+    cd <- ag() |> mutate(abs_gap = abs(gap_pct_of_request)) |> arrange(abs_gap) |>
+      mutate(pctile = (row_number() - 0.5) / n(), y = pmin(abs_gap, cap))
+    qs <- quantile(cd$abs_gap, c(.25, .5, .75))
+    ggplot(cd, aes(pctile, y)) +
+      geom_vline(xintercept = c(.25, .5, .75), linetype = "dotted", colour = "#9AA5B4") +
+      annotate("text", x = c(.25, .5, .75), y = cap * 1.08, label = pct(qs), fontface = "italic", size = 3, colour = ink) +
+      geom_line(colour = ink, linewidth = 0.8) +
+      geom_segment(aes(x = pctile, xend = pctile, y = -0.05, yend = -0.015, colour = group), linewidth = 1) +
+      scale_colour_manual(values = grp_cols) +
+      guides(colour = guide_legend(override.aes = list(linewidth = 2.4))) +
+      scale_x_continuous(breaks = c(.25, .5, .75), labels = c("25th", "50th", "75th"), limits = c(0, 1)) +
+      scale_y_continuous(labels = label_percent(accuracy = 1), limits = c(-0.055, cap * 1.12), breaks = seq(0, cap, 0.2)) +
+      coord_cartesian(clip = "off") +
+      labs(x = "Account-years ranked by gap (percentile)", y = "Absolute gap (% of request, capped at 60%)") + theme_va() + leg_in(0.01, 0.63, just = c(0, 0.5))
+  }, res = 96)
+  output$t_curve <- renderUI({
+    cd <- ag(); qs <- quantile(abs(cd$gap_pct_of_request), c(.25, .5, .75))
+    top <- cd |> filter(abs(gap_pct_of_request) >= qs[3]) |> count(group, sort = TRUE)
+    p(HTML(paste0("Quartiles of the gap: <b>", pct(qs[1]), "</b>, <b>", pct(qs[2]), "</b> and <b>", pct(qs[3]),
+      "</b>. In the top quarter: ", paste0(top$group, " (", top$n, ")", collapse = ", "),
+      ". Ticks on the baseline show where each group falls.")))
+  })
+}
+
+shinyApp(ui, server)
+## file: va_data.csv
+series_id,fiscal_year,edition,vintage_lag,value,is_latest,latest_is_final,value_request,value_latest,gap_pct_of_request
+acct_construction_major,2008,2008.0,0.0,727.0,0,1,727.0,1531.0,1.105915
+acct_construction_major,2008,2009.0,1.0,1069.0,0,1,727.0,1531.0,1.105915
+acct_construction_major,2008,2010.0,2.0,1531.0,1,1,727.0,1531.0,1.105915
+acct_construction_major,2009,2009.0,0.0,582.0,0,1,582.0,923.0,0.585911
+acct_construction_major,2009,2010.0,1.0,923.0,1,1,582.0,923.0,0.585911
+acct_construction_major,2010,2010.0,0.0,1194.0,0,1,1194.0,1194.0,0.0
+acct_construction_major,2010,2012.0,2.0,1194.0,1,1,1194.0,1194.0,0.0
+acct_construction_major,2012,2012.0,0.0,590.0,0,1,590.0,590.0,0.0
+acct_construction_major,2012,2013.0,1.0,590.0,0,1,590.0,590.0,0.0
+acct_construction_major,2012,2014.0,2.0,590.0,1,1,590.0,590.0,0.0
+acct_construction_major,2013,2013.0,0.0,532.0,0,1,532.0,739.0,0.389098
+acct_construction_major,2013,2014.0,1.0,532.0,0,1,532.0,739.0,0.389098
+acct_construction_major,2013,2015.0,2.0,739.0,1,1,532.0,739.0,0.389098
+acct_construction_major,2014,2014.0,0.0,342.0,0,1,342.0,342.0,0.0
+acct_construction_major,2014,2015.0,1.0,342.0,0,1,342.0,342.0,0.0
+acct_construction_major,2014,2016.0,2.0,342.0,1,1,342.0,342.0,0.0
+acct_construction_major,2015,2015.0,0.0,562.0,0,1,562.0,562.0,0.0
+acct_construction_major,2015,2016.0,1.0,562.0,0,1,562.0,562.0,0.0
+acct_construction_major,2015,2017.0,2.0,562.0,1,1,562.0,562.0,0.0
+acct_construction_major,2016,2016.0,0.0,1144.0,0,1,1144.0,1221.0,0.067308
+acct_construction_major,2016,2017.0,1.0,1244.0,0,1,1144.0,1221.0,0.067308
+acct_construction_major,2016,2018.0,2.0,1221.0,1,1,1144.0,1221.0,0.067308
+acct_construction_major,2017,2017.0,0.0,528.0,0,1,528.0,305.0,-0.422348
+acct_construction_major,2017,2018.0,1.0,528.0,0,1,528.0,305.0,-0.422348
+acct_construction_major,2017,2019.0,2.0,305.0,1,1,528.0,305.0,-0.422348
+acct_construction_major,2018,2018.0,0.0,512.0,0,1,512.0,512.0,0.0
+acct_construction_major,2018,2019.0,1.0,512.0,0,1,512.0,512.0,0.0
+acct_construction_major,2018,2020.0,2.0,512.0,1,1,512.0,512.0,0.0
+acct_construction_major,2019,2019.0,0.0,1127.0,0,1,1127.0,2177.0,0.931677
+acct_construction_major,2019,2020.0,1.0,2177.0,0,1,1127.0,2177.0,0.931677
+acct_construction_major,2019,2021.0,2.0,2177.0,1,1,1127.0,2177.0,0.931677
+acct_construction_major,2020,2020.0,0.0,1235.0,0,1,1235.0,1235.0,0.0
+acct_construction_major,2020,2021.0,1.0,1235.0,0,1,1235.0,1235.0,0.0
+acct_construction_major,2020,2022.0,2.0,1235.0,1,1,1235.0,1235.0,0.0
+acct_construction_major,2021,2021.0,0.0,1373.0,0,1,1373.0,1316.0,-0.041515
+acct_construction_major,2021,2022.0,1.0,1316.0,0,1,1373.0,1316.0,-0.041515
+acct_construction_major,2021,2023.0,2.0,1316.0,1,1,1373.0,1316.0,-0.041515
+acct_construction_major,2022,2022.0,0.0,1611.0,0,1,1611.0,1611.0,0.0
+acct_construction_major,2022,2023.0,1.0,1611.0,0,1,1611.0,1611.0,0.0
+acct_construction_major,2022,2024.0,2.0,1611.0,1,1,1611.0,1611.0,0.0
+acct_construction_major,2023,2023.0,0.0,1448.0,0,1,1448.0,1372.0,-0.052486
+acct_construction_major,2023,2024.0,1.0,1372.0,0,1,1448.0,1372.0,-0.052486
+acct_construction_major,2023,2025.0,2.0,1372.0,1,1,1448.0,1372.0,-0.052486
+acct_construction_major,2024,2024.0,0.0,881.0,0,1,881.0,881.0,0.0
+acct_construction_major,2024,2025.0,1.0,881.0,0,1,881.0,881.0,0.0
+acct_construction_major,2024,2026.0,2.0,881.0,1,1,881.0,881.0,0.0
+acct_construction_major,2025,2025.0,0.0,2069.0,0,1,2069.0,961.0,-0.535524
+acct_construction_major,2025,2026.0,1.0,961.0,0,1,2069.0,961.0,-0.535524
+acct_construction_major,2025,2027.0,2.0,961.0,1,1,2069.0,961.0,-0.535524
+acct_construction_major,2026,2026.0,0.0,1871.0,0,1,1871.0,1394.0,-0.254944
+acct_construction_major,2026,2027.0,1.0,1394.0,1,1,1871.0,1394.0,-0.254944
+acct_construction_minor,2008,2008.0,0.0,233.0,0,1,233.0,631.0,1.708155
+acct_construction_minor,2008,2009.0,1.0,631.0,0,1,233.0,631.0,1.708155
+acct_construction_minor,2008,2010.0,2.0,631.0,1,1,233.0,631.0,1.708155
+acct_construction_minor,2009,2009.0,0.0,329.0,0,1,329.0,742.0,1.255319
+acct_construction_minor,2009,2010.0,1.0,742.0,1,1,329.0,742.0,1.255319
+acct_construction_minor,2010,2010.0,0.0,600.0,0,1,600.0,703.0,0.171667
+acct_construction_minor,2010,2012.0,2.0,703.0,1,1,600.0,703.0,0.171667
+acct_construction_minor,2012,2012.0,0.0,550.0,0,1,550.0,482.0,-0.123636
+acct_construction_minor,2012,2013.0,1.0,482.0,0,1,550.0,482.0,-0.123636
+acct_construction_minor,2012,2014.0,2.0,482.0,1,1,550.0,482.0,-0.123636
+acct_construction_minor,2013,2013.0,0.0,608.0,0,1,608.0,607.0,-0.001645
+acct_construction_minor,2013,2014.0,1.0,607.0,0,1,608.0,607.0,-0.001645
+acct_construction_minor,2013,2015.0,2.0,607.0,1,1,608.0,607.0,-0.001645
+acct_construction_minor,2014,2014.0,0.0,715.0,0,1,715.0,715.0,0.0
+acct_construction_minor,2014,2015.0,1.0,715.0,0,1,715.0,715.0,0.0
+acct_construction_minor,2014,2016.0,2.0,715.0,1,1,715.0,715.0,0.0
+acct_construction_minor,2015,2015.0,0.0,495.0,0,1,495.0,495.0,0.0
+acct_construction_minor,2015,2016.0,1.0,495.0,0,1,495.0,495.0,0.0
+acct_construction_minor,2015,2017.0,2.0,495.0,1,1,495.0,495.0,0.0
+acct_construction_minor,2016,2016.0,0.0,406.0,0,1,406.0,321.0,-0.20936
+acct_construction_minor,2016,2017.0,1.0,406.0,0,1,406.0,321.0,-0.20936
+acct_construction_minor,2016,2018.0,2.0,321.0,1,1,406.0,321.0,-0.20936
+acct_construction_minor,2017,2017.0,0.0,372.0,0,1,372.0,372.0,0.0
+acct_construction_minor,2017,2018.0,1.0,372.0,0,1,372.0,372.0,0.0
+acct_construction_minor,2017,2019.0,2.0,372.0,1,1,372.0,372.0,0.0
+acct_construction_minor,2018,2018.0,0.0,343.0,0,1,343.0,768.0,1.239067
+acct_construction_minor,2018,2019.0,1.0,343.0,0,1,343.0,768.0,1.239067
+acct_construction_minor,2018,2020.0,2.0,768.0,1,1,343.0,768.0,1.239067
+acct_construction_minor,2019,2019.0,0.0,707.0,0,1,707.0,800.0,0.131542
+acct_construction_minor,2019,2020.0,1.0,800.0,0,1,707.0,800.0,0.131542
+acct_construction_minor,2019,2021.0,2.0,800.0,1,1,707.0,800.0,0.131542
+acct_construction_minor,2020,2020.0,0.0,399.0,0,1,399.0,399.0,0.0
+acct_construction_minor,2020,2021.0,1.0,399.0,0,1,399.0,399.0,0.0
+acct_construction_minor,2020,2022.0,2.0,399.0,1,1,399.0,399.0,0.0
+acct_construction_minor,2021,2021.0,0.0,400.0,0,1,400.0,354.0,-0.115
+acct_construction_minor,2021,2022.0,1.0,354.0,0,1,400.0,354.0,-0.115
+acct_construction_minor,2021,2023.0,2.0,354.0,1,1,400.0,354.0,-0.115
+acct_construction_minor,2022,2022.0,0.0,553.0,0,1,553.0,553.0,0.0
+acct_construction_minor,2022,2023.0,1.0,553.0,0,1,553.0,553.0,0.0
+acct_construction_minor,2022,2024.0,2.0,553.0,1,1,553.0,553.0,0.0
+acct_construction_minor,2023,2023.0,0.0,626.0,0,1,626.0,626.0,0.0
+acct_construction_minor,2023,2024.0,1.0,626.0,0,1,626.0,626.0,0.0
+acct_construction_minor,2023,2025.0,2.0,626.0,1,1,626.0,626.0,0.0
+acct_construction_minor,2024,2024.0,0.0,680.0,0,1,680.0,692.0,0.017647
+acct_construction_minor,2024,2025.0,1.0,680.0,0,1,680.0,692.0,0.017647
+acct_construction_minor,2024,2026.0,2.0,692.0,1,1,680.0,692.0,0.017647
+acct_construction_minor,2025,2025.0,0.0,380.0,0,1,380.0,692.0,0.821053
+acct_construction_minor,2025,2026.0,1.0,692.0,0,1,380.0,692.0,0.821053
+acct_construction_minor,2025,2027.0,2.0,692.0,1,1,380.0,692.0,0.821053
+acct_construction_minor,2026,2026.0,0.0,232.0,0,1,232.0,350.0,0.508621
+acct_construction_minor,2026,2027.0,1.0,350.0,1,1,232.0,350.0,0.508621
+acct_ehrm,2019,2019.0,0.0,1207.0,0,1,1207.0,1107.0,-0.08285
+acct_ehrm,2019,2020.0,1.0,1107.0,0,1,1207.0,1107.0,-0.08285
+acct_ehrm,2019,2021.0,2.0,1107.0,1,1,1207.0,1107.0,-0.08285
+acct_ehrm,2020,2020.0,0.0,1603.0,0,1,1603.0,1430.0,-0.107923
+acct_ehrm,2020,2021.0,1.0,1443.0,0,1,1603.0,1430.0,-0.107923
+acct_ehrm,2020,2022.0,2.0,1430.0,1,1,1603.0,1430.0,-0.107923
+acct_ehrm,2021,2021.0,0.0,2627.0,0,1,2627.0,2607.0,-0.007613
+acct_ehrm,2021,2022.0,1.0,2607.0,0,1,2627.0,2607.0,-0.007613
+acct_ehrm,2021,2023.0,2.0,2607.0,1,1,2627.0,2607.0,-0.007613
+acct_ehrm,2022,2022.0,0.0,2663.0,0,1,2663.0,2300.0,-0.136312
+acct_ehrm,2022,2023.0,1.0,2663.0,0,1,2663.0,2300.0,-0.136312
+acct_ehrm,2022,2024.0,2.0,2300.0,1,1,2663.0,2300.0,-0.136312
+acct_ehrm,2023,2023.0,0.0,1759.0,0,1,1759.0,1609.0,-0.085276
+acct_ehrm,2023,2024.0,1.0,1609.0,0,1,1759.0,1609.0,-0.085276
+acct_ehrm,2023,2025.0,2.0,1609.0,1,1,1759.0,1609.0,-0.085276
+acct_ehrm,2024,2024.0,0.0,1863.0,0,1,1863.0,874.0,-0.530864
+acct_ehrm,2024,2025.0,1.0,1863.0,0,1,1863.0,874.0,-0.530864
+acct_ehrm,2024,2026.0,2.0,874.0,1,1,1863.0,874.0,-0.530864
+acct_ehrm,2025,2025.0,0.0,894.0,0,1,894.0,1306.0,0.46085
+acct_ehrm,2025,2026.0,1.0,1322.0,0,1,894.0,1306.0,0.46085
+acct_ehrm,2025,2027.0,2.0,1306.0,1,1,894.0,1306.0,0.46085
+acct_ehrm,2026,2026.0,0.0,3495.0,0,1,3495.0,3400.0,-0.027182
+acct_ehrm,2026,2027.0,1.0,3400.0,1,1,3495.0,3400.0,-0.027182
+acct_general_admin,2008,2008.0,0.0,274.0,0,1,274.0,325.0,0.186131
+acct_general_admin,2008,2009.0,1.0,324.0,0,1,274.0,325.0,0.186131
+acct_general_admin,2008,2010.0,2.0,325.0,1,1,274.0,325.0,0.186131
+acct_general_admin,2009,2009.0,0.0,328.0,0,1,328.0,336.0,0.02439
+acct_general_admin,2009,2010.0,1.0,336.0,0,1,328.0,336.0,0.02439
+acct_general_admin,2009,2011.0,2.0,336.0,1,1,328.0,336.0,0.02439
+acct_general_admin,2010,2010.0,0.0,394.0,0,1,394.0,398.0,0.010152
+acct_general_admin,2010,2011.0,1.0,398.0,0,1,394.0,398.0,0.010152
+acct_general_admin,2010,2012.0,2.0,398.0,1,1,394.0,398.0,0.010152
+acct_general_admin,2011,2011.0,0.0,463.0,0,1,463.0,397.0,-0.142549
+acct_general_admin,2011,2012.0,1.0,398.0,0,1,463.0,397.0,-0.142549
+acct_general_admin,2011,2013.0,2.0,397.0,1,1,463.0,397.0,-0.142549
+acct_general_admin,2012,2012.0,0.0,448.0,0,1,448.0,417.0,-0.069196
+acct_general_admin,2012,2013.0,1.0,417.0,0,1,448.0,417.0,-0.069196
+acct_general_admin,2012,2014.0,2.0,417.0,1,1,448.0,417.0,-0.069196
+acct_general_admin,2013,2013.0,0.0,417.0,0,1,417.0,338.0,-0.189448
+acct_general_admin,2013,2014.0,1.0,424.0,0,1,417.0,338.0,-0.189448
+acct_general_admin,2013,2015.0,2.0,338.0,1,1,417.0,338.0,-0.189448
+acct_general_admin,2014,2014.0,0.0,403.0,0,1,403.0,326.0,-0.191067
+acct_general_admin,2014,2015.0,1.0,326.0,0,1,403.0,326.0,-0.191067
+acct_general_admin,2014,2016.0,2.0,326.0,1,1,403.0,326.0,-0.191067
+acct_general_admin,2015,2015.0,0.0,322.0,0,1,322.0,321.0,-0.003106
+acct_general_admin,2015,2016.0,1.0,321.0,0,1,322.0,321.0,-0.003106
+acct_general_admin,2015,2017.0,2.0,321.0,1,1,322.0,321.0,-0.003106
+acct_general_admin,2016,2016.0,0.0,347.0,0,1,347.0,333.0,-0.040346
+acct_general_admin,2016,2017.0,1.0,337.0,0,1,347.0,333.0,-0.040346
+acct_general_admin,2016,2018.0,2.0,333.0,1,1,347.0,333.0,-0.040346
+acct_general_admin,2017,2017.0,0.0,418.0,0,1,418.0,345.0,-0.174641
+acct_general_admin,2017,2018.0,1.0,345.0,0,1,418.0,345.0,-0.174641
+acct_general_admin,2017,2019.0,2.0,345.0,1,1,418.0,345.0,-0.174641
+acct_general_admin,2018,2018.0,0.0,347.0,0,1,347.0,336.0,-0.0317
+acct_general_admin,2018,2019.0,1.0,347.0,0,1,347.0,336.0,-0.0317
+acct_general_admin,2018,2020.0,2.0,336.0,1,1,347.0,336.0,-0.0317
+acct_general_admin,2019,2019.0,0.0,368.0,0,1,368.0,356.0,-0.032609
+acct_general_admin,2019,2020.0,1.0,356.0,0,1,368.0,356.0,-0.032609
+acct_general_admin,2019,2021.0,2.0,356.0,1,1,368.0,356.0,-0.032609
+acct_general_admin,2020,2020.0,0.0,369.0,0,1,369.0,356.0,-0.03523
+acct_general_admin,2020,2021.0,1.0,356.0,0,1,369.0,356.0,-0.03523
+acct_general_admin,2020,2022.0,2.0,356.0,1,1,369.0,356.0,-0.03523
+acct_general_admin,2021,2021.0,0.0,413.0,0,1,413.0,354.0,-0.142857
+acct_general_admin,2021,2022.0,1.0,354.0,0,1,413.0,354.0,-0.142857
+acct_general_admin,2021,2023.0,2.0,354.0,1,1,413.0,354.0,-0.142857
+acct_general_admin,2022,2022.0,0.0,401.0,0,1,401.0,401.0,0.0
+acct_general_admin,2022,2023.0,1.0,401.0,0,1,401.0,401.0,0.0
+acct_general_admin,2022,2024.0,2.0,401.0,1,1,401.0,401.0,0.0
+acct_general_admin,2023,2023.0,0.0,435.0,0,1,435.0,433.0,-0.004598
+acct_general_admin,2023,2024.0,1.0,433.0,0,1,435.0,433.0,-0.004598
+acct_general_admin,2023,2025.0,2.0,433.0,1,1,435.0,433.0,-0.004598
+acct_general_admin,2024,2024.0,0.0,475.0,0,1,475.0,470.0,-0.010526
+acct_general_admin,2024,2025.0,1.0,475.0,0,1,475.0,470.0,-0.010526
+acct_general_admin,2024,2026.0,2.0,470.0,1,1,475.0,470.0,-0.010526
+acct_general_admin,2025,2025.0,0.0,457.0,0,1,457.0,448.0,-0.019694
+acct_general_admin,2025,2026.0,1.0,448.0,0,1,457.0,448.0,-0.019694
+acct_general_admin,2025,2027.0,2.0,448.0,1,1,457.0,448.0,-0.019694
+acct_general_admin,2026,2026.0,0.0,440.0,0,1,440.0,429.0,-0.025
+acct_general_admin,2026,2027.0,1.0,429.0,1,1,440.0,429.0,-0.025
+acct_goe_vba,2008,2008.0,0.0,1198.0,0,1,1198.0,1322.0,0.103506
+acct_goe_vba,2008,2009.0,1.0,1322.0,1,1,1198.0,1322.0,0.103506
+acct_goe_vba,2009,2009.0,0.0,1372.0,1,0,1372.0,1372.0,0.0
+acct_goe_vba,2016,2016.0,0.0,2698.0,0,1,2698.0,2704.0,0.002224
+acct_goe_vba,2016,2017.0,1.0,2708.0,0,1,2698.0,2704.0,0.002224
+acct_goe_vba,2016,2018.0,2.0,2704.0,1,1,2698.0,2704.0,0.002224
+acct_goe_vba,2017,2017.0,0.0,2826.0,0,1,2826.0,2844.0,0.006369
+acct_goe_vba,2017,2018.0,1.0,2844.0,0,1,2826.0,2844.0,0.006369
+acct_goe_vba,2017,2019.0,2.0,2844.0,1,1,2826.0,2844.0,0.006369
+acct_goe_vba,2018,2018.0,0.0,2844.0,0,1,2844.0,2917.0,0.025668
+acct_goe_vba,2018,2019.0,1.0,2844.0,0,1,2844.0,2917.0,0.025668
+acct_goe_vba,2018,2020.0,2.0,2917.0,1,1,2844.0,2917.0,0.025668
+acct_goe_vba,2019,2019.0,0.0,2869.0,0,1,2869.0,2956.0,0.030324
+acct_goe_vba,2019,2020.0,1.0,2956.0,0,1,2869.0,2956.0,0.030324
+acct_goe_vba,2019,2021.0,2.0,2956.0,1,1,2869.0,2956.0,0.030324
+acct_goe_vba,2020,2020.0,0.0,3000.0,0,1,3000.0,3125.0,0.041667
+acct_goe_vba,2020,2021.0,1.0,3125.0,0,1,3000.0,3125.0,0.041667
+acct_goe_vba,2020,2022.0,2.0,3125.0,1,1,3000.0,3125.0,0.041667
+acct_goe_vba,2021,2021.0,0.0,3207.0,0,1,3207.0,3164.0,-0.013408
+acct_goe_vba,2021,2022.0,1.0,3164.0,0,1,3207.0,3164.0,-0.013408
+acct_goe_vba,2021,2023.0,2.0,3164.0,1,1,3207.0,3164.0,-0.013408
+acct_goe_vba,2022,2022.0,0.0,3423.0,0,1,3423.0,3454.0,0.009056
+acct_goe_vba,2022,2023.0,1.0,3423.0,0,1,3423.0,3454.0,0.009056
+acct_goe_vba,2022,2024.0,2.0,3454.0,1,1,3423.0,3454.0,0.009056
+acct_goe_vba,2023,2023.0,0.0,3863.0,0,1,3863.0,3863.0,0.0
+acct_goe_vba,2023,2024.0,1.0,3863.0,0,1,3863.0,3863.0,0.0
+acct_goe_vba,2023,2025.0,2.0,3863.0,1,1,3863.0,3863.0,0.0
+acct_goe_vba,2024,2024.0,0.0,3899.0,0,1,3899.0,3869.0,-0.007694
+acct_goe_vba,2024,2025.0,1.0,3899.0,0,1,3899.0,3869.0,-0.007694
+acct_goe_vba,2024,2026.0,2.0,3869.0,1,1,3899.0,3869.0,-0.007694
+acct_goe_vba,2025,2025.0,0.0,4035.0,0,1,4035.0,3934.0,-0.025031
+acct_goe_vba,2025,2026.0,1.0,3899.0,0,1,4035.0,3934.0,-0.025031
+acct_goe_vba,2025,2027.0,2.0,3934.0,1,1,4035.0,3934.0,-0.025031
+acct_goe_vba,2026,2026.0,0.0,3879.0,0,1,3879.0,3881.0,0.000516
+acct_goe_vba,2026,2027.0,1.0,3881.0,1,1,3879.0,3881.0,0.000516
+acct_grants_state_ext_care,2008,2008.0,0.0,85.0,0,1,85.0,165.0,0.941176
+acct_grants_state_ext_care,2008,2009.0,1.0,165.0,0,1,85.0,165.0,0.941176
+acct_grants_state_ext_care,2008,2010.0,2.0,165.0,1,1,85.0,165.0,0.941176
+acct_grants_state_ext_care,2009,2009.0,0.0,85.0,0,1,85.0,325.0,2.823529
+acct_grants_state_ext_care,2009,2010.0,1.0,175.0,0,1,85.0,325.0,2.823529
+acct_grants_state_ext_care,2009,2011.0,2.0,325.0,1,1,85.0,325.0,2.823529
+acct_grants_state_ext_care,2010,2010.0,0.0,85.0,0,1,85.0,100.0,0.176471
+acct_grants_state_ext_care,2010,2011.0,1.0,100.0,0,1,85.0,100.0,0.176471
+acct_grants_state_ext_care,2010,2012.0,2.0,100.0,1,1,85.0,100.0,0.176471
+acct_grants_state_ext_care,2011,2011.0,0.0,85.0,0,1,85.0,85.0,0.0
+acct_grants_state_ext_care,2011,2012.0,1.0,100.0,0,1,85.0,85.0,0.0
+acct_grants_state_ext_care,2011,2013.0,2.0,85.0,1,1,85.0,85.0,0.0
+acct_grants_state_ext_care,2012,2012.0,0.0,85.0,0,1,85.0,85.0,0.0
+acct_grants_state_ext_care,2012,2013.0,1.0,85.0,0,1,85.0,85.0,0.0
+acct_grants_state_ext_care,2012,2014.0,2.0,85.0,1,1,85.0,85.0,0.0
+acct_grants_state_ext_care,2013,2013.0,0.0,85.0,0,1,85.0,85.0,0.0
+acct_grants_state_ext_care,2013,2014.0,1.0,85.0,0,1,85.0,85.0,0.0
+acct_grants_state_ext_care,2013,2015.0,2.0,85.0,1,1,85.0,85.0,0.0
+acct_grants_state_ext_care,2014,2014.0,0.0,83.0,0,1,83.0,85.0,0.024096
+acct_grants_state_ext_care,2014,2015.0,1.0,85.0,0,1,83.0,85.0,0.024096
+acct_grants_state_ext_care,2014,2016.0,2.0,85.0,1,1,83.0,85.0,0.024096
+acct_grants_state_ext_care,2015,2015.0,0.0,80.0,0,1,80.0,90.0,0.125
+acct_grants_state_ext_care,2015,2016.0,1.0,90.0,0,1,80.0,90.0,0.125
+acct_grants_state_ext_care,2015,2017.0,2.0,90.0,1,1,80.0,90.0,0.125
+acct_grants_state_ext_care,2016,2016.0,0.0,80.0,0,1,80.0,140.0,0.75
+acct_grants_state_ext_care,2016,2017.0,1.0,120.0,0,1,80.0,140.0,0.75
+acct_grants_state_ext_care,2016,2018.0,2.0,140.0,1,1,80.0,140.0,0.75
+acct_grants_state_ext_care,2017,2017.0,0.0,80.0,0,1,80.0,90.0,0.125
+acct_grants_state_ext_care,2017,2018.0,1.0,90.0,0,1,80.0,90.0,0.125
+acct_grants_state_ext_care,2017,2019.0,2.0,90.0,1,1,80.0,90.0,0.125
+acct_grants_state_ext_care,2018,2018.0,0.0,90.0,0,1,90.0,685.0,6.611111
+acct_grants_state_ext_care,2018,2019.0,1.0,90.0,0,1,90.0,685.0,6.611111
+acct_grants_state_ext_care,2018,2020.0,2.0,685.0,1,1,90.0,685.0,6.611111
+acct_grants_state_ext_care,2019,2019.0,0.0,150.0,0,1,150.0,150.0,0.0
+acct_grants_state_ext_care,2019,2020.0,1.0,150.0,0,1,150.0,150.0,0.0
+acct_grants_state_ext_care,2019,2021.0,2.0,150.0,1,1,150.0,150.0,0.0
+acct_grants_state_ext_care,2020,2020.0,0.0,90.0,0,1,90.0,90.0,0.0
+acct_grants_state_ext_care,2020,2021.0,1.0,90.0,0,1,90.0,90.0,0.0
+acct_grants_state_ext_care,2020,2022.0,2.0,90.0,1,1,90.0,90.0,0.0
+acct_grants_state_ext_care,2021,2021.0,0.0,90.0,0,1,90.0,90.0,0.0
+acct_grants_state_ext_care,2021,2022.0,1.0,90.0,0,1,90.0,90.0,0.0
+acct_grants_state_ext_care,2021,2023.0,2.0,90.0,1,1,90.0,90.0,0.0
+acct_grants_state_ext_care,2022,2022.0,0.0,0.0,0,1,0.0,50.0,
+acct_grants_state_ext_care,2022,2023.0,1.0,0.0,0,1,0.0,50.0,
+acct_grants_state_ext_care,2022,2024.0,2.0,50.0,1,1,0.0,50.0,
+acct_grants_state_ext_care,2023,2023.0,0.0,150.0,0,1,150.0,150.0,0.0
+acct_grants_state_ext_care,2023,2024.0,1.0,150.0,0,1,150.0,150.0,0.0
+acct_grants_state_ext_care,2023,2025.0,2.0,150.0,1,1,150.0,150.0,0.0
+acct_grants_state_ext_care,2024,2024.0,0.0,164.0,0,1,164.0,171.0,0.042683
+acct_grants_state_ext_care,2024,2025.0,1.0,164.0,0,1,164.0,171.0,0.042683
+acct_grants_state_ext_care,2024,2026.0,2.0,171.0,1,1,164.0,171.0,0.042683
+acct_grants_state_ext_care,2025,2025.0,0.0,141.0,0,1,141.0,171.0,0.212766
+acct_grants_state_ext_care,2025,2026.0,1.0,171.0,0,1,141.0,171.0,0.212766
+acct_grants_state_ext_care,2025,2027.0,2.0,171.0,1,1,141.0,171.0,0.212766
+acct_grants_state_ext_care,2026,2026.0,0.0,171.0,0,1,171.0,275.0,0.608187
+acct_grants_state_ext_care,2026,2027.0,1.0,275.0,1,1,171.0,275.0,0.608187
+acct_it_systems,2008,2008.0,0.0,1859.0,0,1,1859.0,2358.0,0.268424
+acct_it_systems,2008,2009.0,1.0,2053.0,0,1,1859.0,2358.0,0.268424
+acct_it_systems,2008,2010.0,2.0,2358.0,1,1,1859.0,2358.0,0.268424
+acct_it_systems,2009,2009.0,0.0,2442.0,0,1,2442.0,2798.0,0.145782
+acct_it_systems,2009,2010.0,1.0,2748.0,0,1,2442.0,2798.0,0.145782
+acct_it_systems,2009,2011.0,2.0,2798.0,1,1,2442.0,2798.0,0.145782
+acct_it_systems,2010,2010.0,0.0,3307.0,0,1,3307.0,3307.0,0.0
+acct_it_systems,2010,2011.0,1.0,3307.0,0,1,3307.0,3307.0,0.0
+acct_it_systems,2010,2012.0,2.0,3307.0,1,1,3307.0,3307.0,0.0
+acct_it_systems,2011,2011.0,0.0,3307.0,0,1,3307.0,2994.0,-0.094648
+acct_it_systems,2011,2012.0,1.0,3307.0,0,1,3307.0,2994.0,-0.094648
+acct_it_systems,2011,2013.0,2.0,2994.0,1,1,3307.0,2994.0,-0.094648
+acct_it_systems,2012,2012.0,0.0,3161.0,0,1,3161.0,3111.0,-0.015818
+acct_it_systems,2012,2013.0,1.0,3111.0,0,1,3161.0,3111.0,-0.015818
+acct_it_systems,2012,2014.0,2.0,3111.0,1,1,3161.0,3111.0,-0.015818
+acct_it_systems,2013,2013.0,0.0,3327.0,0,1,3327.0,3522.0,0.058611
+acct_it_systems,2013,2014.0,1.0,3323.0,0,1,3327.0,3522.0,0.058611
+acct_it_systems,2013,2015.0,2.0,3522.0,1,1,3327.0,3522.0,0.058611
+acct_it_systems,2014,2014.0,0.0,3683.0,0,1,3683.0,3703.0,0.00543
+acct_it_systems,2014,2015.0,1.0,3703.0,0,1,3683.0,3703.0,0.00543
+acct_it_systems,2014,2016.0,2.0,3703.0,1,1,3683.0,3703.0,0.00543
+acct_it_systems,2015,2015.0,0.0,3903.0,0,1,3903.0,3902.0,-0.000256
+acct_it_systems,2015,2016.0,1.0,3902.0,0,1,3903.0,3902.0,-0.000256
+acct_it_systems,2015,2017.0,2.0,3902.0,1,1,3903.0,3902.0,-0.000256
+acct_it_systems,2016,2016.0,0.0,4133.0,0,1,4133.0,4058.0,-0.018147
+acct_it_systems,2016,2017.0,1.0,4133.0,0,1,4133.0,4058.0,-0.018147
+acct_it_systems,2016,2018.0,2.0,4058.0,1,1,4133.0,4058.0,-0.018147
+acct_it_systems,2017,2017.0,0.0,4278.0,0,1,4278.0,4270.0,-0.00187
+acct_it_systems,2017,2018.0,1.0,4270.0,0,1,4278.0,4270.0,-0.00187
+acct_it_systems,2017,2019.0,2.0,4270.0,1,1,4278.0,4270.0,-0.00187
+acct_it_systems,2018,2018.0,0.0,4056.0,0,1,4056.0,4056.0,0.0
+acct_it_systems,2018,2019.0,1.0,4056.0,0,1,4056.0,4056.0,0.0
+acct_it_systems,2018,2020.0,2.0,4056.0,1,1,4056.0,4056.0,0.0
+acct_it_systems,2019,2019.0,0.0,4185.0,0,1,4185.0,4103.0,-0.019594
+acct_it_systems,2019,2020.0,1.0,4103.0,0,1,4185.0,4103.0,-0.019594
+acct_it_systems,2019,2021.0,2.0,4103.0,1,1,4185.0,4103.0,-0.019594
+acct_it_systems,2020,2020.0,0.0,4343.0,0,1,4343.0,4372.0,0.006677
+acct_it_systems,2020,2021.0,1.0,4372.0,0,1,4343.0,4372.0,0.006677
+acct_it_systems,2020,2022.0,2.0,4372.0,1,1,4343.0,4372.0,0.006677
+acct_it_systems,2021,2021.0,0.0,4912.0,0,1,4912.0,4875.0,-0.007533
+acct_it_systems,2021,2022.0,1.0,4875.0,0,1,4912.0,4875.0,-0.007533
+acct_it_systems,2021,2023.0,2.0,4875.0,1,1,4912.0,4875.0,-0.007533
+acct_it_systems,2022,2022.0,0.0,4843.0,0,1,4843.0,5513.0,0.138344
+acct_it_systems,2022,2023.0,1.0,4843.0,0,1,4843.0,5513.0,0.138344
+acct_it_systems,2022,2024.0,2.0,5513.0,1,1,4843.0,5513.0,0.138344
+acct_it_systems,2023,2023.0,0.0,5782.0,0,1,5782.0,5782.0,0.0
+acct_it_systems,2023,2024.0,1.0,5782.0,0,1,5782.0,5782.0,0.0
+acct_it_systems,2023,2025.0,2.0,5782.0,1,1,5782.0,5782.0,0.0
+acct_it_systems,2024,2024.0,0.0,6401.0,0,1,6401.0,6386.0,-0.002343
+acct_it_systems,2024,2025.0,1.0,6401.0,0,1,6401.0,6386.0,-0.002343
+acct_it_systems,2024,2026.0,2.0,6386.0,1,1,6401.0,6386.0,-0.002343
+acct_it_systems,2025,2025.0,0.0,6232.0,0,1,6232.0,6192.0,-0.006418
+acct_it_systems,2025,2026.0,1.0,6227.0,0,1,6232.0,6192.0,-0.006418
+acct_it_systems,2025,2027.0,2.0,6192.0,1,1,6232.0,6192.0,-0.006418
+acct_it_systems,2026,2026.0,0.0,5908.0,0,1,5908.0,6219.0,0.05264
+acct_it_systems,2026,2027.0,1.0,6219.0,1,1,5908.0,6219.0,0.05264
+acct_medical_community_care,2018,2018.0,0.0,9663.0,0,1,9663.0,9828.0,0.017075
+acct_medical_community_care,2018,2019.0,1.0,9663.0,0,1,9663.0,9828.0,0.017075
+acct_medical_community_care,2018,2020.0,2.0,9828.0,1,1,9663.0,9828.0,0.017075
+acct_medical_community_care,2019,2019.0,0.0,0.0,0,1,0.0,9385.0,
+acct_medical_community_care,2019,2020.0,1.0,9385.0,0,1,0.0,9385.0,
+acct_medical_community_care,2019,2021.0,2.0,9385.0,1,1,0.0,9385.0,
+acct_medical_community_care,2020,2020.0,0.0,15280.0,0,1,15280.0,15280.0,0.0
+acct_medical_community_care,2020,2021.0,1.0,15280.0,0,1,15280.0,15280.0,0.0
+acct_medical_community_care,2020,2022.0,2.0,15280.0,1,1,15280.0,15280.0,0.0
+acct_medical_community_care,2021,2021.0,0.0,18512.0,0,1,18512.0,18512.0,0.0
+acct_medical_community_care,2021,2022.0,1.0,18512.0,0,1,18512.0,18512.0,0.0
+acct_medical_community_care,2021,2023.0,2.0,18512.0,1,1,18512.0,18512.0,0.0
+acct_medical_community_care,2022,2022.0,0.0,23417.0,0,1,23417.0,23217.0,-0.008541
+acct_medical_community_care,2022,2023.0,1.0,23417.0,0,1,23417.0,23217.0,-0.008541
+acct_medical_community_care,2022,2024.0,2.0,23217.0,1,1,23417.0,23217.0,-0.008541
+acct_medical_community_care,2023,2023.0,0.0,28457.0,0,1,28457.0,28457.0,0.0
+acct_medical_community_care,2023,2024.0,1.0,28457.0,0,1,28457.0,28457.0,0.0
+acct_medical_community_care,2023,2025.0,2.0,28457.0,1,1,28457.0,28457.0,0.0
+acct_medical_community_care,2024,2024.0,0.0,31091.0,0,1,31091.0,30342.0,-0.024091
+acct_medical_community_care,2024,2025.0,1.0,31091.0,0,1,31091.0,30342.0,-0.024091
+acct_medical_community_care,2024,2026.0,2.0,30342.0,1,1,31091.0,30342.0,-0.024091
+acct_medical_community_care,2025,2025.0,0.0,20382.0,0,1,20382.0,22555.0,0.106614
+acct_medical_community_care,2025,2026.0,1.0,22555.0,0,1,20382.0,22555.0,0.106614
+acct_medical_community_care,2025,2027.0,2.0,22555.0,1,1,20382.0,22555.0,0.106614
+acct_medical_community_care,2026,2026.0,0.0,34000.0,0,1,34000.0,34000.0,0.0
+acct_medical_community_care,2026,2027.0,1.0,34000.0,1,1,34000.0,34000.0,0.0
+acct_medical_facilities,2008,2008.0,0.0,3592.0,0,1,3592.0,4233.0,0.178452
+acct_medical_facilities,2008,2009.0,1.0,4073.0,0,1,3592.0,4233.0,0.178452
+acct_medical_facilities,2008,2010.0,2.0,4233.0,1,1,3592.0,4233.0,0.178452
+acct_medical_facilities,2009,2009.0,0.0,4661.0,0,1,4661.0,6029.0,0.293499
+acct_medical_facilities,2009,2010.0,1.0,5029.0,0,1,4661.0,6029.0,0.293499
+acct_medical_facilities,2009,2011.0,2.0,6029.0,1,1,4661.0,6029.0,0.293499
+acct_medical_facilities,2010,2010.0,0.0,4693.0,0,1,4693.0,4859.0,0.035372
+acct_medical_facilities,2010,2011.0,1.0,4859.0,0,1,4693.0,4859.0,0.035372
+acct_medical_facilities,2010,2012.0,2.0,4859.0,1,1,4693.0,4859.0,0.035372
+acct_medical_facilities,2011,2011.0,0.0,5740.0,0,1,5740.0,5714.0,-0.00453
+acct_medical_facilities,2011,2012.0,1.0,5740.0,0,1,5740.0,5714.0,-0.00453
+acct_medical_facilities,2011,2013.0,2.0,5714.0,1,1,5740.0,5714.0,-0.00453
+acct_medical_facilities,2012,2012.0,0.0,5376.0,0,1,5376.0,5426.0,0.009301
+acct_medical_facilities,2012,2013.0,1.0,5426.0,0,1,5376.0,5426.0,0.009301
+acct_medical_facilities,2012,2014.0,2.0,5426.0,1,1,5376.0,5426.0,0.009301
+acct_medical_facilities,2013,2013.0,0.0,5441.0,0,1,5441.0,5445.0,0.000735
+acct_medical_facilities,2013,2014.0,1.0,5439.0,0,1,5441.0,5445.0,0.000735
+acct_medical_facilities,2013,2015.0,2.0,5445.0,1,1,5441.0,5445.0,0.000735
+acct_medical_facilities,2014,2014.0,0.0,4872.0,0,1,4872.0,4957.0,0.017447
+acct_medical_facilities,2014,2015.0,1.0,4957.0,0,1,4872.0,4957.0,0.017447
+acct_medical_facilities,2014,2016.0,2.0,4957.0,1,1,4872.0,4957.0,0.017447
+acct_medical_facilities,2015,2015.0,0.0,4739.0,0,1,4739.0,4737.0,-0.000422
+acct_medical_facilities,2015,2016.0,1.0,4737.0,0,1,4739.0,4737.0,-0.000422
+acct_medical_facilities,2015,2017.0,2.0,4737.0,1,1,4739.0,4737.0,-0.000422
+acct_medical_facilities,2016,2016.0,0.0,5020.0,0,1,5020.0,4708.0,-0.062151
+acct_medical_facilities,2016,2017.0,1.0,5020.0,0,1,5020.0,4708.0,-0.062151
+acct_medical_facilities,2016,2018.0,2.0,4708.0,1,1,5020.0,4708.0,-0.062151
+acct_medical_facilities,2017,2017.0,0.0,5723.0,0,1,5723.0,5313.0,-0.071641
+acct_medical_facilities,2017,2018.0,1.0,5313.0,0,1,5723.0,5313.0,-0.071641
+acct_medical_facilities,2017,2019.0,2.0,5313.0,1,1,5723.0,5313.0,-0.071641
+acct_medical_facilities,2018,2018.0,0.0,6515.0,0,1,6515.0,7217.0,0.107751
+acct_medical_facilities,2018,2019.0,1.0,6515.0,0,1,6515.0,7217.0,0.107751
+acct_medical_facilities,2018,2020.0,2.0,7217.0,1,1,6515.0,7217.0,0.107751
+acct_medical_facilities,2019,2019.0,0.0,5914.0,0,1,5914.0,6807.0,0.150998
+acct_medical_facilities,2019,2020.0,1.0,6804.0,0,1,5914.0,6807.0,0.150998
+acct_medical_facilities,2019,2021.0,2.0,6807.0,1,1,5914.0,6807.0,0.150998
+acct_medical_facilities,2020,2020.0,0.0,6142.0,0,1,6142.0,6142.0,0.0
+acct_medical_facilities,2020,2021.0,1.0,6142.0,0,1,6142.0,6142.0,0.0
+acct_medical_facilities,2020,2022.0,2.0,6142.0,1,1,6142.0,6142.0,0.0
+acct_medical_facilities,2021,2021.0,0.0,6583.0,0,1,6583.0,6583.0,0.0
+acct_medical_facilities,2021,2022.0,1.0,6583.0,0,1,6583.0,6583.0,0.0
+acct_medical_facilities,2021,2023.0,2.0,6583.0,1,1,6583.0,6583.0,0.0
+acct_medical_facilities,2022,2022.0,0.0,6735.0,0,1,6735.0,6885.0,0.022272
+acct_medical_facilities,2022,2023.0,1.0,6735.0,0,1,6735.0,6885.0,0.022272
+acct_medical_facilities,2022,2024.0,2.0,6885.0,1,1,6735.0,6885.0,0.022272
+acct_medical_facilities,2023,2023.0,0.0,8634.0,0,1,8634.0,8634.0,0.0
+acct_medical_facilities,2023,2024.0,1.0,8634.0,0,1,8634.0,8634.0,0.0
+acct_medical_facilities,2023,2025.0,2.0,8634.0,1,1,8634.0,8634.0,0.0
+acct_medical_facilities,2024,2024.0,0.0,8549.0,0,1,8549.0,8949.0,0.046789
+acct_medical_facilities,2024,2025.0,1.0,8549.0,0,1,8549.0,8949.0,0.046789
+acct_medical_facilities,2024,2026.0,2.0,8949.0,1,1,8549.0,8949.0,0.046789
+acct_medical_facilities,2025,2025.0,0.0,9400.0,0,1,9400.0,9548.0,0.015745
+acct_medical_facilities,2025,2026.0,1.0,9548.0,0,1,9400.0,9548.0,0.015745
+acct_medical_facilities,2025,2027.0,2.0,9548.0,1,1,9400.0,9548.0,0.015745
+acct_medical_facilities,2026,2026.0,0.0,11730.0,0,1,11730.0,11876.0,0.012447
+acct_medical_facilities,2026,2027.0,1.0,11876.0,1,1,11730.0,11876.0,0.012447
+acct_medical_research,2008,2008.0,0.0,411.0,0,1,411.0,480.0,0.167883
+acct_medical_research,2008,2009.0,1.0,480.0,0,1,411.0,480.0,0.167883
+acct_medical_research,2008,2010.0,2.0,480.0,1,1,411.0,480.0,0.167883
+acct_medical_research,2009,2009.0,0.0,442.0,0,1,442.0,510.0,0.153846
+acct_medical_research,2009,2010.0,1.0,510.0,0,1,442.0,510.0,0.153846
+acct_medical_research,2009,2011.0,2.0,510.0,1,1,442.0,510.0,0.153846
+acct_medical_research,2010,2010.0,0.0,580.0,0,1,580.0,581.0,0.001724
+acct_medical_research,2010,2011.0,1.0,581.0,0,1,580.0,581.0,0.001724
+acct_medical_research,2010,2012.0,2.0,581.0,1,1,580.0,581.0,0.001724
+acct_medical_research,2011,2011.0,0.0,590.0,0,1,590.0,580.0,-0.016949
+acct_medical_research,2011,2012.0,1.0,581.0,0,1,590.0,580.0,-0.016949
+acct_medical_research,2011,2013.0,2.0,580.0,1,1,590.0,580.0,-0.016949
+acct_medical_research,2012,2012.0,0.0,509.0,0,1,509.0,581.0,0.141454
+acct_medical_research,2012,2013.0,1.0,581.0,0,1,509.0,581.0,0.141454
+acct_medical_research,2012,2014.0,2.0,581.0,1,1,509.0,581.0,0.141454
+acct_medical_research,2013,2013.0,0.0,583.0,0,1,583.0,582.0,-0.001715
+acct_medical_research,2013,2014.0,1.0,582.0,0,1,583.0,582.0,-0.001715
+acct_medical_research,2013,2015.0,2.0,582.0,1,1,583.0,582.0,-0.001715
+acct_medical_research,2014,2014.0,0.0,586.0,0,1,586.0,586.0,0.0
+acct_medical_research,2014,2015.0,1.0,586.0,0,1,586.0,586.0,0.0
+acct_medical_research,2014,2016.0,2.0,586.0,1,1,586.0,586.0,0.0
+acct_medical_research,2015,2015.0,0.0,589.0,0,1,589.0,589.0,0.0
+acct_medical_research,2015,2016.0,1.0,589.0,0,1,589.0,589.0,0.0
+acct_medical_research,2015,2017.0,2.0,589.0,1,1,589.0,589.0,0.0
+acct_medical_research,2016,2016.0,0.0,622.0,0,1,622.0,611.0,-0.017685
+acct_medical_research,2016,2017.0,1.0,631.0,0,1,622.0,611.0,-0.017685
+acct_medical_research,2016,2018.0,2.0,611.0,1,1,622.0,611.0,-0.017685
+acct_medical_research,2017,2017.0,0.0,663.0,0,1,663.0,673.0,0.015083
+acct_medical_research,2017,2018.0,1.0,673.0,0,1,663.0,673.0,0.015083
+acct_medical_research,2017,2019.0,2.0,673.0,1,1,663.0,673.0,0.015083
+acct_medical_research,2018,2018.0,0.0,640.0,0,1,640.0,722.0,0.128125
+acct_medical_research,2018,2019.0,1.0,640.0,0,1,640.0,722.0,0.128125
+acct_medical_research,2018,2020.0,2.0,722.0,1,1,640.0,722.0,0.128125
+acct_medical_research,2019,2019.0,0.0,727.0,0,1,727.0,779.0,0.071527
+acct_medical_research,2019,2020.0,1.0,779.0,0,1,727.0,779.0,0.071527
+acct_medical_research,2019,2021.0,2.0,779.0,1,1,727.0,779.0,0.071527
+acct_medical_research,2020,2020.0,0.0,762.0,0,1,762.0,750.0,-0.015748
+acct_medical_research,2020,2021.0,1.0,750.0,0,1,762.0,750.0,-0.015748
+acct_medical_research,2020,2022.0,2.0,750.0,1,1,762.0,750.0,-0.015748
+acct_medical_research,2021,2021.0,0.0,787.0,0,1,787.0,795.0,0.010165
+acct_medical_research,2021,2022.0,1.0,795.0,0,1,787.0,795.0,0.010165
+acct_medical_research,2021,2023.0,2.0,795.0,1,1,787.0,795.0,0.010165
+acct_medical_research,2022,2022.0,0.0,882.0,0,1,882.0,882.0,0.0
+acct_medical_research,2022,2023.0,1.0,882.0,0,1,882.0,882.0,0.0
+acct_medical_research,2022,2024.0,2.0,882.0,1,1,882.0,882.0,0.0
+acct_medical_research,2023,2023.0,0.0,916.0,0,1,916.0,916.0,0.0
+acct_medical_research,2023,2024.0,1.0,916.0,0,1,916.0,916.0,0.0
+acct_medical_research,2023,2025.0,2.0,916.0,1,1,916.0,916.0,0.0
+acct_medical_research,2024,2024.0,0.0,938.0,0,1,938.0,943.0,0.00533
+acct_medical_research,2024,2025.0,1.0,938.0,0,1,938.0,943.0,0.00533
+acct_medical_research,2024,2026.0,2.0,943.0,1,1,938.0,943.0,0.00533
+acct_medical_research,2025,2025.0,0.0,868.0,0,1,868.0,935.0,0.077189
+acct_medical_research,2025,2026.0,1.0,935.0,0,1,868.0,935.0,0.077189
+acct_medical_research,2025,2027.0,2.0,935.0,1,1,868.0,935.0,0.077189
+acct_medical_research,2026,2026.0,0.0,943.0,0,1,943.0,945.0,0.002121
+acct_medical_research,2026,2027.0,1.0,945.0,1,1,943.0,945.0,0.002121
+acct_medical_services,2008,2008.0,0.0,27168.0,0,1,27168.0,28093.0,0.034047
+acct_medical_services,2008,2009.0,1.0,32501.0,0,1,27168.0,28093.0,0.034047
+acct_medical_services,2008,2010.0,2.0,28093.0,1,1,27168.0,28093.0,0.034047
+acct_medical_services,2009,2009.0,0.0,34076.0,0,1,34076.0,30780.0,-0.096725
+acct_medical_services,2009,2010.0,1.0,30735.0,0,1,34076.0,30780.0,-0.096725
+acct_medical_services,2009,2011.0,2.0,30780.0,1,1,34076.0,30780.0,-0.096725
+acct_medical_services,2010,2010.0,0.0,34705.0,0,1,34705.0,34796.0,0.002622
+acct_medical_services,2010,2011.0,1.0,34723.0,0,1,34705.0,34796.0,0.002622
+acct_medical_services,2010,2012.0,2.0,34796.0,1,1,34705.0,34796.0,0.002622
+acct_medical_services,2011,2011.0,0.0,37136.0,0,1,37136.0,37062.0,-0.001993
+acct_medical_services,2011,2012.0,1.0,37151.0,0,1,37136.0,37062.0,-0.001993
+acct_medical_services,2011,2013.0,2.0,37062.0,1,1,37136.0,37062.0,-0.001993
+acct_medical_services,2012,2012.0,0.0,40051.0,0,1,40051.0,39705.0,-0.008639
+acct_medical_services,2012,2013.0,1.0,39650.0,0,1,40051.0,39705.0,-0.008639
+acct_medical_services,2012,2014.0,2.0,39705.0,1,1,40051.0,39705.0,-0.008639
+acct_medical_services,2013,2013.0,0.0,41504.0,0,1,41504.0,41323.0,-0.004361
+acct_medical_services,2013,2014.0,1.0,41494.0,0,1,41504.0,41323.0,-0.004361
+acct_medical_services,2013,2015.0,2.0,41323.0,1,1,41504.0,41323.0,-0.004361
+acct_medical_services,2014,2014.0,0.0,43700.0,0,1,43700.0,43418.0,-0.006453
+acct_medical_services,2014,2015.0,1.0,43418.0,0,1,43700.0,43418.0,-0.006453
+acct_medical_services,2014,2016.0,2.0,43418.0,1,1,43700.0,43418.0,-0.006453
+acct_medical_services,2015,2015.0,0.0,45383.0,0,1,45383.0,45196.0,-0.00412
+acct_medical_services,2015,2016.0,1.0,45196.0,0,1,45383.0,45196.0,-0.00412
+acct_medical_services,2015,2017.0,2.0,45196.0,1,1,45383.0,45196.0,-0.00412
+acct_medical_services,2016,2016.0,0.0,48727.0,0,1,48727.0,49913.0,0.02434
+acct_medical_services,2016,2017.0,1.0,49972.0,0,1,48727.0,49913.0,0.02434
+acct_medical_services,2016,2018.0,2.0,49913.0,1,1,48727.0,49913.0,0.02434
+acct_medical_services,2017,2017.0,0.0,52752.0,0,1,52752.0,45422.0,-0.138952
+acct_medical_services,2017,2018.0,1.0,45372.0,0,1,52752.0,45422.0,-0.138952
+acct_medical_services,2017,2019.0,2.0,45422.0,1,1,52752.0,45422.0,-0.138952
+acct_medical_services,2018,2018.0,0.0,45918.0,0,1,45918.0,46110.0,0.004181
+acct_medical_services,2018,2019.0,1.0,45918.0,0,1,45918.0,46110.0,0.004181
+acct_medical_services,2018,2020.0,2.0,46110.0,1,1,45918.0,46110.0,0.004181
+acct_medical_services,2019,2019.0,0.0,58046.0,0,1,58046.0,49911.0,-0.140147
+acct_medical_services,2019,2020.0,1.0,49911.0,0,1,58046.0,49911.0,-0.140147
+acct_medical_services,2019,2021.0,2.0,49911.0,1,1,58046.0,49911.0,-0.140147
+acct_medical_services,2020,2020.0,0.0,51411.0,0,1,51411.0,51061.0,-0.006808
+acct_medical_services,2020,2021.0,1.0,51061.0,0,1,51411.0,51061.0,-0.006808
+acct_medical_services,2020,2022.0,2.0,51061.0,1,1,51411.0,51061.0,-0.006808
+acct_medical_services,2021,2021.0,0.0,56655.0,0,1,56655.0,56555.0,-0.001765
+acct_medical_services,2021,2022.0,1.0,56555.0,0,1,56655.0,56555.0,-0.001765
+acct_medical_services,2021,2023.0,2.0,56555.0,1,1,56655.0,56555.0,-0.001765
+acct_medical_services,2022,2022.0,0.0,58897.0,0,1,58897.0,58697.0,-0.003396
+acct_medical_services,2022,2023.0,1.0,58897.0,0,1,58897.0,58697.0,-0.003396
+acct_medical_services,2022,2024.0,2.0,58697.0,1,1,58897.0,58697.0,-0.003396
+acct_medical_services,2023,2023.0,0.0,70584.0,0,1,70584.0,70584.0,0.0
+acct_medical_services,2023,2024.0,1.0,70584.0,0,1,70584.0,70584.0,0.0
+acct_medical_services,2023,2025.0,2.0,70584.0,1,1,70584.0,70584.0,0.0
+acct_medical_services,2024,2024.0,0.0,69071.0,0,1,69071.0,69018.0,-0.000767
+acct_medical_services,2024,2025.0,1.0,69071.0,0,1,69071.0,69018.0,-0.000767
+acct_medical_services,2024,2026.0,2.0,69018.0,1,1,69071.0,69018.0,-0.000767
+acct_medical_services,2025,2025.0,0.0,71000.0,0,1,71000.0,69129.0,-0.026352
+acct_medical_services,2025,2026.0,1.0,69129.0,0,1,71000.0,69129.0,-0.026352
+acct_medical_services,2025,2027.0,2.0,69129.0,1,1,71000.0,69129.0,-0.026352
+acct_medical_services,2026,2026.0,0.0,57120.0,0,1,57120.0,57241.0,0.002118
+acct_medical_services,2026,2027.0,1.0,57241.0,1,1,57120.0,57241.0,0.002118
+acct_medical_support_compliance,2008,2008.0,0.0,3442.0,0,1,3442.0,3957.0,0.149622
+acct_medical_support_compliance,2008,2010.0,2.0,3957.0,1,1,3442.0,3957.0,0.149622
+acct_medical_support_compliance,2010,2010.0,0.0,5100.0,0,1,5100.0,4882.0,-0.042745
+acct_medical_support_compliance,2010,2011.0,1.0,4930.0,0,1,5100.0,4882.0,-0.042745
+acct_medical_support_compliance,2010,2012.0,2.0,4882.0,1,1,5100.0,4882.0,-0.042745
+acct_medical_support_compliance,2011,2011.0,0.0,5307.0,0,1,5307.0,5262.0,-0.008479
+acct_medical_support_compliance,2011,2012.0,1.0,5307.0,0,1,5307.0,5262.0,-0.008479
+acct_medical_support_compliance,2011,2013.0,2.0,5262.0,1,1,5307.0,5262.0,-0.008479
+acct_medical_support_compliance,2012,2012.0,0.0,5424.0,0,1,5424.0,5480.0,0.010324
+acct_medical_support_compliance,2012,2013.0,1.0,5535.0,0,1,5424.0,5480.0,0.010324
+acct_medical_support_compliance,2012,2014.0,2.0,5480.0,1,1,5424.0,5480.0,0.010324
+acct_medical_support_compliance,2013,2013.0,0.0,5746.0,0,1,5746.0,5738.0,-0.001392
+acct_medical_support_compliance,2013,2014.0,1.0,5744.0,0,1,5746.0,5738.0,-0.001392
+acct_medical_support_compliance,2013,2015.0,2.0,5738.0,1,1,5746.0,5738.0,-0.001392
+acct_medical_support_compliance,2014,2014.0,0.0,6033.0,0,1,6033.0,5983.0,-0.008288
+acct_medical_support_compliance,2014,2015.0,1.0,5983.0,0,1,6033.0,5983.0,-0.008288
+acct_medical_support_compliance,2014,2016.0,2.0,5983.0,1,1,6033.0,5983.0,-0.008288
+acct_medical_support_compliance,2015,2015.0,0.0,5880.0,0,1,5880.0,5874.0,-0.00102
+acct_medical_support_compliance,2015,2016.0,1.0,5874.0,0,1,5880.0,5874.0,-0.00102
+acct_medical_support_compliance,2015,2017.0,2.0,5874.0,1,1,5880.0,5874.0,-0.00102
+acct_medical_support_compliance,2016,2016.0,0.0,6214.0,0,1,6214.0,6059.0,-0.024944
+acct_medical_support_compliance,2016,2017.0,1.0,6144.0,0,1,6214.0,6059.0,-0.024944
+acct_medical_support_compliance,2016,2018.0,2.0,6059.0,1,1,6214.0,6059.0,-0.024944
+acct_medical_support_compliance,2017,2017.0,0.0,6524.0,0,1,6524.0,6498.0,-0.003985
+acct_medical_support_compliance,2017,2018.0,1.0,6498.0,0,1,6524.0,6498.0,-0.003985
+acct_medical_support_compliance,2017,2019.0,2.0,6498.0,1,1,6524.0,6498.0,-0.003985
+acct_medical_support_compliance,2018,2018.0,0.0,6939.0,0,1,6939.0,6758.0,-0.026084
+acct_medical_support_compliance,2018,2019.0,1.0,6939.0,0,1,6939.0,6758.0,-0.026084
+acct_medical_support_compliance,2018,2020.0,2.0,6758.0,1,1,6939.0,6758.0,-0.026084
+acct_medical_support_compliance,2019,2019.0,0.0,7239.0,0,1,7239.0,7028.0,-0.029148
+acct_medical_support_compliance,2019,2020.0,1.0,7028.0,0,1,7239.0,7028.0,-0.029148
+acct_medical_support_compliance,2019,2021.0,2.0,7028.0,1,1,7239.0,7028.0,-0.029148
+acct_medical_support_compliance,2020,2020.0,0.0,7338.0,0,1,7338.0,7328.0,-0.001363
+acct_medical_support_compliance,2020,2021.0,1.0,7328.0,0,1,7338.0,7328.0,-0.001363
+acct_medical_support_compliance,2020,2022.0,2.0,7328.0,1,1,7338.0,7328.0,-0.001363
+acct_medical_support_compliance,2021,2021.0,0.0,8214.0,0,1,8214.0,8199.0,-0.001826
+acct_medical_support_compliance,2021,2022.0,1.0,8199.0,0,1,8214.0,8199.0,-0.001826
+acct_medical_support_compliance,2021,2023.0,2.0,8199.0,1,1,8214.0,8199.0,-0.001826
+acct_medical_support_compliance,2022,2022.0,0.0,8403.0,0,1,8403.0,8403.0,0.0
+acct_medical_support_compliance,2022,2023.0,1.0,8403.0,0,1,8403.0,8403.0,0.0
+acct_medical_support_compliance,2022,2024.0,2.0,8403.0,1,1,8403.0,8403.0,0.0
+acct_medical_support_compliance,2023,2023.0,0.0,11073.0,0,1,11073.0,11073.0,0.0
+acct_medical_support_compliance,2023,2024.0,1.0,11073.0,0,1,11073.0,11073.0,0.0
+acct_medical_support_compliance,2023,2025.0,2.0,11073.0,1,1,11073.0,11073.0,0.0
+acct_medical_support_compliance,2024,2024.0,0.0,12300.0,0,1,12300.0,10750.0,-0.126016
+acct_medical_support_compliance,2024,2025.0,1.0,12300.0,0,1,12300.0,10750.0,-0.126016
+acct_medical_support_compliance,2024,2026.0,2.0,10750.0,1,1,12300.0,10750.0,-0.126016
+acct_medical_support_compliance,2025,2025.0,0.0,11800.0,0,1,11800.0,11719.0,-0.006864
+acct_medical_support_compliance,2025,2026.0,1.0,11719.0,0,1,11800.0,11719.0,-0.006864
+acct_medical_support_compliance,2025,2027.0,2.0,11719.0,1,1,11800.0,11719.0,-0.006864
+acct_medical_support_compliance,2026,2026.0,0.0,12090.0,0,1,12090.0,11669.0,-0.034822
+acct_medical_support_compliance,2026,2027.0,1.0,11669.0,1,1,12090.0,11669.0,-0.034822
+acct_nca,2016,2016.0,0.0,266.0,0,1,266.0,271.0,0.018797
+acct_nca,2016,2017.0,1.0,271.0,0,1,266.0,271.0,0.018797
+acct_nca,2016,2018.0,2.0,271.0,1,1,266.0,271.0,0.018797
+acct_nca,2017,2017.0,0.0,286.0,0,1,286.0,286.0,0.0
+acct_nca,2017,2018.0,1.0,286.0,0,1,286.0,286.0,0.0
+acct_nca,2017,2019.0,2.0,286.0,1,1,286.0,286.0,0.0
+acct_nca,2018,2018.0,0.0,306.0,0,1,306.0,306.0,0.0
+acct_nca,2018,2019.0,1.0,306.0,0,1,306.0,306.0,0.0
+acct_nca,2018,2020.0,2.0,306.0,1,1,306.0,306.0,0.0
+acct_nca,2019,2019.0,0.0,316.0,0,1,316.0,316.0,0.0
+acct_nca,2019,2020.0,1.0,316.0,0,1,316.0,316.0,0.0
+acct_nca,2019,2021.0,2.0,316.0,1,1,316.0,316.0,0.0
+acct_nca,2020,2020.0,0.0,329.0,0,1,329.0,329.0,0.0
+acct_nca,2020,2021.0,1.0,328.0,0,1,329.0,329.0,0.0
+acct_nca,2020,2022.0,2.0,329.0,1,1,329.0,329.0,0.0
+acct_nca,2021,2021.0,0.0,360.0,0,1,360.0,352.0,-0.022222
+acct_nca,2021,2022.0,1.0,352.0,0,1,360.0,352.0,-0.022222
+acct_nca,2021,2023.0,2.0,352.0,1,1,360.0,352.0,-0.022222
+acct_nca,2022,2022.0,0.0,394.0,0,1,394.0,394.0,0.0
+acct_nca,2022,2023.0,1.0,394.0,0,1,394.0,394.0,0.0
+acct_nca,2022,2024.0,2.0,394.0,1,1,394.0,394.0,0.0
+acct_nca,2023,2023.0,0.0,430.0,0,1,430.0,430.0,0.0
+acct_nca,2023,2024.0,1.0,430.0,0,1,430.0,430.0,0.0
+acct_nca,2023,2025.0,2.0,430.0,1,1,430.0,430.0,0.0
+acct_nca,2024,2024.0,0.0,480.0,0,1,480.0,480.0,0.0
+acct_nca,2024,2025.0,1.0,480.0,0,1,480.0,480.0,0.0
+acct_nca,2024,2026.0,2.0,480.0,1,1,480.0,480.0,0.0
+acct_nca,2025,2025.0,0.0,495.0,0,1,495.0,480.0,-0.030303
+acct_nca,2025,2026.0,1.0,480.0,0,1,495.0,480.0,-0.030303
+acct_nca,2025,2027.0,2.0,480.0,1,1,495.0,480.0,-0.030303
+acct_nca,2026,2026.0,0.0,497.0,0,1,497.0,499.0,0.004024
+acct_nca,2026,2027.0,1.0,499.0,1,1,497.0,499.0,0.004024
+acct_oig,2008,2008.0,0.0,73.0,0,1,73.0,81.0,0.109589
+acct_oig,2008,2009.0,1.0,81.0,0,1,73.0,81.0,0.109589
+acct_oig,2008,2010.0,2.0,81.0,1,1,73.0,81.0,0.109589
+acct_oig,2009,2009.0,0.0,77.0,0,1,77.0,89.0,0.155844
+acct_oig,2009,2010.0,1.0,88.0,0,1,77.0,89.0,0.155844
+acct_oig,2009,2011.0,2.0,89.0,1,1,77.0,89.0,0.155844
+acct_oig,2010,2010.0,0.0,107.0,0,1,107.0,109.0,0.018692
+acct_oig,2010,2011.0,1.0,109.0,0,1,107.0,109.0,0.018692
+acct_oig,2010,2012.0,2.0,109.0,1,1,107.0,109.0,0.018692
+acct_oig,2011,2011.0,0.0,109.0,0,1,109.0,109.0,0.0
+acct_oig,2011,2012.0,1.0,109.0,0,1,109.0,109.0,0.0
+acct_oig,2011,2013.0,2.0,109.0,1,1,109.0,109.0,0.0
+acct_oig,2012,2012.0,0.0,109.0,0,1,109.0,112.0,0.027523
+acct_oig,2012,2013.0,1.0,112.0,0,1,109.0,112.0,0.027523
+acct_oig,2012,2014.0,2.0,112.0,1,1,109.0,112.0,0.027523
+acct_oig,2013,2013.0,0.0,113.0,0,1,113.0,115.0,0.017699
+acct_oig,2013,2014.0,1.0,115.0,0,1,113.0,115.0,0.017699
+acct_oig,2013,2015.0,2.0,115.0,1,1,113.0,115.0,0.017699
+acct_oig,2014,2014.0,0.0,116.0,0,1,116.0,121.0,0.043103
+acct_oig,2014,2015.0,1.0,121.0,0,1,116.0,121.0,0.043103
+acct_oig,2014,2016.0,2.0,121.0,1,1,116.0,121.0,0.043103
+acct_oig,2015,2015.0,0.0,121.0,0,1,121.0,127.0,0.049587
+acct_oig,2015,2016.0,1.0,126.0,0,1,121.0,127.0,0.049587
+acct_oig,2015,2017.0,2.0,127.0,1,1,121.0,127.0,0.049587
+acct_oig,2016,2016.0,0.0,127.0,0,1,127.0,137.0,0.07874
+acct_oig,2016,2017.0,1.0,137.0,0,1,127.0,137.0,0.07874
+acct_oig,2016,2018.0,2.0,137.0,1,1,127.0,137.0,0.07874
+acct_oig,2017,2017.0,0.0,160.0,0,1,160.0,160.0,0.0
+acct_oig,2017,2018.0,1.0,160.0,0,1,160.0,160.0,0.0
+acct_oig,2017,2019.0,2.0,160.0,1,1,160.0,160.0,0.0
+acct_oig,2018,2018.0,0.0,160.0,0,1,160.0,164.0,0.025
+acct_oig,2018,2019.0,1.0,160.0,0,1,160.0,164.0,0.025
+acct_oig,2018,2020.0,2.0,164.0,1,1,160.0,164.0,0.025
+acct_oig,2019,2019.0,0.0,172.0,0,1,172.0,192.0,0.116279
+acct_oig,2019,2020.0,1.0,192.0,0,1,172.0,192.0,0.116279
+acct_oig,2019,2021.0,2.0,192.0,1,1,172.0,192.0,0.116279
+acct_oig,2020,2020.0,0.0,207.0,0,1,207.0,210.0,0.014493
+acct_oig,2020,2021.0,1.0,210.0,0,1,207.0,210.0,0.014493
+acct_oig,2020,2022.0,2.0,210.0,1,1,207.0,210.0,0.014493
+acct_oig,2021,2021.0,0.0,228.0,0,1,228.0,228.0,0.0
+acct_oig,2021,2022.0,1.0,228.0,0,1,228.0,228.0,0.0
+acct_oig,2021,2023.0,2.0,228.0,1,1,228.0,228.0,0.0
+acct_oig,2022,2022.0,0.0,239.0,0,1,239.0,239.0,0.0
+acct_oig,2022,2023.0,1.0,239.0,0,1,239.0,239.0,0.0
+acct_oig,2022,2024.0,2.0,239.0,1,1,239.0,239.0,0.0
+acct_oig,2023,2023.0,0.0,273.0,0,1,273.0,273.0,0.0
+acct_oig,2023,2024.0,1.0,273.0,0,1,273.0,273.0,0.0
+acct_oig,2023,2025.0,2.0,273.0,1,1,273.0,273.0,0.0
+acct_oig,2024,2024.0,0.0,296.0,0,1,296.0,296.0,0.0
+acct_oig,2024,2025.0,1.0,296.0,0,1,296.0,296.0,0.0
+acct_oig,2024,2026.0,2.0,296.0,1,1,296.0,296.0,0.0
+acct_oig,2025,2025.0,0.0,296.0,0,1,296.0,296.0,0.0
+acct_oig,2025,2026.0,1.0,296.0,0,1,296.0,296.0,0.0
+acct_oig,2025,2027.0,2.0,296.0,1,1,296.0,296.0,0.0
+acct_oig,2026,2026.0,0.0,296.0,0,1,296.0,296.0,0.0
+acct_oig,2026,2027.0,1.0,296.0,1,1,296.0,296.0,0.0
+tot_discretionary_derived,2008,2008.0,0.0,41779.0,0,1,41779.0,46112.0,0.103712
+tot_discretionary_derived,2008,2009.0,1.0,45442.0,0,1,41779.0,46112.0,0.103712
+tot_discretionary_derived,2008,2010.0,2.0,46112.0,1,1,41779.0,46112.0,0.103712
+tot_discretionary_derived,2009,2009.0,0.0,47231.0,0,1,47231.0,52000.0,0.100972
+tot_discretionary_derived,2009,2010.0,1.0,50382.0,0,1,47231.0,52000.0,0.100972
+tot_discretionary_derived,2009,2011.0,2.0,52000.0,1,1,47231.0,52000.0,0.100972
+tot_discretionary_derived,2010,2010.0,0.0,55921.0,0,1,55921.0,55926.0,8.9e-05
+tot_discretionary_derived,2010,2011.0,1.0,56081.0,0,1,55921.0,55926.0,8.9e-05
+tot_discretionary_derived,2010,2012.0,2.0,55926.0,1,1,55921.0,55926.0,8.9e-05
+tot_discretionary_derived,2011,2011.0,0.0,60321.0,0,1,60321.0,59108.0,-0.020109
+tot_discretionary_derived,2011,2012.0,1.0,60082.0,0,1,60321.0,59108.0,-0.020109
+tot_discretionary_derived,2011,2013.0,2.0,59108.0,1,1,60321.0,59108.0,-0.020109
+tot_discretionary_derived,2012,2012.0,0.0,61854.0,0,1,61854.0,61476.0,-0.006111
+tot_discretionary_derived,2012,2013.0,1.0,61228.0,0,1,61854.0,61476.0,-0.006111
+tot_discretionary_derived,2012,2014.0,2.0,61476.0,1,1,61854.0,61476.0,-0.006111
+tot_discretionary_derived,2013,2013.0,0.0,63979.0,0,1,63979.0,64242.0,0.004111
+tot_discretionary_derived,2013,2014.0,1.0,63809.0,0,1,63979.0,64242.0,0.004111
+tot_discretionary_derived,2013,2015.0,2.0,64242.0,1,1,63979.0,64242.0,0.004111
+tot_discretionary_derived,2014,2014.0,0.0,66536.0,0,1,66536.0,66471.0,-0.000977
+tot_discretionary_derived,2014,2015.0,1.0,66338.0,0,1,66536.0,66471.0,-0.000977
+tot_discretionary_derived,2014,2016.0,2.0,66471.0,1,1,66536.0,66471.0,-0.000977
+tot_discretionary_derived,2015,2015.0,0.0,68354.0,0,1,68354.0,68549.0,0.002853
+tot_discretionary_derived,2015,2016.0,1.0,68329.0,0,1,68354.0,68549.0,0.002853
+tot_discretionary_derived,2015,2017.0,2.0,68549.0,1,1,68354.0,68549.0,0.002853
+tot_discretionary_derived,2016,2016.0,0.0,73486.0,0,1,73486.0,74406.0,0.012519
+tot_discretionary_derived,2016,2017.0,1.0,75066.0,0,1,73486.0,74406.0,0.012519
+tot_discretionary_derived,2016,2018.0,2.0,74406.0,1,1,73486.0,74406.0,0.012519
+tot_discretionary_derived,2017,2017.0,0.0,78709.0,0,1,78709.0,77864.0,-0.010736
+tot_discretionary_derived,2017,2018.0,1.0,77815.0,0,1,78709.0,77864.0,-0.010736
+tot_discretionary_derived,2017,2019.0,2.0,77864.0,1,1,78709.0,77864.0,-0.010736
+tot_discretionary_derived,2018,2018.0,0.0,82114.0,0,1,82114.0,85185.0,0.037399
+tot_discretionary_derived,2018,2019.0,1.0,82103.0,0,1,82114.0,85185.0,0.037399
+tot_discretionary_derived,2018,2020.0,2.0,85185.0,1,1,82114.0,85185.0,0.037399
+tot_discretionary_derived,2019,2019.0,0.0,88920.0,0,1,88920.0,90532.0,0.018129
+tot_discretionary_derived,2019,2020.0,1.0,90242.0,0,1,88920.0,90532.0,0.018129
+tot_discretionary_derived,2019,2021.0,2.0,90532.0,1,1,88920.0,90532.0,0.018129
+tot_discretionary_derived,2020,2020.0,0.0,96991.0,0,1,96991.0,95467.0,-0.015713
+tot_discretionary_derived,2020,2021.0,1.0,95962.0,0,1,96991.0,95467.0,-0.015713
+tot_discretionary_derived,2020,2022.0,2.0,95467.0,1,1,96991.0,95467.0,-0.015713
+tot_discretionary_derived,2021,2021.0,0.0,109491.0,0,1,109491.0,107674.0,-0.016595
+tot_discretionary_derived,2021,2022.0,1.0,107549.0,0,1,109491.0,107674.0,-0.016595
+tot_discretionary_derived,2021,2023.0,2.0,107674.0,1,1,109491.0,107674.0,-0.016595
+tot_discretionary_derived,2022,2022.0,0.0,118028.0,0,1,118028.0,116331.0,-0.014378
+tot_discretionary_derived,2022,2023.0,1.0,118028.0,0,1,118028.0,116331.0,-0.014378
+tot_discretionary_derived,2022,2024.0,2.0,116331.0,1,1,118028.0,116331.0,-0.014378
+tot_discretionary_derived,2023,2023.0,0.0,140114.0,0,1,140114.0,140099.0,-0.000107
+tot_discretionary_derived,2023,2024.0,1.0,139812.0,0,1,140114.0,140099.0,-0.000107
+tot_discretionary_derived,2023,2025.0,2.0,140099.0,1,1,140114.0,140099.0,-0.000107
+tot_discretionary_derived,2024,2024.0,0.0,142811.0,0,1,142811.0,139484.0,-0.023297
+tot_discretionary_derived,2024,2025.0,1.0,142887.0,0,1,142811.0,139484.0,-0.023297
+tot_discretionary_derived,2024,2026.0,2.0,139484.0,1,1,142811.0,139484.0,-0.023297
+tot_discretionary_derived,2025,2025.0,0.0,133977.0,0,1,133977.0,134134.0,0.001172
+tot_discretionary_derived,2025,2026.0,1.0,133925.0,0,1,133977.0,134134.0,0.001172
+tot_discretionary_derived,2025,2027.0,2.0,134134.0,1,1,133977.0,134134.0,0.001172
+tot_discretionary_derived,2026,2026.0,0.0,140049.0,0,1,140049.0,138290.0,-0.01256
+tot_discretionary_derived,2026,2027.0,1.0,138290.0,1,1,140049.0,138290.0,-0.01256
+tot_mandatory,2008,2008.0,0.0,44595.0,0,1,44595.0,44873.0,0.006234
+tot_mandatory,2008,2009.0,1.0,44849.0,0,1,44595.0,44873.0,0.006234
+tot_mandatory,2008,2010.0,2.0,44873.0,1,1,44595.0,44873.0,0.006234
+tot_mandatory,2009,2009.0,0.0,46435.0,0,1,46435.0,47793.0,0.029245
+tot_mandatory,2009,2010.0,1.0,47328.0,0,1,46435.0,47793.0,0.029245
+tot_mandatory,2009,2011.0,2.0,47793.0,1,1,46435.0,47793.0,0.029245
+tot_mandatory,2010,2010.0,0.0,56923.0,0,1,56923.0,71281.0,0.252235
+tot_mandatory,2010,2011.0,1.0,57954.0,0,1,56923.0,71281.0,0.252235
+tot_mandatory,2010,2012.0,2.0,71281.0,1,1,56923.0,71281.0,0.252235
+tot_mandatory,2011,2011.0,0.0,64683.0,0,1,64683.0,66379.0,0.02622
+tot_mandatory,2011,2012.0,1.0,66447.0,0,1,64683.0,66379.0,0.02622
+tot_mandatory,2011,2013.0,2.0,66379.0,1,1,64683.0,66379.0,0.02622
+tot_mandatory,2012,2012.0,0.0,70312.0,0,1,70312.0,65489.0,-0.068594
+tot_mandatory,2012,2013.0,1.0,65721.0,0,1,70312.0,65489.0,-0.068594
+tot_mandatory,2012,2014.0,2.0,65489.0,1,1,70312.0,65489.0,-0.068594
+tot_mandatory,2013,2013.0,0.0,76368.0,0,1,76368.0,74770.0,-0.020925
+tot_mandatory,2013,2014.0,1.0,74724.0,0,1,76368.0,74770.0,-0.020925
+tot_mandatory,2013,2015.0,2.0,74770.0,1,1,76368.0,74770.0,-0.020925
+tot_mandatory,2014,2014.0,0.0,86146.0,0,1,86146.0,87411.0,0.014684
+tot_mandatory,2014,2015.0,1.0,87543.0,0,1,86146.0,87411.0,0.014684
+tot_mandatory,2014,2016.0,2.0,87411.0,1,1,86146.0,87411.0,0.014684
+tot_mandatory,2015,2015.0,0.0,95569.0,0,1,95569.0,95424.0,-0.001517
+tot_mandatory,2015,2016.0,1.0,95126.0,0,1,95569.0,95424.0,-0.001517
+tot_mandatory,2015,2017.0,2.0,95424.0,1,1,95569.0,95424.0,-0.001517
+tot_mandatory,2016,2016.0,0.0,95316.0,0,1,95316.0,92520.0,-0.029334
+tot_mandatory,2016,2017.0,1.0,92396.0,0,1,95316.0,92520.0,-0.029334
+tot_mandatory,2016,2018.0,2.0,92520.0,1,1,95316.0,92520.0,-0.029334
+tot_mandatory,2017,2017.0,0.0,103631.0,0,1,103631.0,104313.0,0.006581
+tot_mandatory,2017,2018.0,1.0,102213.0,0,1,103631.0,104313.0,0.006581
+tot_mandatory,2017,2019.0,2.0,104313.0,1,1,103631.0,104313.0,0.006581
+tot_mandatory,2018,2018.0,0.0,104347.0,0,1,104347.0,112283.0,0.076054
+tot_mandatory,2018,2019.0,1.0,104347.0,0,1,104347.0,112283.0,0.076054
+tot_mandatory,2018,2020.0,2.0,112283.0,1,1,104347.0,112283.0,0.076054
+tot_mandatory,2019,2019.0,0.0,109652.0,0,1,109652.0,110915.0,0.011518
+tot_mandatory,2019,2020.0,1.0,110896.0,0,1,109652.0,110915.0,0.011518
+tot_mandatory,2019,2021.0,2.0,110915.0,1,1,109652.0,110915.0,0.011518
+tot_mandatory,2020,2020.0,0.0,123213.0,0,1,123213.0,124721.0,0.012239
+tot_mandatory,2020,2021.0,1.0,124724.0,0,1,123213.0,124721.0,0.012239
+tot_mandatory,2020,2022.0,2.0,124721.0,1,1,123213.0,124721.0,0.012239
+tot_mandatory,2021,2021.0,0.0,133766.0,0,1,133766.0,137730.0,0.029634
+tot_mandatory,2021,2022.0,1.0,137730.0,0,1,133766.0,137730.0,0.029634
+tot_mandatory,2021,2023.0,2.0,137730.0,1,1,133766.0,137730.0,0.029634
+tot_mandatory,2022,2022.0,0.0,152654.0,0,1,152654.0,157518.0,0.031863
+tot_mandatory,2022,2023.0,1.0,152654.0,0,1,152654.0,157518.0,0.031863
+tot_mandatory,2022,2024.0,2.0,157518.0,1,1,152654.0,157518.0,0.031863
+tot_mandatory,2023,2023.0,0.0,161282.0,0,1,161282.0,168685.0,0.045901
+tot_mandatory,2023,2024.0,1.0,168710.0,0,1,161282.0,168685.0,0.045901
+tot_mandatory,2023,2025.0,2.0,168685.0,1,1,161282.0,168685.0,0.045901
+tot_mandatory,2024,2024.0,0.0,182320.0,0,1,182320.0,195697.0,0.073371
+tot_mandatory,2024,2025.0,1.0,193461.0,0,1,182320.0,195697.0,0.073371
+tot_mandatory,2024,2026.0,2.0,195697.0,1,1,182320.0,195697.0,0.073371
+tot_mandatory,2025,2025.0,0.0,235280.0,0,1,235280.0,267160.0,0.135498
+tot_mandatory,2025,2026.0,1.0,267009.0,0,1,235280.0,267160.0,0.135498
+tot_mandatory,2025,2027.0,2.0,267160.0,1,1,235280.0,267160.0,0.135498
+tot_mandatory,2026,2026.0,0.0,301165.0,0,1,301165.0,315053.0,0.046114
+tot_mandatory,2026,2027.0,1.0,315053.0,1,1,301165.0,315053.0,0.046114
+tot_va,2008,2008.0,0.0,86374.0,0,1,86374.0,90985.0,0.053384
+tot_va,2008,2009.0,1.0,90291.0,0,1,86374.0,90985.0,0.053384
+tot_va,2008,2010.0,2.0,90985.0,1,1,86374.0,90985.0,0.053384
+tot_va,2009,2009.0,0.0,93666.0,0,1,93666.0,99793.0,0.065413
+tot_va,2009,2010.0,1.0,97710.0,0,1,93666.0,99793.0,0.065413
+tot_va,2009,2011.0,2.0,99793.0,1,1,93666.0,99793.0,0.065413
+tot_va,2010,2010.0,0.0,112844.0,0,1,112844.0,127207.0,0.127282
+tot_va,2010,2011.0,1.0,114035.0,0,1,112844.0,127207.0,0.127282
+tot_va,2010,2012.0,2.0,127207.0,1,1,112844.0,127207.0,0.127282
+tot_va,2011,2011.0,0.0,125004.0,0,1,125004.0,125487.0,0.003864
+tot_va,2011,2012.0,1.0,126529.0,0,1,125004.0,125487.0,0.003864
+tot_va,2011,2013.0,2.0,125487.0,1,1,125004.0,125487.0,0.003864
+tot_va,2012,2012.0,0.0,132166.0,0,1,132166.0,126965.0,-0.039352
+tot_va,2012,2013.0,1.0,126949.0,0,1,132166.0,126965.0,-0.039352
+tot_va,2012,2014.0,2.0,126965.0,1,1,132166.0,126965.0,-0.039352
+tot_va,2013,2013.0,0.0,140347.0,0,1,140347.0,139012.0,-0.009512
+tot_va,2013,2014.0,1.0,138533.0,0,1,140347.0,139012.0,-0.009512
+tot_va,2013,2015.0,2.0,139012.0,1,1,140347.0,139012.0,-0.009512
+tot_va,2014,2014.0,0.0,152682.0,0,1,152682.0,153882.0,0.007859
+tot_va,2014,2015.0,1.0,153881.0,0,1,152682.0,153882.0,0.007859
+tot_va,2014,2016.0,2.0,153882.0,1,1,152682.0,153882.0,0.007859
+tot_va,2015,2015.0,0.0,163923.0,0,1,163923.0,163973.0,0.000305
+tot_va,2015,2016.0,1.0,163455.0,0,1,163923.0,163973.0,0.000305
+tot_va,2015,2017.0,2.0,163973.0,1,1,163923.0,163973.0,0.000305
+tot_va,2016,2016.0,0.0,168802.0,0,1,168802.0,166926.0,-0.011114
+tot_va,2016,2017.0,1.0,167462.0,0,1,168802.0,166926.0,-0.011114
+tot_va,2016,2018.0,2.0,166926.0,1,1,168802.0,166926.0,-0.011114
+tot_va,2017,2017.0,0.0,182340.0,0,1,182340.0,182177.0,-0.000894
+tot_va,2017,2018.0,1.0,180028.0,0,1,182340.0,182177.0,-0.000894
+tot_va,2017,2019.0,2.0,182177.0,1,1,182340.0,182177.0,-0.000894
+tot_va,2018,2018.0,0.0,186461.0,0,1,186461.0,197468.0,0.059031
+tot_va,2018,2019.0,1.0,186450.0,0,1,186461.0,197468.0,0.059031
+tot_va,2018,2020.0,2.0,197468.0,1,1,186461.0,197468.0,0.059031
+tot_va,2019,2019.0,0.0,198572.0,0,1,198572.0,201447.0,0.014478
+tot_va,2019,2020.0,1.0,201138.0,0,1,198572.0,201447.0,0.014478
+tot_va,2019,2021.0,2.0,201447.0,1,1,198572.0,201447.0,0.014478
+tot_va,2020,2020.0,0.0,220204.0,0,1,220204.0,220188.0,-7.3e-05
+tot_va,2020,2021.0,1.0,220686.0,0,1,220204.0,220188.0,-7.3e-05
+tot_va,2020,2022.0,2.0,220188.0,1,1,220204.0,220188.0,-7.3e-05
+tot_va,2021,2021.0,0.0,243257.0,0,1,243257.0,245404.0,0.008826
+tot_va,2021,2022.0,1.0,245279.0,0,1,243257.0,245404.0,0.008826
+tot_va,2021,2023.0,2.0,245404.0,1,1,243257.0,245404.0,0.008826
+tot_va,2022,2022.0,0.0,270682.0,0,1,270682.0,273849.0,0.0117
+tot_va,2022,2023.0,1.0,270682.0,0,1,270682.0,273849.0,0.0117
+tot_va,2022,2024.0,2.0,273849.0,1,1,270682.0,273849.0,0.0117
+tot_va,2023,2023.0,0.0,301396.0,0,1,301396.0,308784.0,0.024513
+tot_va,2023,2024.0,1.0,308522.0,0,1,301396.0,308784.0,0.024513
+tot_va,2023,2025.0,2.0,308784.0,1,1,301396.0,308784.0,0.024513
+tot_va,2024,2024.0,0.0,325131.0,0,1,325131.0,335181.0,0.030911
+tot_va,2024,2025.0,1.0,336348.0,0,1,325131.0,335181.0,0.030911
+tot_va,2024,2026.0,2.0,335181.0,1,1,325131.0,335181.0,0.030911
+tot_va,2025,2025.0,0.0,369257.0,0,1,369257.0,401294.0,0.086761
+tot_va,2025,2026.0,1.0,400934.0,0,1,369257.0,401294.0,0.086761
+tot_va,2025,2027.0,2.0,401294.0,1,1,369257.0,401294.0,0.086761
+tot_va,2026,2026.0,0.0,441214.0,0,1,441214.0,453343.0,0.02749
+tot_va,2026,2027.0,1.0,453343.0,1,1,441214.0,453343.0,0.02749
+mand_comp_pension,2008,2010.0,2.0,41239.0,1,1,,41239.0,
+mand_comp_pension,2009,2010.0,1.0,42656.0,0,1,,42805.9,
+mand_comp_pension,2009,2011.0,2.0,42805.9,1,1,,42805.9,
+mand_comp_pension,2010,2010.0,0.0,47265.0,0,1,47265.0,61177.0,0.29434
+mand_comp_pension,2010,2011.0,1.0,47923.1,0,1,47265.0,61177.0,0.29434
+mand_comp_pension,2010,2012.0,2.0,61177.0,1,1,47265.0,61177.0,0.29434
+mand_comp_pension,2011,2011.0,0.0,53492.2,0,1,53492.2,53040.0,-0.008454
+mand_comp_pension,2011,2012.0,1.0,53978.0,0,1,53492.2,53040.0,-0.008454
+mand_comp_pension,2011,2013.0,2.0,53040.0,1,1,53492.2,53040.0,-0.008454
+mand_comp_pension,2012,2012.0,0.0,58067.0,0,1,58067.0,51238.0,-0.117606
+mand_comp_pension,2012,2013.0,1.0,51238.0,0,1,58067.0,51238.0,-0.117606
+mand_comp_pension,2012,2014.0,2.0,51238.0,1,1,58067.0,51238.0,-0.117606
+mand_comp_pension,2013,2013.0,0.0,61741.0,0,1,61741.0,61425.0,-0.005118
+mand_comp_pension,2013,2014.0,1.0,61425.0,0,1,61741.0,61425.0,-0.005118
+mand_comp_pension,2013,2015.0,2.0,61425.0,1,1,61741.0,61425.0,-0.005118
+mand_comp_pension,2014,2014.0,0.0,71248.0,0,1,71248.0,71476.1,0.003201
+mand_comp_pension,2014,2015.0,1.0,71476.0,0,1,71248.0,71476.1,0.003201
+mand_comp_pension,2014,2016.0,2.0,71476.1,1,1,71248.0,71476.1,0.003201
+mand_comp_pension,2015,2015.0,0.0,78688.0,0,1,78688.0,79071.0,0.004867
+mand_comp_pension,2015,2016.0,1.0,79071.0,0,1,78688.0,79071.0,0.004867
+mand_comp_pension,2015,2017.0,2.0,79071.0,1,1,78688.0,79071.0,0.004867
+mand_comp_pension,2016,2016.0,0.0,79124.7,0,1,79124.7,76865.5,-0.028552
+mand_comp_pension,2016,2017.0,1.0,76865.5,0,1,79124.7,76865.5,-0.028552
+mand_comp_pension,2016,2018.0,2.0,76865.5,1,1,79124.7,76865.5,-0.028552
+mand_comp_pension,2017,2017.0,0.0,86083.1,0,1,86083.1,86083.1,0.0
+mand_comp_pension,2017,2018.0,1.0,86083.1,0,1,86083.1,86083.1,0.0
+mand_comp_pension,2017,2019.0,2.0,86083.1,1,1,86083.1,86083.1,0.0
+mand_comp_pension,2018,2017.0,-1.0,90119.0,0,1,86894.5,90119.4,0.037113
+mand_comp_pension,2018,2018.0,0.0,86894.5,0,1,86894.5,90119.4,0.037113
+mand_comp_pension,2018,2019.0,1.0,90119.4,0,1,86894.5,90119.4,0.037113
+mand_comp_pension,2018,2020.0,2.0,90119.4,1,1,86894.5,90119.4,0.037113
+mand_comp_pension,2019,2019.0,0.0,97178.8,0,1,97178.8,98762.8,0.0163
+mand_comp_pension,2019,2020.0,1.0,98762.8,0,1,97178.8,98762.8,0.0163
+mand_comp_pension,2019,2021.0,2.0,98762.8,1,1,97178.8,98762.8,0.0163
+mand_comp_pension,2020,2019.0,-1.0,107119.8,0,1,109017.2,110457.1,0.013208
+mand_comp_pension,2020,2020.0,0.0,109017.2,0,1,109017.2,110457.1,0.013208
+mand_comp_pension,2020,2021.0,1.0,110457.1,0,1,109017.2,110457.1,0.013208
+mand_comp_pension,2020,2022.0,2.0,110457.1,1,1,109017.2,110457.1,0.013208
+mand_comp_pension,2021,2020.0,-1.0,116801.3,0,1,121060.9,124357.0,0.027227
+mand_comp_pension,2021,2021.0,0.0,121060.9,0,1,121060.9,124357.0,0.027227
+mand_comp_pension,2021,2022.0,1.0,124357.2,0,1,121060.9,124357.0,0.027227
+mand_comp_pension,2021,2023.0,2.0,124357.0,1,1,121060.9,124357.0,0.027227
+mand_comp_pension,2022,2021.0,-1.0,130227.6,0,1,137575.5,139183.0,0.011684
+mand_comp_pension,2022,2022.0,0.0,137575.5,0,1,137575.5,139183.0,0.011684
+mand_comp_pension,2022,2023.0,1.0,137575.0,0,1,137575.5,139183.0,0.011684
+mand_comp_pension,2022,2024.0,2.0,139183.0,1,1,137575.5,139183.0,0.011684
+mand_comp_pension,2023,2022.0,-1.0,147569.5,0,1,0.105,152017.0,1447779.952381
+mand_comp_pension,2023,2023.0,0.0,0.105,0,1,0.105,152017.0,1447779.952381
+mand_comp_pension,2023,2024.0,1.0,152017.0,0,1,0.105,152017.0,1447779.952381
+mand_comp_pension,2023,2025.0,2.0,152017.0,1,1,0.105,152017.0,1447779.952381
+mand_comp_pension,2024,2023.0,-1.0,146778.0,0,1,151434.0,164136.0,0.083878
+mand_comp_pension,2024,2024.0,0.0,151434.0,0,1,151434.0,164136.0,0.083878
+mand_comp_pension,2024,2025.0,1.0,161851.0,0,1,151434.0,164136.0,0.083878
+mand_comp_pension,2024,2026.0,2.0,164136.0,1,1,151434.0,164136.0,0.083878
+mand_comp_pension,2025,2024.0,-1.0,181390.0,0,1,192131.0,212553.0,0.106292
+mand_comp_pension,2025,2025.0,0.0,192131.0,0,1,192131.0,212553.0,0.106292
+mand_comp_pension,2025,2026.0,1.0,212553.0,0,1,192131.0,212553.0,0.106292
+mand_comp_pension,2025,2027.0,2.0,212553.0,1,1,192131.0,212553.0,0.106292
+mand_comp_pension,2026,2026.0,0.0,227240.0,0,1,227240.0,233090.0,0.025744
+mand_comp_pension,2026,2027.0,1.0,233090.0,1,1,227240.0,233090.0,0.025744
+mand_readjustment,2008,2010.0,2.0,3300.0,1,1,,3300.0,
+mand_readjustment,2009,2010.0,1.0,4283.0,0,1,,4132.9,
+mand_readjustment,2009,2011.0,2.0,4132.9,1,1,,4132.9,
+mand_readjustment,2010,2010.0,0.0,8664.0,0,1,8664.0,8822.0,0.018236
+mand_readjustment,2010,2011.0,1.0,8705.4,0,1,8664.0,8822.0,0.018236
+mand_readjustment,2010,2012.0,2.0,8822.0,1,1,8664.0,8822.0,0.018236
+mand_readjustment,2011,2011.0,0.0,10440.2,0,1,10440.2,11335.0,0.085707
+mand_readjustment,2011,2012.0,1.0,10396.0,0,1,10440.2,11335.0,0.085707
+mand_readjustment,2011,2013.0,2.0,11335.0,1,1,10440.2,11335.0,0.085707
+mand_readjustment,2012,2012.0,0.0,11011.0,0,1,11011.0,12108.0,0.099628
+mand_readjustment,2012,2013.0,1.0,12108.0,0,1,11011.0,12108.0,0.099628
+mand_readjustment,2012,2014.0,2.0,12108.0,1,1,11011.0,12108.0,0.099628
+mand_readjustment,2013,2013.0,0.0,12607.0,0,1,12607.0,11199.0,-0.111684
+mand_readjustment,2013,2014.0,1.0,11199.0,0,1,12607.0,11199.0,-0.111684
+mand_readjustment,2013,2015.0,2.0,11199.0,1,1,12607.0,11199.0,-0.111684
+mand_readjustment,2014,2014.0,0.0,13136.0,0,1,13136.0,13135.9,-8e-06
+mand_readjustment,2014,2015.0,1.0,13136.0,0,1,13136.0,13135.9,-8e-06
+mand_readjustment,2014,2016.0,2.0,13135.9,1,1,13136.0,13135.9,-8e-06
+mand_readjustment,2015,2015.0,0.0,14762.0,0,1,14762.0,14997.1,0.015926
+mand_readjustment,2015,2016.0,1.0,14997.1,0,1,14762.0,14997.1,0.015926
+mand_readjustment,2015,2017.0,2.0,14997.1,1,1,14762.0,14997.1,0.015926
+mand_readjustment,2016,2016.0,0.0,15733.3,0,1,15733.3,14313.4,-0.090248
+mand_readjustment,2016,2017.0,1.0,14313.4,0,1,15733.3,14313.4,-0.090248
+mand_readjustment,2016,2018.0,2.0,14313.4,1,1,15733.3,14313.4,-0.090248
+mand_readjustment,2017,2017.0,0.0,16340.8,0,1,16340.8,16340.8,0.0
+mand_readjustment,2017,2018.0,1.0,16340.8,0,1,16340.8,16340.8,0.0
+mand_readjustment,2017,2019.0,2.0,16340.8,1,1,16340.8,16340.8,0.0
+mand_readjustment,2018,2017.0,-1.0,13709.0,0,1,13666.6,13708.6,0.003073
+mand_readjustment,2018,2018.0,0.0,13666.6,0,1,13666.6,13708.6,0.003073
+mand_readjustment,2018,2019.0,1.0,13708.6,0,1,13666.6,13708.6,0.003073
+mand_readjustment,2018,2020.0,2.0,13708.6,1,1,13666.6,13708.6,0.003073
+mand_readjustment,2019,2019.0,0.0,11832.2,0,1,11832.2,11832.2,0.0
+mand_readjustment,2019,2020.0,1.0,11832.2,0,1,11832.2,11832.2,0.0
+mand_readjustment,2019,2021.0,2.0,11832.2,1,1,11832.2,11832.2,0.0
+mand_readjustment,2020,2019.0,-1.0,14065.3,0,1,14065.3,14065.3,0.0
+mand_readjustment,2020,2020.0,0.0,14065.3,0,1,14065.3,14065.3,0.0
+mand_readjustment,2020,2021.0,1.0,14065.3,0,1,14065.3,14065.3,0.0
+mand_readjustment,2020,2022.0,2.0,14065.3,1,1,14065.3,14065.3,0.0
+mand_readjustment,2021,2020.0,-1.0,12579.0,0,1,12579.0,12965.0,0.030686
+mand_readjustment,2021,2021.0,0.0,12579.0,0,1,12579.0,12965.0,0.030686
+mand_readjustment,2021,2022.0,1.0,12579.0,0,1,12579.0,12965.0,0.030686
+mand_readjustment,2021,2023.0,2.0,12965.0,1,1,12579.0,12965.0,0.030686
+mand_readjustment,2022,2021.0,-1.0,14946.6,0,1,14946.6,14947.0,2.7e-05
+mand_readjustment,2022,2022.0,0.0,14946.6,0,1,14946.6,14947.0,2.7e-05
+mand_readjustment,2022,2023.0,1.0,14947.0,0,1,14946.6,14947.0,2.7e-05
+mand_readjustment,2022,2024.0,2.0,14947.0,1,1,14946.6,14947.0,2.7e-05
+mand_readjustment,2023,2022.0,-1.0,8906.9,0,1,-0.404,8907.0,-22048.029703
+mand_readjustment,2023,2023.0,0.0,-0.404,0,1,-0.404,8907.0,-22048.029703
+mand_readjustment,2023,2024.0,1.0,8907.0,0,1,-0.404,8907.0,-22048.029703
+mand_readjustment,2023,2025.0,2.0,8907.0,1,1,-0.404,8907.0,-22048.029703
+mand_readjustment,2024,2023.0,-1.0,8453.0,0,1,8453.0,9424.0,0.11487
+mand_readjustment,2024,2024.0,0.0,8453.0,0,1,8453.0,9424.0,0.11487
+mand_readjustment,2024,2025.0,1.0,8827.0,0,1,8453.0,9424.0,0.11487
+mand_readjustment,2024,2026.0,2.0,9424.0,1,1,8453.0,9424.0,0.11487
+mand_readjustment,2025,2024.0,-1.0,11523.0,0,1,16057.0,18264.0,0.137448
+mand_readjustment,2025,2025.0,0.0,16057.0,0,1,16057.0,18264.0,0.137448
+mand_readjustment,2025,2026.0,1.0,18264.0,0,1,16057.0,18264.0,0.137448
+mand_readjustment,2025,2027.0,2.0,18264.0,1,1,16057.0,18264.0,0.137448
+mand_readjustment,2026,2026.0,0.0,20372.0,0,1,20372.0,25250.0,0.239446
+mand_readjustment,2026,2027.0,1.0,25250.0,1,1,20372.0,25250.0,0.239446
+tef_total,2022,2025.0,3.0,500.0,0,1,,500.0,
+tef_total,2022,2026.0,4.0,500.0,0,1,,500.0,
+tef_total,2022,2027.0,5.0,500.0,1,1,,500.0,
+tef_total,2023,2025.0,2.0,5000.0,0,1,,5000.0,
+tef_total,2023,2026.0,3.0,5000.0,0,1,,5000.0,
+tef_total,2023,2027.0,4.0,5000.0,1,1,,5000.0,
+tef_total,2024,2024.0,0.0,20268.0,0,1,20268.0,20268.0,0.0
+tef_total,2024,2025.0,1.0,20268.0,0,1,20268.0,20268.0,0.0
+tef_total,2024,2026.0,2.0,20268.0,0,1,20268.0,20268.0,0.0
+tef_total,2024,2027.0,3.0,20268.0,1,1,20268.0,20268.0,0.0
+tef_total,2025,2025.0,0.0,24455.0,0,1,24455.0,30455.0,0.245349
+tef_total,2025,2026.0,1.0,30455.0,0,1,24455.0,30455.0,0.245349
+tef_total,2025,2027.0,2.0,30455.0,1,1,24455.0,30455.0,0.245349
+tef_total,2026,2026.0,0.0,52676.0,0,1,52676.0,52676.0,0.0
+tef_total,2026,2027.0,1.0,52676.0,1,1,52676.0,52676.0,0.0
+```
+
+# RQ2 · Discretionary vs. mandatory
+
+```{shinylive-r}
+#| standalone: true
+#| viewerHeight: 1050
+## file: app.R
+library(shiny)
+library(bslib)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(scales)
+library(ggrepel)
+library(patchwork)
+
+# ---------------------------------------------------------------- data
+va <- read.csv("va_data.csv")
+FY_MIN <- 2008; FY_MAX <- 2026
+
+latest <- va |>
+  filter(is_latest == 1) |>
+  select(series_id, fiscal_year, value) |>
+  pivot_wider(names_from = series_id, values_from = value) |>
+  arrange(fiscal_year)
+
+r2_all <- latest |>
+  transmute(fiscal_year,
+            total = tot_va, mandatory = tot_mandatory, discretionary = tot_va - tot_mandatory,
+            cp = mand_comp_pension, readj = mand_readjustment, tef = coalesce(tef_total, 0),
+            other = mandatory - cp - readj - tef)
+
+short <- c("Compensation & Pensions" = "C&P", "Toxic Exposures Fund" = "TEF",
+           "Readjustment benefits" = "Readjustment", "Other mandatory" = "Other")
+PROGS <- c("Compensation & Pensions" = "cp", "Toxic Exposures Fund" = "tef",
+           "Readjustment benefits" = "readj", "Other mandatory" = "other")
+
+# ---------------------------------------------------------------- look
+pal <- c(blue = "#0A3161", purple = "#B31942", sky = "#6C9BD2", yellow = "#D4A62A",
+         orange = "#6E7B3E", pink = "#B31942", mint = "#A9B3C1", grey = "#B8C0CC")
+prog_cols <- c("Compensation & Pensions" = pal[["purple"]], "Toxic Exposures Fund" = pal[["sky"]],
+               "Readjustment benefits" = pal[["yellow"]], "Other mandatory" = pal[["grey"]])
+ink <- "#13233F"; muted <- "#5A6578"
+theme_va <- function() {
+  theme_minimal(base_size = 8.5) +
+    theme(text = element_text(colour = ink),
+          axis.text = element_text(size = 8.5, colour = muted),
+          axis.title = element_text(size = 8.5, colour = muted),
+          legend.text = element_text(size = 8.5), legend.title = element_blank(),
+          legend.position = "top", legend.justification = "left",
+          panel.grid.minor = element_blank(),
+          plot.margin = margin(8, 14, 8, 8))
+}
+bn  <- function(x, d = 1) paste0("$", formatC(x / 1000, format = "f", digits = d, big.mark = ","), "B")
+pct <- function(x, d = 0) paste0(formatC(100 * x, format = "f", digits = d), "%")
+
+# ---------------------------------------------------------------- UI
+plot_card <- function(plot_id, text_id, height = "360px") {
+  card(full_screen = TRUE, card_header(textOutput(paste0(plot_id, "_ttl"), inline = TRUE)),
+       plotOutput(plot_id, height = height),
+       card_footer(uiOutput(text_id), div(class = "src", "Source: U.S. Department of Veterans Affairs, Congressional Budget Submissions (Vols. I–V), FY2008–FY2027 editions; compiled by the authors. Nominal budget authority.")))
+}
+
+ui <- page_sidebar(
+  fillable = FALSE,
+  theme = bs_theme(version = 5, primary = pal[["blue"]], base_font = font_google("Source Sans 3", local = FALSE), heading_font = font_google("Oswald", local = FALSE), fg = ink, bg = "#ffffff"),
+  sidebar = sidebar(
+    width = 290,
+    sliderInput("years", "Fiscal years", min = FY_MIN, max = FY_MAX, value = c(FY_MIN, FY_MAX), step = 1, sep = ""),
+    conditionalPanel("input.tab == 'Mandatory vs. discretionary' || input.tab == 'Mandatory programs'",
+      radioButtons("units", "Show funding as", choices = c("$ billions", "% of total VA funding"), selected = "$ billions")),
+    conditionalPanel("input.tab == 'Mandatory programs'",
+      checkboxGroupInput("progs", "Mandatory programs", choices = names(PROGS), selected = names(PROGS))),
+    helpText("Final (enacted) budget authority, nominal dollars. Discretionary = total VA − mandatory.")
+  ),
+  tags$head(tags$style(HTML("
+    .bslib-value-box { min-height: 0 !important; }
+    .bslib-value-box .card-body { padding: .3rem .4rem !important; }
+    .bslib-value-box .value-box-area { padding: .35rem .8rem !important; gap: 0 !important; }
+    .bslib-value-box .value-box-title { font-size: .85rem !important; margin-bottom: .1rem !important; }
+    .bslib-value-box .value-box-value { font-size: 1.55rem !important; line-height: 1.15 !important; margin-bottom: .1rem !important; }
+    .bslib-sidebar-layout > .sidebar { font-size: .9rem; }
+    .bslib-sidebar-layout > .sidebar .control-label, .bslib-sidebar-layout > .sidebar .form-label { font-size: .9rem; }
+    .vb-row { margin-bottom: 1.4rem !important; }
+    .vb-row + * { margin-top: 0 !important; }
+    .bslib-value-box { border: 0 !important; border-top: 4px solid #B31942 !important; border-radius: 6px !important; }
+    .bslib-value-box .value-box-title { font-family: Oswald, sans-serif; text-transform: uppercase; letter-spacing: .06em; }
+    .bslib-value-box .value-box-title::before { content: '\\2605  '; color: #B31942; }
+    .bslib-value-box .value-box-value { font-family: Oswald, sans-serif; font-weight: 600 !important; letter-spacing: .02em; }
+    .card-header { font-family: Oswald, sans-serif; letter-spacing: .02em; font-weight: 500; font-size: 1.05rem; color: #0A1F44; border-bottom: 2px solid #B31942; }
+    .card-footer .src { font-size: .75rem; color: #5A6578; margin-top: .35rem; border-top: 1px solid #E3E7EC; padding-top: .3rem; }
+    .nav-underline .nav-link, .nav-tabs .nav-link { font-family: Oswald, sans-serif; text-transform: uppercase; letter-spacing: .05em; }
+    .nav-underline .nav-link.active { color: #B31942 !important; border-bottom-color: #B31942 !important; }
+    .bslib-value-box p { font-size: .8rem !important; margin: 0 !important; opacity: .9; }
+  "))),
+  layout_columns(
+    fill = FALSE, class = "vb-row",
+    value_box(title = "Mandatory passed discretionary", value = textOutput("vb_cross"),
+              theme = value_box_theme(bg = "#0A1F44", fg = "white"), p(textOutput("vb_cross_note"))),
+    value_box(title = "Mandatory growth in the window", value = textOutput("vb_growth"),
+              theme = value_box_theme(bg = "#0A1F44", fg = "white"), p(textOutput("vb_growth_note"))),
+    value_box(title = "Discretionary share of VA funding", value = textOutput("vb_share"),
+              theme = value_box_theme(bg = "#0A1F44", fg = "white"), p(textOutput("vb_share_note")))
+  ),
+  navset_card_underline(
+    id = "tab",
+    nav_panel("Mandatory vs. discretionary", plot_card("p_lines", "t_lines")),
+    nav_panel("Mandatory programs",          plot_card("p_area", "t_area")),
+    nav_panel("What drove the growth",
+      card(full_screen = TRUE, card_header(textOutput("p_contrib_ttl", inline = TRUE)),
+           plotOutput("p_contrib", height = "230px"),
+           plotOutput("p_waffle", height = "230px"),
+           card_footer(uiOutput("t_contrib"), div(class = "src", "Source: U.S. Department of Veterans Affairs, Congressional Budget Submissions (Vols. I–V), FY2008–FY2027 editions; compiled by the authors. Nominal budget authority.")))),
+    nav_panel("Shrinking share?",            plot_card("p_share", "t_share"))
+  )
+)
+
+# ---------------------------------------------------------------- server
+server <- function(input, output, session) {
+  r2 <- reactive({
+    validate(need(input$years[2] > input$years[1], "Choose a window of at least two years."))
+    r2_all |> filter(between(fiscal_year, input$years[1], input$years[2]))
+  })
+  first <- reactive(r2() |> slice(1)); last <- reactive(r2() |> slice(n()))
+  growth <- reactive({
+    tibble(program = names(PROGS),
+           change = vapply(PROGS, function(v) last()[[v]] - first()[[v]], numeric(1))) |>
+      mutate(share = change / sum(change))
+  })
+
+  # ---- value boxes
+  cross <- reactive({ x <- r2() |> filter(mandatory > discretionary); if (nrow(x)) x$fiscal_year[1] else NA })
+  output$vb_cross <- renderText(if (is.na(cross())) "Not in window" else paste0("FY", cross()))
+  output$vb_cross_note <- renderText({
+    if (is.na(cross())) "mandatory stays below discretionary"
+    else if (cross() == input$years[1]) "already ahead at the start of the window"
+    else "first year mandatory > discretionary" })
+  output$vb_growth <- renderText(paste0("+", bn(last()$mandatory - first()$mandatory)))
+  output$vb_growth_note <- renderText(paste0(formatC(last()$mandatory / first()$mandatory, format = "f", digits = 1),
+                                             "× from FY", input$years[1], " to FY", input$years[2]))
+  output$vb_share <- renderText(paste0(pct(first()$discretionary / first()$total), " → ", pct(last()$discretionary / last()$total)))
+  output$vb_share_note <- renderText(paste0("FY", input$years[1], " to FY", input$years[2]))
+
+
+  # ---- message titles (update with the filters)
+  output$p_lines_ttl <- renderText({
+    c10 <- cross()
+    if (is.na(c10)) "Mandatory funding stays below discretionary funding in this window"
+    else if (c10 == input$years[1]) paste0("Mandatory funding is already larger than discretionary in FY", c10)
+    else paste0("Mandatory funding overtook discretionary funding in FY", c10)
+  })
+  output$p_area_ttl <- renderText({
+    req(length(input$progs) > 0)
+    l <- last(); tot <- l$cp + l$tef + l$readj + l$other
+    v <- vapply(PROGS[input$progs], function(k) l[[k]], numeric(1)); top <- names(v)[which.max(v)]
+    paste0(top, " makes up ", pct(max(v) / tot), " of mandatory funding in FY", input$years[2])
+  })
+  output$p_contrib_ttl <- renderText({
+    g <- growth() |> arrange(desc(change))
+    paste0(g$program[1], " accounts for $", round(100 * g$share[1]), " of every $100 added to mandatory funding")
+  })
+  output$p_share_ttl <- renderText({
+    f <- first(); l <- last(); gm <- l$mandatory / f$mandatory; gd <- l$discretionary / f$discretionary
+    s0 <- pct(f$discretionary / f$total); s1 <- pct(l$discretionary / l$total)
+    if (gm > gd) paste0("Discretionary share fell from ", s0, " to ", s1, " because mandatory grew faster (",
+                        formatC(gm, format = "f", digits = 1), "× vs. ", formatC(gd, format = "f", digits = 1), "×)")
+    else paste0("Discretionary share moved from ", s0, " to ", s1, "; mandatory did not outgrow discretionary")
+  })
+
+  # ---- lines
+  output$p_lines <- renderPlot({
+    share <- input$units != "$ billions"
+    d <- r2() |> select(fiscal_year, Mandatory = mandatory, Discretionary = discretionary, total) |>
+      pivot_longer(c(Mandatory, Discretionary)) |>
+      mutate(y = if (share) value / total else value / 1000)
+    ggplot(d, aes(fiscal_year, y, colour = name)) +
+      geom_line(linewidth = 1.4) + geom_point(size = 2.6) +
+      geom_text(data = d |> filter(fiscal_year == max(fiscal_year)), aes(label = name),
+                hjust = 0, nudge_x = 0.3, size = 3, fontface = "bold") +
+      scale_colour_manual(values = c(Mandatory = pal[["purple"]], Discretionary = pal[["blue"]]), guide = "none") +
+      scale_y_continuous(labels = if (share) label_percent(accuracy = 1) else label_dollar(suffix = "B"), limits = c(0, NA)) +
+      scale_x_continuous(breaks = pretty_breaks(6), expand = expansion(mult = c(0.02, 0.2))) +
+      coord_cartesian(clip = "off") +
+      labs(x = "Fiscal year", y = if (share) "Share of total VA funding (%)" else "Budget authority ($ billions)") + theme_va()
+  }, res = 96)
+  output$t_lines <- renderUI({
+    d <- r2(); c10 <- cross()
+    txt <- if (is.na(c10)) "In this window, mandatory funding never exceeds discretionary." else
+      if (c10 == input$years[1]) paste0("Mandatory funding is already larger than discretionary in FY", c10, ".") else {
+        a <- d |> filter(fiscal_year %in% c(c10 - 1, c10))
+        paste0("Mandatory funding overtakes discretionary in <b>FY", c10, "</b>, rising from ", bn(a$mandatory[1]), " to ",
+               bn(a$mandatory[2]), "; ", bn(a$cp[2] - a$cp[1]), " of that jump is Compensation & Pensions.") }
+    p(HTML(paste0(txt, " By FY", input$years[2], " mandatory is ", bn(last()$mandatory), " and discretionary ",
+                  bn(last()$discretionary), ".")))
+  })
+
+  # ---- stacked area + end-year bar
+  output$p_area <- renderPlot({
+    validate(need(length(input$progs) > 0, "Select at least one program."))
+    share <- input$units != "$ billions"
+    sel <- names(PROGS)[names(PROGS) %in% input$progs]
+    d <- r2() |> select(fiscal_year, total, all_of(unname(PROGS[sel]))) |>
+      pivot_longer(-c(fiscal_year, total), names_to = "v") |>
+      mutate(program = factor(names(PROGS)[match(v, PROGS)], levels = rev(names(PROGS))),
+             y = if (share) value / total else value / 1000)
+    fy_end <- max(d$fiscal_year); span <- max(diff(range(d$fiscal_year)), 1)
+    lab <- d |> filter(fiscal_year == fy_end) |> arrange(desc(program)) |>
+      mutate(top = cumsum(y), mid = top - y / 2, tot = sum(y), inside = y >= 0.3 * tot)
+    lx <- fy_end - span * 0.17
+    out <- lab |> filter(!inside) |> arrange(desc(mid)) |>
+      mutate(ly = tot * (1.12 - 0.11 * (row_number() - 1)))
+    ins <- lab |> filter(inside)
+    ggplot(d, aes(fiscal_year, y, fill = program)) +
+      geom_area(colour = "white", linewidth = 0.3) +
+      geom_segment(data = out, aes(x = lx + span * 0.01, xend = fy_end - span * 0.005, y = ly, yend = mid),
+                   inherit.aes = FALSE, colour = muted, linewidth = 0.35) +
+      geom_point(data = out, aes(x = fy_end - span * 0.005, y = mid), inherit.aes = FALSE, colour = muted, size = 0.9) +
+      geom_text(data = out, aes(x = lx, y = ly, label = program, colour = program), inherit.aes = FALSE,
+                hjust = 1, size = 3, fontface = "bold") +
+      geom_text(data = ins, aes(x = fy_end - span * 0.04, y = mid, label = program), inherit.aes = FALSE,
+                hjust = 1, size = 3, fontface = "bold", colour = "white") +
+      scale_fill_manual(values = prog_cols, breaks = names(PROGS), guide = "none") +
+      scale_colour_manual(values = prog_cols, guide = "none") +
+      scale_y_continuous(labels = if (share) label_percent(accuracy = 1) else label_dollar(suffix = "B"),
+                         expand = expansion(mult = c(0.02, 0.06))) +
+      scale_x_continuous(breaks = pretty_breaks(6), expand = expansion(mult = c(0.02, 0.01))) +
+      labs(x = "Fiscal year", y = if (share) "Share of total VA funding (%)" else "Budget authority ($ billions)") + theme_va()
+  }, res = 96)
+  output$t_area <- renderUI({
+    l <- last(); tot <- l$cp + l$tef + l$readj + l$other
+    p(HTML(paste0("In FY", input$years[2], ", mandatory funding of ", bn(l$mandatory), " splits into ",
+      "<b>Compensation & Pensions</b> ", bn(l$cp), " (", pct(l$cp / tot), "), ",
+      "<b>Toxic Exposures Fund</b> ", bn(l$tef), " (", pct(l$tef / tot), "), ",
+      "<b>Readjustment</b> ", bn(l$readj), " (", pct(l$readj / tot), ") and other programs ", bn(l$other), ".")))
+  })
+
+  # ---- contribution: columns + waffle
+  output$p_contrib <- renderPlot({
+    g <- growth() |> arrange(desc(change)) |> mutate(program = factor(program, levels = program), rank = row_number())
+    p1 <- ggplot(g, aes(rank, change / 1000, fill = program)) +
+      geom_col(width = 0.7) +
+      geom_hline(yintercept = 0, colour = "#9AA5B4") +
+      geom_text(aes(label = formatC(change / 1000, format = "f", digits = 1),
+                    vjust = ifelse(change >= 0, -0.4, 1.3)), size = 3, colour = ink, fontface = "bold") +
+      scale_fill_manual(values = prog_cols, guide = "none") +
+      scale_x_continuous(breaks = g$rank, labels = short[as.character(g$program)]) +
+      scale_y_continuous(labels = label_dollar(suffix = "B"), expand = expansion(mult = c(0.08, 0.15))) +
+      labs(x = "Mandatory program", y = "Change ($ billions)", subtitle = paste0("Change in budget authority, FY", input$years[1], " → FY", input$years[2])) +
+      theme_va() + theme(panel.grid.major.x = element_blank(), plot.subtitle = element_text(colour = muted, size = 8.5))
+    p1
+  }, res = 96)
+  output$p_waffle <- renderPlot({
+    g <- growth() |> arrange(desc(change)) |> mutate(program = factor(program, levels = program))
+    raw <- 100 * pmax(g$share, 0); cents <- floor(raw); left <- 100 - sum(cents)
+    if (left > 0) { o <- order(raw - floor(raw), decreasing = TRUE)[seq_len(left)]; cents[o] <- cents[o] + 1 }
+    w <- tibble(program = g$program, dollars = cents) |> tidyr::crossing(cell = 1:100) |>
+      mutate(col = (cell - 1) %% 10, row = (cell - 1) %/% 10, fill = ifelse(cell <= dollars, as.character(program), "empty"))
+    p2 <- ggplot(w, aes(col, row, colour = fill)) +
+      geom_point(size = 2.25) +
+      geom_text(data = distinct(w, program, dollars), aes(x = 4.5, y = 11.8, label = paste0("$", dollars)),
+                inherit.aes = FALSE, size = 3, fontface = "bold", colour = ink) +
+      facet_wrap(~program, nrow = 1, labeller = label_wrap_gen(14), strip.position = "bottom") +
+      scale_colour_manual(values = c(prog_cols, empty = "#E3E7EC"), guide = "none") +
+      coord_equal(clip = "off") +
+      labs(subtitle = "Of every $100 added", x = NULL, y = NULL) +
+      theme_void(base_size = 8.5) + theme(strip.text = element_text(colour = ink, size = 8.5, margin = margin(t = 4)),
+                                          panel.spacing.x = unit(4, "lines"), plot.margin = margin(0, 10, 4, 10),
+                                          plot.subtitle = element_text(colour = muted, size = 8.5, margin = margin(b = 4)))
+    p2
+  }, res = 96)
+  output$t_contrib <- renderUI({
+    g <- growth() |> arrange(desc(change))
+    p(HTML(paste0("From FY", input$years[1], " to FY", input$years[2], ", mandatory funding changed by <b>",
+      bn(sum(g$change)), "</b>: ",
+      paste0("<b>", g$program, "</b> ", ifelse(g$change >= 0, "+", "−"), bn(abs(g$change)), " (", pct(g$share), ")", collapse = "; "), ".")))
+  })
+
+  # ---- index + share
+  output$p_share <- renderPlot({
+    f <- first()
+    full <- r2() |> transmute(fiscal_year, Mandatory = 100 * mandatory / f$mandatory, Discretionary = 100 * discretionary / f$discretionary)
+    ylim_idx <- range(c(100, full$Mandatory, full$Discretionary))
+    d <- r2() |> transmute(fiscal_year, Mandatory = 100 * mandatory / f$mandatory, Discretionary = 100 * discretionary / f$discretionary,
+                           share = discretionary / total)
+    di <- d |> select(-share) |> pivot_longer(-fiscal_year)
+    p1 <- ggplot(di, aes(fiscal_year, value, colour = name)) +
+      geom_hline(yintercept = 100, colour = "#9AA5B4") +
+      geom_line(linewidth = 1.4) +
+      geom_point(data = di |> filter(fiscal_year == max(fiscal_year)), size = 2.4) +
+      geom_text(data = di |> filter(fiscal_year == max(fiscal_year)), aes(label = name),
+                hjust = 0, nudge_x = 0.3, size = 3, fontface = "bold") +
+      scale_y_continuous(limits = ylim_idx) +
+      scale_colour_manual(values = c(Mandatory = pal[["purple"]], Discretionary = pal[["blue"]]), guide = "none") +
+      scale_x_continuous(breaks = function(l) { b <- pretty(input$years, 4); b[b >= input$years[1] & b <= input$years[2]] },
+                         expand = expansion(mult = c(0.02, 0.45))) +
+      coord_cartesian(clip = "off") +
+      labs(subtitle = "Growth since the first year", x = "Fiscal year", y = paste0("Index (FY", input$years[1], " = 100)")) +
+      theme_va() + theme(plot.subtitle = element_text(colour = muted, size = 8.5))
+    p2 <- ggplot(d, aes(fiscal_year, share)) +
+      geom_line(linewidth = 1.4, colour = pal[["pink"]]) +
+      geom_point(data = d |> filter(fiscal_year %in% range(fiscal_year)), size = 3, colour = pal[["pink"]]) +
+      geom_text(data = d |> filter(fiscal_year %in% range(fiscal_year)), aes(label = pct(share)),
+                vjust = -1, size = 3, colour = ink) +
+      scale_y_continuous(labels = label_percent(accuracy = 1), limits = c(0, 0.65)) +
+      scale_x_continuous(breaks = pretty_breaks(4), limits = input$years) +
+      labs(subtitle = "Discretionary ÷ total VA funding", x = "Fiscal year", y = "Discretionary share (%)") +
+      theme_va() + theme(plot.subtitle = element_text(colour = muted, size = 8.5))
+    if (requireNamespace("patchwork", quietly = TRUE)) patchwork::wrap_plots(p1, p2, ncol = 2) else p1
+  }, res = 96)
+  output$t_share <- renderUI({
+    f <- first(); l <- last()
+    cf <- l$discretionary / (l$discretionary + f$mandatory * l$discretionary / f$discretionary)
+    p(HTML(paste0("Discretionary funding grew <b>", formatC(l$discretionary / f$discretionary, format = "f", digits = 1),
+      "×</b> while mandatory grew <b>", formatC(l$mandatory / f$mandatory, format = "f", digits = 1), "×</b>. ",
+      "Had mandatory grown at the discretionary pace, the discretionary share would be ", pct(cf), " instead of ",
+      pct(l$discretionary / l$total), ", so the shrinking share is ",
+      if (l$mandatory / f$mandatory > l$discretionary / f$discretionary) "a <b>denominator effect</b>." else "not driven by mandatory growth in this window.")))
+  })
+}
+
+shinyApp(ui, server)
+## file: va_data.csv
+series_id,fiscal_year,edition,vintage_lag,value,is_latest,latest_is_final,value_request,value_latest,gap_pct_of_request
+acct_construction_major,2008,2008.0,0.0,727.0,0,1,727.0,1531.0,1.105915
+acct_construction_major,2008,2009.0,1.0,1069.0,0,1,727.0,1531.0,1.105915
+acct_construction_major,2008,2010.0,2.0,1531.0,1,1,727.0,1531.0,1.105915
+acct_construction_major,2009,2009.0,0.0,582.0,0,1,582.0,923.0,0.585911
+acct_construction_major,2009,2010.0,1.0,923.0,1,1,582.0,923.0,0.585911
+acct_construction_major,2010,2010.0,0.0,1194.0,0,1,1194.0,1194.0,0.0
+acct_construction_major,2010,2012.0,2.0,1194.0,1,1,1194.0,1194.0,0.0
+acct_construction_major,2012,2012.0,0.0,590.0,0,1,590.0,590.0,0.0
+acct_construction_major,2012,2013.0,1.0,590.0,0,1,590.0,590.0,0.0
+acct_construction_major,2012,2014.0,2.0,590.0,1,1,590.0,590.0,0.0
+acct_construction_major,2013,2013.0,0.0,532.0,0,1,532.0,739.0,0.389098
+acct_construction_major,2013,2014.0,1.0,532.0,0,1,532.0,739.0,0.389098
+acct_construction_major,2013,2015.0,2.0,739.0,1,1,532.0,739.0,0.389098
+acct_construction_major,2014,2014.0,0.0,342.0,0,1,342.0,342.0,0.0
+acct_construction_major,2014,2015.0,1.0,342.0,0,1,342.0,342.0,0.0
+acct_construction_major,2014,2016.0,2.0,342.0,1,1,342.0,342.0,0.0
+acct_construction_major,2015,2015.0,0.0,562.0,0,1,562.0,562.0,0.0
+acct_construction_major,2015,2016.0,1.0,562.0,0,1,562.0,562.0,0.0
+acct_construction_major,2015,2017.0,2.0,562.0,1,1,562.0,562.0,0.0
+acct_construction_major,2016,2016.0,0.0,1144.0,0,1,1144.0,1221.0,0.067308
+acct_construction_major,2016,2017.0,1.0,1244.0,0,1,1144.0,1221.0,0.067308
+acct_construction_major,2016,2018.0,2.0,1221.0,1,1,1144.0,1221.0,0.067308
+acct_construction_major,2017,2017.0,0.0,528.0,0,1,528.0,305.0,-0.422348
+acct_construction_major,2017,2018.0,1.0,528.0,0,1,528.0,305.0,-0.422348
+acct_construction_major,2017,2019.0,2.0,305.0,1,1,528.0,305.0,-0.422348
+acct_construction_major,2018,2018.0,0.0,512.0,0,1,512.0,512.0,0.0
+acct_construction_major,2018,2019.0,1.0,512.0,0,1,512.0,512.0,0.0
+acct_construction_major,2018,2020.0,2.0,512.0,1,1,512.0,512.0,0.0
+acct_construction_major,2019,2019.0,0.0,1127.0,0,1,1127.0,2177.0,0.931677
+acct_construction_major,2019,2020.0,1.0,2177.0,0,1,1127.0,2177.0,0.931677
+acct_construction_major,2019,2021.0,2.0,2177.0,1,1,1127.0,2177.0,0.931677
+acct_construction_major,2020,2020.0,0.0,1235.0,0,1,1235.0,1235.0,0.0
+acct_construction_major,2020,2021.0,1.0,1235.0,0,1,1235.0,1235.0,0.0
+acct_construction_major,2020,2022.0,2.0,1235.0,1,1,1235.0,1235.0,0.0
+acct_construction_major,2021,2021.0,0.0,1373.0,0,1,1373.0,1316.0,-0.041515
+acct_construction_major,2021,2022.0,1.0,1316.0,0,1,1373.0,1316.0,-0.041515
+acct_construction_major,2021,2023.0,2.0,1316.0,1,1,1373.0,1316.0,-0.041515
+acct_construction_major,2022,2022.0,0.0,1611.0,0,1,1611.0,1611.0,0.0
+acct_construction_major,2022,2023.0,1.0,1611.0,0,1,1611.0,1611.0,0.0
+acct_construction_major,2022,2024.0,2.0,1611.0,1,1,1611.0,1611.0,0.0
+acct_construction_major,2023,2023.0,0.0,1448.0,0,1,1448.0,1372.0,-0.052486
+acct_construction_major,2023,2024.0,1.0,1372.0,0,1,1448.0,1372.0,-0.052486
+acct_construction_major,2023,2025.0,2.0,1372.0,1,1,1448.0,1372.0,-0.052486
+acct_construction_major,2024,2024.0,0.0,881.0,0,1,881.0,881.0,0.0
+acct_construction_major,2024,2025.0,1.0,881.0,0,1,881.0,881.0,0.0
+acct_construction_major,2024,2026.0,2.0,881.0,1,1,881.0,881.0,0.0
+acct_construction_major,2025,2025.0,0.0,2069.0,0,1,2069.0,961.0,-0.535524
+acct_construction_major,2025,2026.0,1.0,961.0,0,1,2069.0,961.0,-0.535524
+acct_construction_major,2025,2027.0,2.0,961.0,1,1,2069.0,961.0,-0.535524
+acct_construction_major,2026,2026.0,0.0,1871.0,0,1,1871.0,1394.0,-0.254944
+acct_construction_major,2026,2027.0,1.0,1394.0,1,1,1871.0,1394.0,-0.254944
+acct_construction_minor,2008,2008.0,0.0,233.0,0,1,233.0,631.0,1.708155
+acct_construction_minor,2008,2009.0,1.0,631.0,0,1,233.0,631.0,1.708155
+acct_construction_minor,2008,2010.0,2.0,631.0,1,1,233.0,631.0,1.708155
+acct_construction_minor,2009,2009.0,0.0,329.0,0,1,329.0,742.0,1.255319
+acct_construction_minor,2009,2010.0,1.0,742.0,1,1,329.0,742.0,1.255319
+acct_construction_minor,2010,2010.0,0.0,600.0,0,1,600.0,703.0,0.171667
+acct_construction_minor,2010,2012.0,2.0,703.0,1,1,600.0,703.0,0.171667
+acct_construction_minor,2012,2012.0,0.0,550.0,0,1,550.0,482.0,-0.123636
+acct_construction_minor,2012,2013.0,1.0,482.0,0,1,550.0,482.0,-0.123636
+acct_construction_minor,2012,2014.0,2.0,482.0,1,1,550.0,482.0,-0.123636
+acct_construction_minor,2013,2013.0,0.0,608.0,0,1,608.0,607.0,-0.001645
+acct_construction_minor,2013,2014.0,1.0,607.0,0,1,608.0,607.0,-0.001645
+acct_construction_minor,2013,2015.0,2.0,607.0,1,1,608.0,607.0,-0.001645
+acct_construction_minor,2014,2014.0,0.0,715.0,0,1,715.0,715.0,0.0
+acct_construction_minor,2014,2015.0,1.0,715.0,0,1,715.0,715.0,0.0
+acct_construction_minor,2014,2016.0,2.0,715.0,1,1,715.0,715.0,0.0
+acct_construction_minor,2015,2015.0,0.0,495.0,0,1,495.0,495.0,0.0
+acct_construction_minor,2015,2016.0,1.0,495.0,0,1,495.0,495.0,0.0
+acct_construction_minor,2015,2017.0,2.0,495.0,1,1,495.0,495.0,0.0
+acct_construction_minor,2016,2016.0,0.0,406.0,0,1,406.0,321.0,-0.20936
+acct_construction_minor,2016,2017.0,1.0,406.0,0,1,406.0,321.0,-0.20936
+acct_construction_minor,2016,2018.0,2.0,321.0,1,1,406.0,321.0,-0.20936
+acct_construction_minor,2017,2017.0,0.0,372.0,0,1,372.0,372.0,0.0
+acct_construction_minor,2017,2018.0,1.0,372.0,0,1,372.0,372.0,0.0
+acct_construction_minor,2017,2019.0,2.0,372.0,1,1,372.0,372.0,0.0
+acct_construction_minor,2018,2018.0,0.0,343.0,0,1,343.0,768.0,1.239067
+acct_construction_minor,2018,2019.0,1.0,343.0,0,1,343.0,768.0,1.239067
+acct_construction_minor,2018,2020.0,2.0,768.0,1,1,343.0,768.0,1.239067
+acct_construction_minor,2019,2019.0,0.0,707.0,0,1,707.0,800.0,0.131542
+acct_construction_minor,2019,2020.0,1.0,800.0,0,1,707.0,800.0,0.131542
+acct_construction_minor,2019,2021.0,2.0,800.0,1,1,707.0,800.0,0.131542
+acct_construction_minor,2020,2020.0,0.0,399.0,0,1,399.0,399.0,0.0
+acct_construction_minor,2020,2021.0,1.0,399.0,0,1,399.0,399.0,0.0
+acct_construction_minor,2020,2022.0,2.0,399.0,1,1,399.0,399.0,0.0
+acct_construction_minor,2021,2021.0,0.0,400.0,0,1,400.0,354.0,-0.115
+acct_construction_minor,2021,2022.0,1.0,354.0,0,1,400.0,354.0,-0.115
+acct_construction_minor,2021,2023.0,2.0,354.0,1,1,400.0,354.0,-0.115
+acct_construction_minor,2022,2022.0,0.0,553.0,0,1,553.0,553.0,0.0
+acct_construction_minor,2022,2023.0,1.0,553.0,0,1,553.0,553.0,0.0
+acct_construction_minor,2022,2024.0,2.0,553.0,1,1,553.0,553.0,0.0
+acct_construction_minor,2023,2023.0,0.0,626.0,0,1,626.0,626.0,0.0
+acct_construction_minor,2023,2024.0,1.0,626.0,0,1,626.0,626.0,0.0
+acct_construction_minor,2023,2025.0,2.0,626.0,1,1,626.0,626.0,0.0
+acct_construction_minor,2024,2024.0,0.0,680.0,0,1,680.0,692.0,0.017647
+acct_construction_minor,2024,2025.0,1.0,680.0,0,1,680.0,692.0,0.017647
+acct_construction_minor,2024,2026.0,2.0,692.0,1,1,680.0,692.0,0.017647
+acct_construction_minor,2025,2025.0,0.0,380.0,0,1,380.0,692.0,0.821053
+acct_construction_minor,2025,2026.0,1.0,692.0,0,1,380.0,692.0,0.821053
+acct_construction_minor,2025,2027.0,2.0,692.0,1,1,380.0,692.0,0.821053
+acct_construction_minor,2026,2026.0,0.0,232.0,0,1,232.0,350.0,0.508621
+acct_construction_minor,2026,2027.0,1.0,350.0,1,1,232.0,350.0,0.508621
+acct_ehrm,2019,2019.0,0.0,1207.0,0,1,1207.0,1107.0,-0.08285
+acct_ehrm,2019,2020.0,1.0,1107.0,0,1,1207.0,1107.0,-0.08285
+acct_ehrm,2019,2021.0,2.0,1107.0,1,1,1207.0,1107.0,-0.08285
+acct_ehrm,2020,2020.0,0.0,1603.0,0,1,1603.0,1430.0,-0.107923
+acct_ehrm,2020,2021.0,1.0,1443.0,0,1,1603.0,1430.0,-0.107923
+acct_ehrm,2020,2022.0,2.0,1430.0,1,1,1603.0,1430.0,-0.107923
+acct_ehrm,2021,2021.0,0.0,2627.0,0,1,2627.0,2607.0,-0.007613
+acct_ehrm,2021,2022.0,1.0,2607.0,0,1,2627.0,2607.0,-0.007613
+acct_ehrm,2021,2023.0,2.0,2607.0,1,1,2627.0,2607.0,-0.007613
+acct_ehrm,2022,2022.0,0.0,2663.0,0,1,2663.0,2300.0,-0.136312
+acct_ehrm,2022,2023.0,1.0,2663.0,0,1,2663.0,2300.0,-0.136312
+acct_ehrm,2022,2024.0,2.0,2300.0,1,1,2663.0,2300.0,-0.136312
+acct_ehrm,2023,2023.0,0.0,1759.0,0,1,1759.0,1609.0,-0.085276
+acct_ehrm,2023,2024.0,1.0,1609.0,0,1,1759.0,1609.0,-0.085276
+acct_ehrm,2023,2025.0,2.0,1609.0,1,1,1759.0,1609.0,-0.085276
+acct_ehrm,2024,2024.0,0.0,1863.0,0,1,1863.0,874.0,-0.530864
+acct_ehrm,2024,2025.0,1.0,1863.0,0,1,1863.0,874.0,-0.530864
+acct_ehrm,2024,2026.0,2.0,874.0,1,1,1863.0,874.0,-0.530864
+acct_ehrm,2025,2025.0,0.0,894.0,0,1,894.0,1306.0,0.46085
+acct_ehrm,2025,2026.0,1.0,1322.0,0,1,894.0,1306.0,0.46085
+acct_ehrm,2025,2027.0,2.0,1306.0,1,1,894.0,1306.0,0.46085
+acct_ehrm,2026,2026.0,0.0,3495.0,0,1,3495.0,3400.0,-0.027182
+acct_ehrm,2026,2027.0,1.0,3400.0,1,1,3495.0,3400.0,-0.027182
+acct_general_admin,2008,2008.0,0.0,274.0,0,1,274.0,325.0,0.186131
+acct_general_admin,2008,2009.0,1.0,324.0,0,1,274.0,325.0,0.186131
+acct_general_admin,2008,2010.0,2.0,325.0,1,1,274.0,325.0,0.186131
+acct_general_admin,2009,2009.0,0.0,328.0,0,1,328.0,336.0,0.02439
+acct_general_admin,2009,2010.0,1.0,336.0,0,1,328.0,336.0,0.02439
+acct_general_admin,2009,2011.0,2.0,336.0,1,1,328.0,336.0,0.02439
+acct_general_admin,2010,2010.0,0.0,394.0,0,1,394.0,398.0,0.010152
+acct_general_admin,2010,2011.0,1.0,398.0,0,1,394.0,398.0,0.010152
+acct_general_admin,2010,2012.0,2.0,398.0,1,1,394.0,398.0,0.010152
+acct_general_admin,2011,2011.0,0.0,463.0,0,1,463.0,397.0,-0.142549
+acct_general_admin,2011,2012.0,1.0,398.0,0,1,463.0,397.0,-0.142549
+acct_general_admin,2011,2013.0,2.0,397.0,1,1,463.0,397.0,-0.142549
+acct_general_admin,2012,2012.0,0.0,448.0,0,1,448.0,417.0,-0.069196
+acct_general_admin,2012,2013.0,1.0,417.0,0,1,448.0,417.0,-0.069196
+acct_general_admin,2012,2014.0,2.0,417.0,1,1,448.0,417.0,-0.069196
+acct_general_admin,2013,2013.0,0.0,417.0,0,1,417.0,338.0,-0.189448
+acct_general_admin,2013,2014.0,1.0,424.0,0,1,417.0,338.0,-0.189448
+acct_general_admin,2013,2015.0,2.0,338.0,1,1,417.0,338.0,-0.189448
+acct_general_admin,2014,2014.0,0.0,403.0,0,1,403.0,326.0,-0.191067
+acct_general_admin,2014,2015.0,1.0,326.0,0,1,403.0,326.0,-0.191067
+acct_general_admin,2014,2016.0,2.0,326.0,1,1,403.0,326.0,-0.191067
+acct_general_admin,2015,2015.0,0.0,322.0,0,1,322.0,321.0,-0.003106
+acct_general_admin,2015,2016.0,1.0,321.0,0,1,322.0,321.0,-0.003106
+acct_general_admin,2015,2017.0,2.0,321.0,1,1,322.0,321.0,-0.003106
+acct_general_admin,2016,2016.0,0.0,347.0,0,1,347.0,333.0,-0.040346
+acct_general_admin,2016,2017.0,1.0,337.0,0,1,347.0,333.0,-0.040346
+acct_general_admin,2016,2018.0,2.0,333.0,1,1,347.0,333.0,-0.040346
+acct_general_admin,2017,2017.0,0.0,418.0,0,1,418.0,345.0,-0.174641
+acct_general_admin,2017,2018.0,1.0,345.0,0,1,418.0,345.0,-0.174641
+acct_general_admin,2017,2019.0,2.0,345.0,1,1,418.0,345.0,-0.174641
+acct_general_admin,2018,2018.0,0.0,347.0,0,1,347.0,336.0,-0.0317
+acct_general_admin,2018,2019.0,1.0,347.0,0,1,347.0,336.0,-0.0317
+acct_general_admin,2018,2020.0,2.0,336.0,1,1,347.0,336.0,-0.0317
+acct_general_admin,2019,2019.0,0.0,368.0,0,1,368.0,356.0,-0.032609
+acct_general_admin,2019,2020.0,1.0,356.0,0,1,368.0,356.0,-0.032609
+acct_general_admin,2019,2021.0,2.0,356.0,1,1,368.0,356.0,-0.032609
+acct_general_admin,2020,2020.0,0.0,369.0,0,1,369.0,356.0,-0.03523
+acct_general_admin,2020,2021.0,1.0,356.0,0,1,369.0,356.0,-0.03523
+acct_general_admin,2020,2022.0,2.0,356.0,1,1,369.0,356.0,-0.03523
+acct_general_admin,2021,2021.0,0.0,413.0,0,1,413.0,354.0,-0.142857
+acct_general_admin,2021,2022.0,1.0,354.0,0,1,413.0,354.0,-0.142857
+acct_general_admin,2021,2023.0,2.0,354.0,1,1,413.0,354.0,-0.142857
+acct_general_admin,2022,2022.0,0.0,401.0,0,1,401.0,401.0,0.0
+acct_general_admin,2022,2023.0,1.0,401.0,0,1,401.0,401.0,0.0
+acct_general_admin,2022,2024.0,2.0,401.0,1,1,401.0,401.0,0.0
+acct_general_admin,2023,2023.0,0.0,435.0,0,1,435.0,433.0,-0.004598
+acct_general_admin,2023,2024.0,1.0,433.0,0,1,435.0,433.0,-0.004598
+acct_general_admin,2023,2025.0,2.0,433.0,1,1,435.0,433.0,-0.004598
+acct_general_admin,2024,2024.0,0.0,475.0,0,1,475.0,470.0,-0.010526
+acct_general_admin,2024,2025.0,1.0,475.0,0,1,475.0,470.0,-0.010526
+acct_general_admin,2024,2026.0,2.0,470.0,1,1,475.0,470.0,-0.010526
+acct_general_admin,2025,2025.0,0.0,457.0,0,1,457.0,448.0,-0.019694
+acct_general_admin,2025,2026.0,1.0,448.0,0,1,457.0,448.0,-0.019694
+acct_general_admin,2025,2027.0,2.0,448.0,1,1,457.0,448.0,-0.019694
+acct_general_admin,2026,2026.0,0.0,440.0,0,1,440.0,429.0,-0.025
+acct_general_admin,2026,2027.0,1.0,429.0,1,1,440.0,429.0,-0.025
+acct_goe_vba,2008,2008.0,0.0,1198.0,0,1,1198.0,1322.0,0.103506
+acct_goe_vba,2008,2009.0,1.0,1322.0,1,1,1198.0,1322.0,0.103506
+acct_goe_vba,2009,2009.0,0.0,1372.0,1,0,1372.0,1372.0,0.0
+acct_goe_vba,2016,2016.0,0.0,2698.0,0,1,2698.0,2704.0,0.002224
+acct_goe_vba,2016,2017.0,1.0,2708.0,0,1,2698.0,2704.0,0.002224
+acct_goe_vba,2016,2018.0,2.0,2704.0,1,1,2698.0,2704.0,0.002224
+acct_goe_vba,2017,2017.0,0.0,2826.0,0,1,2826.0,2844.0,0.006369
+acct_goe_vba,2017,2018.0,1.0,2844.0,0,1,2826.0,2844.0,0.006369
+acct_goe_vba,2017,2019.0,2.0,2844.0,1,1,2826.0,2844.0,0.006369
+acct_goe_vba,2018,2018.0,0.0,2844.0,0,1,2844.0,2917.0,0.025668
+acct_goe_vba,2018,2019.0,1.0,2844.0,0,1,2844.0,2917.0,0.025668
+acct_goe_vba,2018,2020.0,2.0,2917.0,1,1,2844.0,2917.0,0.025668
+acct_goe_vba,2019,2019.0,0.0,2869.0,0,1,2869.0,2956.0,0.030324
+acct_goe_vba,2019,2020.0,1.0,2956.0,0,1,2869.0,2956.0,0.030324
+acct_goe_vba,2019,2021.0,2.0,2956.0,1,1,2869.0,2956.0,0.030324
+acct_goe_vba,2020,2020.0,0.0,3000.0,0,1,3000.0,3125.0,0.041667
+acct_goe_vba,2020,2021.0,1.0,3125.0,0,1,3000.0,3125.0,0.041667
+acct_goe_vba,2020,2022.0,2.0,3125.0,1,1,3000.0,3125.0,0.041667
+acct_goe_vba,2021,2021.0,0.0,3207.0,0,1,3207.0,3164.0,-0.013408
+acct_goe_vba,2021,2022.0,1.0,3164.0,0,1,3207.0,3164.0,-0.013408
+acct_goe_vba,2021,2023.0,2.0,3164.0,1,1,3207.0,3164.0,-0.013408
+acct_goe_vba,2022,2022.0,0.0,3423.0,0,1,3423.0,3454.0,0.009056
+acct_goe_vba,2022,2023.0,1.0,3423.0,0,1,3423.0,3454.0,0.009056
+acct_goe_vba,2022,2024.0,2.0,3454.0,1,1,3423.0,3454.0,0.009056
+acct_goe_vba,2023,2023.0,0.0,3863.0,0,1,3863.0,3863.0,0.0
+acct_goe_vba,2023,2024.0,1.0,3863.0,0,1,3863.0,3863.0,0.0
+acct_goe_vba,2023,2025.0,2.0,3863.0,1,1,3863.0,3863.0,0.0
+acct_goe_vba,2024,2024.0,0.0,3899.0,0,1,3899.0,3869.0,-0.007694
+acct_goe_vba,2024,2025.0,1.0,3899.0,0,1,3899.0,3869.0,-0.007694
+acct_goe_vba,2024,2026.0,2.0,3869.0,1,1,3899.0,3869.0,-0.007694
+acct_goe_vba,2025,2025.0,0.0,4035.0,0,1,4035.0,3934.0,-0.025031
+acct_goe_vba,2025,2026.0,1.0,3899.0,0,1,4035.0,3934.0,-0.025031
+acct_goe_vba,2025,2027.0,2.0,3934.0,1,1,4035.0,3934.0,-0.025031
+acct_goe_vba,2026,2026.0,0.0,3879.0,0,1,3879.0,3881.0,0.000516
+acct_goe_vba,2026,2027.0,1.0,3881.0,1,1,3879.0,3881.0,0.000516
+acct_grants_state_ext_care,2008,2008.0,0.0,85.0,0,1,85.0,165.0,0.941176
+acct_grants_state_ext_care,2008,2009.0,1.0,165.0,0,1,85.0,165.0,0.941176
+acct_grants_state_ext_care,2008,2010.0,2.0,165.0,1,1,85.0,165.0,0.941176
+acct_grants_state_ext_care,2009,2009.0,0.0,85.0,0,1,85.0,325.0,2.823529
+acct_grants_state_ext_care,2009,2010.0,1.0,175.0,0,1,85.0,325.0,2.823529
+acct_grants_state_ext_care,2009,2011.0,2.0,325.0,1,1,85.0,325.0,2.823529
+acct_grants_state_ext_care,2010,2010.0,0.0,85.0,0,1,85.0,100.0,0.176471
+acct_grants_state_ext_care,2010,2011.0,1.0,100.0,0,1,85.0,100.0,0.176471
+acct_grants_state_ext_care,2010,2012.0,2.0,100.0,1,1,85.0,100.0,0.176471
+acct_grants_state_ext_care,2011,2011.0,0.0,85.0,0,1,85.0,85.0,0.0
+acct_grants_state_ext_care,2011,2012.0,1.0,100.0,0,1,85.0,85.0,0.0
+acct_grants_state_ext_care,2011,2013.0,2.0,85.0,1,1,85.0,85.0,0.0
+acct_grants_state_ext_care,2012,2012.0,0.0,85.0,0,1,85.0,85.0,0.0
+acct_grants_state_ext_care,2012,2013.0,1.0,85.0,0,1,85.0,85.0,0.0
+acct_grants_state_ext_care,2012,2014.0,2.0,85.0,1,1,85.0,85.0,0.0
+acct_grants_state_ext_care,2013,2013.0,0.0,85.0,0,1,85.0,85.0,0.0
+acct_grants_state_ext_care,2013,2014.0,1.0,85.0,0,1,85.0,85.0,0.0
+acct_grants_state_ext_care,2013,2015.0,2.0,85.0,1,1,85.0,85.0,0.0
+acct_grants_state_ext_care,2014,2014.0,0.0,83.0,0,1,83.0,85.0,0.024096
+acct_grants_state_ext_care,2014,2015.0,1.0,85.0,0,1,83.0,85.0,0.024096
+acct_grants_state_ext_care,2014,2016.0,2.0,85.0,1,1,83.0,85.0,0.024096
+acct_grants_state_ext_care,2015,2015.0,0.0,80.0,0,1,80.0,90.0,0.125
+acct_grants_state_ext_care,2015,2016.0,1.0,90.0,0,1,80.0,90.0,0.125
+acct_grants_state_ext_care,2015,2017.0,2.0,90.0,1,1,80.0,90.0,0.125
+acct_grants_state_ext_care,2016,2016.0,0.0,80.0,0,1,80.0,140.0,0.75
+acct_grants_state_ext_care,2016,2017.0,1.0,120.0,0,1,80.0,140.0,0.75
+acct_grants_state_ext_care,2016,2018.0,2.0,140.0,1,1,80.0,140.0,0.75
+acct_grants_state_ext_care,2017,2017.0,0.0,80.0,0,1,80.0,90.0,0.125
+acct_grants_state_ext_care,2017,2018.0,1.0,90.0,0,1,80.0,90.0,0.125
+acct_grants_state_ext_care,2017,2019.0,2.0,90.0,1,1,80.0,90.0,0.125
+acct_grants_state_ext_care,2018,2018.0,0.0,90.0,0,1,90.0,685.0,6.611111
+acct_grants_state_ext_care,2018,2019.0,1.0,90.0,0,1,90.0,685.0,6.611111
+acct_grants_state_ext_care,2018,2020.0,2.0,685.0,1,1,90.0,685.0,6.611111
+acct_grants_state_ext_care,2019,2019.0,0.0,150.0,0,1,150.0,150.0,0.0
+acct_grants_state_ext_care,2019,2020.0,1.0,150.0,0,1,150.0,150.0,0.0
+acct_grants_state_ext_care,2019,2021.0,2.0,150.0,1,1,150.0,150.0,0.0
+acct_grants_state_ext_care,2020,2020.0,0.0,90.0,0,1,90.0,90.0,0.0
+acct_grants_state_ext_care,2020,2021.0,1.0,90.0,0,1,90.0,90.0,0.0
+acct_grants_state_ext_care,2020,2022.0,2.0,90.0,1,1,90.0,90.0,0.0
+acct_grants_state_ext_care,2021,2021.0,0.0,90.0,0,1,90.0,90.0,0.0
+acct_grants_state_ext_care,2021,2022.0,1.0,90.0,0,1,90.0,90.0,0.0
+acct_grants_state_ext_care,2021,2023.0,2.0,90.0,1,1,90.0,90.0,0.0
+acct_grants_state_ext_care,2022,2022.0,0.0,0.0,0,1,0.0,50.0,
+acct_grants_state_ext_care,2022,2023.0,1.0,0.0,0,1,0.0,50.0,
+acct_grants_state_ext_care,2022,2024.0,2.0,50.0,1,1,0.0,50.0,
+acct_grants_state_ext_care,2023,2023.0,0.0,150.0,0,1,150.0,150.0,0.0
+acct_grants_state_ext_care,2023,2024.0,1.0,150.0,0,1,150.0,150.0,0.0
+acct_grants_state_ext_care,2023,2025.0,2.0,150.0,1,1,150.0,150.0,0.0
+acct_grants_state_ext_care,2024,2024.0,0.0,164.0,0,1,164.0,171.0,0.042683
+acct_grants_state_ext_care,2024,2025.0,1.0,164.0,0,1,164.0,171.0,0.042683
+acct_grants_state_ext_care,2024,2026.0,2.0,171.0,1,1,164.0,171.0,0.042683
+acct_grants_state_ext_care,2025,2025.0,0.0,141.0,0,1,141.0,171.0,0.212766
+acct_grants_state_ext_care,2025,2026.0,1.0,171.0,0,1,141.0,171.0,0.212766
+acct_grants_state_ext_care,2025,2027.0,2.0,171.0,1,1,141.0,171.0,0.212766
+acct_grants_state_ext_care,2026,2026.0,0.0,171.0,0,1,171.0,275.0,0.608187
+acct_grants_state_ext_care,2026,2027.0,1.0,275.0,1,1,171.0,275.0,0.608187
+acct_it_systems,2008,2008.0,0.0,1859.0,0,1,1859.0,2358.0,0.268424
+acct_it_systems,2008,2009.0,1.0,2053.0,0,1,1859.0,2358.0,0.268424
+acct_it_systems,2008,2010.0,2.0,2358.0,1,1,1859.0,2358.0,0.268424
+acct_it_systems,2009,2009.0,0.0,2442.0,0,1,2442.0,2798.0,0.145782
+acct_it_systems,2009,2010.0,1.0,2748.0,0,1,2442.0,2798.0,0.145782
+acct_it_systems,2009,2011.0,2.0,2798.0,1,1,2442.0,2798.0,0.145782
+acct_it_systems,2010,2010.0,0.0,3307.0,0,1,3307.0,3307.0,0.0
+acct_it_systems,2010,2011.0,1.0,3307.0,0,1,3307.0,3307.0,0.0
+acct_it_systems,2010,2012.0,2.0,3307.0,1,1,3307.0,3307.0,0.0
+acct_it_systems,2011,2011.0,0.0,3307.0,0,1,3307.0,2994.0,-0.094648
+acct_it_systems,2011,2012.0,1.0,3307.0,0,1,3307.0,2994.0,-0.094648
+acct_it_systems,2011,2013.0,2.0,2994.0,1,1,3307.0,2994.0,-0.094648
+acct_it_systems,2012,2012.0,0.0,3161.0,0,1,3161.0,3111.0,-0.015818
+acct_it_systems,2012,2013.0,1.0,3111.0,0,1,3161.0,3111.0,-0.015818
+acct_it_systems,2012,2014.0,2.0,3111.0,1,1,3161.0,3111.0,-0.015818
+acct_it_systems,2013,2013.0,0.0,3327.0,0,1,3327.0,3522.0,0.058611
+acct_it_systems,2013,2014.0,1.0,3323.0,0,1,3327.0,3522.0,0.058611
+acct_it_systems,2013,2015.0,2.0,3522.0,1,1,3327.0,3522.0,0.058611
+acct_it_systems,2014,2014.0,0.0,3683.0,0,1,3683.0,3703.0,0.00543
+acct_it_systems,2014,2015.0,1.0,3703.0,0,1,3683.0,3703.0,0.00543
+acct_it_systems,2014,2016.0,2.0,3703.0,1,1,3683.0,3703.0,0.00543
+acct_it_systems,2015,2015.0,0.0,3903.0,0,1,3903.0,3902.0,-0.000256
+acct_it_systems,2015,2016.0,1.0,3902.0,0,1,3903.0,3902.0,-0.000256
+acct_it_systems,2015,2017.0,2.0,3902.0,1,1,3903.0,3902.0,-0.000256
+acct_it_systems,2016,2016.0,0.0,4133.0,0,1,4133.0,4058.0,-0.018147
+acct_it_systems,2016,2017.0,1.0,4133.0,0,1,4133.0,4058.0,-0.018147
+acct_it_systems,2016,2018.0,2.0,4058.0,1,1,4133.0,4058.0,-0.018147
+acct_it_systems,2017,2017.0,0.0,4278.0,0,1,4278.0,4270.0,-0.00187
+acct_it_systems,2017,2018.0,1.0,4270.0,0,1,4278.0,4270.0,-0.00187
+acct_it_systems,2017,2019.0,2.0,4270.0,1,1,4278.0,4270.0,-0.00187
+acct_it_systems,2018,2018.0,0.0,4056.0,0,1,4056.0,4056.0,0.0
+acct_it_systems,2018,2019.0,1.0,4056.0,0,1,4056.0,4056.0,0.0
+acct_it_systems,2018,2020.0,2.0,4056.0,1,1,4056.0,4056.0,0.0
+acct_it_systems,2019,2019.0,0.0,4185.0,0,1,4185.0,4103.0,-0.019594
+acct_it_systems,2019,2020.0,1.0,4103.0,0,1,4185.0,4103.0,-0.019594
+acct_it_systems,2019,2021.0,2.0,4103.0,1,1,4185.0,4103.0,-0.019594
+acct_it_systems,2020,2020.0,0.0,4343.0,0,1,4343.0,4372.0,0.006677
+acct_it_systems,2020,2021.0,1.0,4372.0,0,1,4343.0,4372.0,0.006677
+acct_it_systems,2020,2022.0,2.0,4372.0,1,1,4343.0,4372.0,0.006677
+acct_it_systems,2021,2021.0,0.0,4912.0,0,1,4912.0,4875.0,-0.007533
+acct_it_systems,2021,2022.0,1.0,4875.0,0,1,4912.0,4875.0,-0.007533
+acct_it_systems,2021,2023.0,2.0,4875.0,1,1,4912.0,4875.0,-0.007533
+acct_it_systems,2022,2022.0,0.0,4843.0,0,1,4843.0,5513.0,0.138344
+acct_it_systems,2022,2023.0,1.0,4843.0,0,1,4843.0,5513.0,0.138344
+acct_it_systems,2022,2024.0,2.0,5513.0,1,1,4843.0,5513.0,0.138344
+acct_it_systems,2023,2023.0,0.0,5782.0,0,1,5782.0,5782.0,0.0
+acct_it_systems,2023,2024.0,1.0,5782.0,0,1,5782.0,5782.0,0.0
+acct_it_systems,2023,2025.0,2.0,5782.0,1,1,5782.0,5782.0,0.0
+acct_it_systems,2024,2024.0,0.0,6401.0,0,1,6401.0,6386.0,-0.002343
+acct_it_systems,2024,2025.0,1.0,6401.0,0,1,6401.0,6386.0,-0.002343
+acct_it_systems,2024,2026.0,2.0,6386.0,1,1,6401.0,6386.0,-0.002343
+acct_it_systems,2025,2025.0,0.0,6232.0,0,1,6232.0,6192.0,-0.006418
+acct_it_systems,2025,2026.0,1.0,6227.0,0,1,6232.0,6192.0,-0.006418
+acct_it_systems,2025,2027.0,2.0,6192.0,1,1,6232.0,6192.0,-0.006418
+acct_it_systems,2026,2026.0,0.0,5908.0,0,1,5908.0,6219.0,0.05264
+acct_it_systems,2026,2027.0,1.0,6219.0,1,1,5908.0,6219.0,0.05264
+acct_medical_community_care,2018,2018.0,0.0,9663.0,0,1,9663.0,9828.0,0.017075
+acct_medical_community_care,2018,2019.0,1.0,9663.0,0,1,9663.0,9828.0,0.017075
+acct_medical_community_care,2018,2020.0,2.0,9828.0,1,1,9663.0,9828.0,0.017075
+acct_medical_community_care,2019,2019.0,0.0,0.0,0,1,0.0,9385.0,
+acct_medical_community_care,2019,2020.0,1.0,9385.0,0,1,0.0,9385.0,
+acct_medical_community_care,2019,2021.0,2.0,9385.0,1,1,0.0,9385.0,
+acct_medical_community_care,2020,2020.0,0.0,15280.0,0,1,15280.0,15280.0,0.0
+acct_medical_community_care,2020,2021.0,1.0,15280.0,0,1,15280.0,15280.0,0.0
+acct_medical_community_care,2020,2022.0,2.0,15280.0,1,1,15280.0,15280.0,0.0
+acct_medical_community_care,2021,2021.0,0.0,18512.0,0,1,18512.0,18512.0,0.0
+acct_medical_community_care,2021,2022.0,1.0,18512.0,0,1,18512.0,18512.0,0.0
+acct_medical_community_care,2021,2023.0,2.0,18512.0,1,1,18512.0,18512.0,0.0
+acct_medical_community_care,2022,2022.0,0.0,23417.0,0,1,23417.0,23217.0,-0.008541
+acct_medical_community_care,2022,2023.0,1.0,23417.0,0,1,23417.0,23217.0,-0.008541
+acct_medical_community_care,2022,2024.0,2.0,23217.0,1,1,23417.0,23217.0,-0.008541
+acct_medical_community_care,2023,2023.0,0.0,28457.0,0,1,28457.0,28457.0,0.0
+acct_medical_community_care,2023,2024.0,1.0,28457.0,0,1,28457.0,28457.0,0.0
+acct_medical_community_care,2023,2025.0,2.0,28457.0,1,1,28457.0,28457.0,0.0
+acct_medical_community_care,2024,2024.0,0.0,31091.0,0,1,31091.0,30342.0,-0.024091
+acct_medical_community_care,2024,2025.0,1.0,31091.0,0,1,31091.0,30342.0,-0.024091
+acct_medical_community_care,2024,2026.0,2.0,30342.0,1,1,31091.0,30342.0,-0.024091
+acct_medical_community_care,2025,2025.0,0.0,20382.0,0,1,20382.0,22555.0,0.106614
+acct_medical_community_care,2025,2026.0,1.0,22555.0,0,1,20382.0,22555.0,0.106614
+acct_medical_community_care,2025,2027.0,2.0,22555.0,1,1,20382.0,22555.0,0.106614
+acct_medical_community_care,2026,2026.0,0.0,34000.0,0,1,34000.0,34000.0,0.0
+acct_medical_community_care,2026,2027.0,1.0,34000.0,1,1,34000.0,34000.0,0.0
+acct_medical_facilities,2008,2008.0,0.0,3592.0,0,1,3592.0,4233.0,0.178452
+acct_medical_facilities,2008,2009.0,1.0,4073.0,0,1,3592.0,4233.0,0.178452
+acct_medical_facilities,2008,2010.0,2.0,4233.0,1,1,3592.0,4233.0,0.178452
+acct_medical_facilities,2009,2009.0,0.0,4661.0,0,1,4661.0,6029.0,0.293499
+acct_medical_facilities,2009,2010.0,1.0,5029.0,0,1,4661.0,6029.0,0.293499
+acct_medical_facilities,2009,2011.0,2.0,6029.0,1,1,4661.0,6029.0,0.293499
+acct_medical_facilities,2010,2010.0,0.0,4693.0,0,1,4693.0,4859.0,0.035372
+acct_medical_facilities,2010,2011.0,1.0,4859.0,0,1,4693.0,4859.0,0.035372
+acct_medical_facilities,2010,2012.0,2.0,4859.0,1,1,4693.0,4859.0,0.035372
+acct_medical_facilities,2011,2011.0,0.0,5740.0,0,1,5740.0,5714.0,-0.00453
+acct_medical_facilities,2011,2012.0,1.0,5740.0,0,1,5740.0,5714.0,-0.00453
+acct_medical_facilities,2011,2013.0,2.0,5714.0,1,1,5740.0,5714.0,-0.00453
+acct_medical_facilities,2012,2012.0,0.0,5376.0,0,1,5376.0,5426.0,0.009301
+acct_medical_facilities,2012,2013.0,1.0,5426.0,0,1,5376.0,5426.0,0.009301
+acct_medical_facilities,2012,2014.0,2.0,5426.0,1,1,5376.0,5426.0,0.009301
+acct_medical_facilities,2013,2013.0,0.0,5441.0,0,1,5441.0,5445.0,0.000735
+acct_medical_facilities,2013,2014.0,1.0,5439.0,0,1,5441.0,5445.0,0.000735
+acct_medical_facilities,2013,2015.0,2.0,5445.0,1,1,5441.0,5445.0,0.000735
+acct_medical_facilities,2014,2014.0,0.0,4872.0,0,1,4872.0,4957.0,0.017447
+acct_medical_facilities,2014,2015.0,1.0,4957.0,0,1,4872.0,4957.0,0.017447
+acct_medical_facilities,2014,2016.0,2.0,4957.0,1,1,4872.0,4957.0,0.017447
+acct_medical_facilities,2015,2015.0,0.0,4739.0,0,1,4739.0,4737.0,-0.000422
+acct_medical_facilities,2015,2016.0,1.0,4737.0,0,1,4739.0,4737.0,-0.000422
+acct_medical_facilities,2015,2017.0,2.0,4737.0,1,1,4739.0,4737.0,-0.000422
+acct_medical_facilities,2016,2016.0,0.0,5020.0,0,1,5020.0,4708.0,-0.062151
+acct_medical_facilities,2016,2017.0,1.0,5020.0,0,1,5020.0,4708.0,-0.062151
+acct_medical_facilities,2016,2018.0,2.0,4708.0,1,1,5020.0,4708.0,-0.062151
+acct_medical_facilities,2017,2017.0,0.0,5723.0,0,1,5723.0,5313.0,-0.071641
+acct_medical_facilities,2017,2018.0,1.0,5313.0,0,1,5723.0,5313.0,-0.071641
+acct_medical_facilities,2017,2019.0,2.0,5313.0,1,1,5723.0,5313.0,-0.071641
+acct_medical_facilities,2018,2018.0,0.0,6515.0,0,1,6515.0,7217.0,0.107751
+acct_medical_facilities,2018,2019.0,1.0,6515.0,0,1,6515.0,7217.0,0.107751
+acct_medical_facilities,2018,2020.0,2.0,7217.0,1,1,6515.0,7217.0,0.107751
+acct_medical_facilities,2019,2019.0,0.0,5914.0,0,1,5914.0,6807.0,0.150998
+acct_medical_facilities,2019,2020.0,1.0,6804.0,0,1,5914.0,6807.0,0.150998
+acct_medical_facilities,2019,2021.0,2.0,6807.0,1,1,5914.0,6807.0,0.150998
+acct_medical_facilities,2020,2020.0,0.0,6142.0,0,1,6142.0,6142.0,0.0
+acct_medical_facilities,2020,2021.0,1.0,6142.0,0,1,6142.0,6142.0,0.0
+acct_medical_facilities,2020,2022.0,2.0,6142.0,1,1,6142.0,6142.0,0.0
+acct_medical_facilities,2021,2021.0,0.0,6583.0,0,1,6583.0,6583.0,0.0
+acct_medical_facilities,2021,2022.0,1.0,6583.0,0,1,6583.0,6583.0,0.0
+acct_medical_facilities,2021,2023.0,2.0,6583.0,1,1,6583.0,6583.0,0.0
+acct_medical_facilities,2022,2022.0,0.0,6735.0,0,1,6735.0,6885.0,0.022272
+acct_medical_facilities,2022,2023.0,1.0,6735.0,0,1,6735.0,6885.0,0.022272
+acct_medical_facilities,2022,2024.0,2.0,6885.0,1,1,6735.0,6885.0,0.022272
+acct_medical_facilities,2023,2023.0,0.0,8634.0,0,1,8634.0,8634.0,0.0
+acct_medical_facilities,2023,2024.0,1.0,8634.0,0,1,8634.0,8634.0,0.0
+acct_medical_facilities,2023,2025.0,2.0,8634.0,1,1,8634.0,8634.0,0.0
+acct_medical_facilities,2024,2024.0,0.0,8549.0,0,1,8549.0,8949.0,0.046789
+acct_medical_facilities,2024,2025.0,1.0,8549.0,0,1,8549.0,8949.0,0.046789
+acct_medical_facilities,2024,2026.0,2.0,8949.0,1,1,8549.0,8949.0,0.046789
+acct_medical_facilities,2025,2025.0,0.0,9400.0,0,1,9400.0,9548.0,0.015745
+acct_medical_facilities,2025,2026.0,1.0,9548.0,0,1,9400.0,9548.0,0.015745
+acct_medical_facilities,2025,2027.0,2.0,9548.0,1,1,9400.0,9548.0,0.015745
+acct_medical_facilities,2026,2026.0,0.0,11730.0,0,1,11730.0,11876.0,0.012447
+acct_medical_facilities,2026,2027.0,1.0,11876.0,1,1,11730.0,11876.0,0.012447
+acct_medical_research,2008,2008.0,0.0,411.0,0,1,411.0,480.0,0.167883
+acct_medical_research,2008,2009.0,1.0,480.0,0,1,411.0,480.0,0.167883
+acct_medical_research,2008,2010.0,2.0,480.0,1,1,411.0,480.0,0.167883
+acct_medical_research,2009,2009.0,0.0,442.0,0,1,442.0,510.0,0.153846
+acct_medical_research,2009,2010.0,1.0,510.0,0,1,442.0,510.0,0.153846
+acct_medical_research,2009,2011.0,2.0,510.0,1,1,442.0,510.0,0.153846
+acct_medical_research,2010,2010.0,0.0,580.0,0,1,580.0,581.0,0.001724
+acct_medical_research,2010,2011.0,1.0,581.0,0,1,580.0,581.0,0.001724
+acct_medical_research,2010,2012.0,2.0,581.0,1,1,580.0,581.0,0.001724
+acct_medical_research,2011,2011.0,0.0,590.0,0,1,590.0,580.0,-0.016949
+acct_medical_research,2011,2012.0,1.0,581.0,0,1,590.0,580.0,-0.016949
+acct_medical_research,2011,2013.0,2.0,580.0,1,1,590.0,580.0,-0.016949
+acct_medical_research,2012,2012.0,0.0,509.0,0,1,509.0,581.0,0.141454
+acct_medical_research,2012,2013.0,1.0,581.0,0,1,509.0,581.0,0.141454
+acct_medical_research,2012,2014.0,2.0,581.0,1,1,509.0,581.0,0.141454
+acct_medical_research,2013,2013.0,0.0,583.0,0,1,583.0,582.0,-0.001715
+acct_medical_research,2013,2014.0,1.0,582.0,0,1,583.0,582.0,-0.001715
+acct_medical_research,2013,2015.0,2.0,582.0,1,1,583.0,582.0,-0.001715
+acct_medical_research,2014,2014.0,0.0,586.0,0,1,586.0,586.0,0.0
+acct_medical_research,2014,2015.0,1.0,586.0,0,1,586.0,586.0,0.0
+acct_medical_research,2014,2016.0,2.0,586.0,1,1,586.0,586.0,0.0
+acct_medical_research,2015,2015.0,0.0,589.0,0,1,589.0,589.0,0.0
+acct_medical_research,2015,2016.0,1.0,589.0,0,1,589.0,589.0,0.0
+acct_medical_research,2015,2017.0,2.0,589.0,1,1,589.0,589.0,0.0
+acct_medical_research,2016,2016.0,0.0,622.0,0,1,622.0,611.0,-0.017685
+acct_medical_research,2016,2017.0,1.0,631.0,0,1,622.0,611.0,-0.017685
+acct_medical_research,2016,2018.0,2.0,611.0,1,1,622.0,611.0,-0.017685
+acct_medical_research,2017,2017.0,0.0,663.0,0,1,663.0,673.0,0.015083
+acct_medical_research,2017,2018.0,1.0,673.0,0,1,663.0,673.0,0.015083
+acct_medical_research,2017,2019.0,2.0,673.0,1,1,663.0,673.0,0.015083
+acct_medical_research,2018,2018.0,0.0,640.0,0,1,640.0,722.0,0.128125
+acct_medical_research,2018,2019.0,1.0,640.0,0,1,640.0,722.0,0.128125
+acct_medical_research,2018,2020.0,2.0,722.0,1,1,640.0,722.0,0.128125
+acct_medical_research,2019,2019.0,0.0,727.0,0,1,727.0,779.0,0.071527
+acct_medical_research,2019,2020.0,1.0,779.0,0,1,727.0,779.0,0.071527
+acct_medical_research,2019,2021.0,2.0,779.0,1,1,727.0,779.0,0.071527
+acct_medical_research,2020,2020.0,0.0,762.0,0,1,762.0,750.0,-0.015748
+acct_medical_research,2020,2021.0,1.0,750.0,0,1,762.0,750.0,-0.015748
+acct_medical_research,2020,2022.0,2.0,750.0,1,1,762.0,750.0,-0.015748
+acct_medical_research,2021,2021.0,0.0,787.0,0,1,787.0,795.0,0.010165
+acct_medical_research,2021,2022.0,1.0,795.0,0,1,787.0,795.0,0.010165
+acct_medical_research,2021,2023.0,2.0,795.0,1,1,787.0,795.0,0.010165
+acct_medical_research,2022,2022.0,0.0,882.0,0,1,882.0,882.0,0.0
+acct_medical_research,2022,2023.0,1.0,882.0,0,1,882.0,882.0,0.0
+acct_medical_research,2022,2024.0,2.0,882.0,1,1,882.0,882.0,0.0
+acct_medical_research,2023,2023.0,0.0,916.0,0,1,916.0,916.0,0.0
+acct_medical_research,2023,2024.0,1.0,916.0,0,1,916.0,916.0,0.0
+acct_medical_research,2023,2025.0,2.0,916.0,1,1,916.0,916.0,0.0
+acct_medical_research,2024,2024.0,0.0,938.0,0,1,938.0,943.0,0.00533
+acct_medical_research,2024,2025.0,1.0,938.0,0,1,938.0,943.0,0.00533
+acct_medical_research,2024,2026.0,2.0,943.0,1,1,938.0,943.0,0.00533
+acct_medical_research,2025,2025.0,0.0,868.0,0,1,868.0,935.0,0.077189
+acct_medical_research,2025,2026.0,1.0,935.0,0,1,868.0,935.0,0.077189
+acct_medical_research,2025,2027.0,2.0,935.0,1,1,868.0,935.0,0.077189
+acct_medical_research,2026,2026.0,0.0,943.0,0,1,943.0,945.0,0.002121
+acct_medical_research,2026,2027.0,1.0,945.0,1,1,943.0,945.0,0.002121
+acct_medical_services,2008,2008.0,0.0,27168.0,0,1,27168.0,28093.0,0.034047
+acct_medical_services,2008,2009.0,1.0,32501.0,0,1,27168.0,28093.0,0.034047
+acct_medical_services,2008,2010.0,2.0,28093.0,1,1,27168.0,28093.0,0.034047
+acct_medical_services,2009,2009.0,0.0,34076.0,0,1,34076.0,30780.0,-0.096725
+acct_medical_services,2009,2010.0,1.0,30735.0,0,1,34076.0,30780.0,-0.096725
+acct_medical_services,2009,2011.0,2.0,30780.0,1,1,34076.0,30780.0,-0.096725
+acct_medical_services,2010,2010.0,0.0,34705.0,0,1,34705.0,34796.0,0.002622
+acct_medical_services,2010,2011.0,1.0,34723.0,0,1,34705.0,34796.0,0.002622
+acct_medical_services,2010,2012.0,2.0,34796.0,1,1,34705.0,34796.0,0.002622
+acct_medical_services,2011,2011.0,0.0,37136.0,0,1,37136.0,37062.0,-0.001993
+acct_medical_services,2011,2012.0,1.0,37151.0,0,1,37136.0,37062.0,-0.001993
+acct_medical_services,2011,2013.0,2.0,37062.0,1,1,37136.0,37062.0,-0.001993
+acct_medical_services,2012,2012.0,0.0,40051.0,0,1,40051.0,39705.0,-0.008639
+acct_medical_services,2012,2013.0,1.0,39650.0,0,1,40051.0,39705.0,-0.008639
+acct_medical_services,2012,2014.0,2.0,39705.0,1,1,40051.0,39705.0,-0.008639
+acct_medical_services,2013,2013.0,0.0,41504.0,0,1,41504.0,41323.0,-0.004361
+acct_medical_services,2013,2014.0,1.0,41494.0,0,1,41504.0,41323.0,-0.004361
+acct_medical_services,2013,2015.0,2.0,41323.0,1,1,41504.0,41323.0,-0.004361
+acct_medical_services,2014,2014.0,0.0,43700.0,0,1,43700.0,43418.0,-0.006453
+acct_medical_services,2014,2015.0,1.0,43418.0,0,1,43700.0,43418.0,-0.006453
+acct_medical_services,2014,2016.0,2.0,43418.0,1,1,43700.0,43418.0,-0.006453
+acct_medical_services,2015,2015.0,0.0,45383.0,0,1,45383.0,45196.0,-0.00412
+acct_medical_services,2015,2016.0,1.0,45196.0,0,1,45383.0,45196.0,-0.00412
+acct_medical_services,2015,2017.0,2.0,45196.0,1,1,45383.0,45196.0,-0.00412
+acct_medical_services,2016,2016.0,0.0,48727.0,0,1,48727.0,49913.0,0.02434
+acct_medical_services,2016,2017.0,1.0,49972.0,0,1,48727.0,49913.0,0.02434
+acct_medical_services,2016,2018.0,2.0,49913.0,1,1,48727.0,49913.0,0.02434
+acct_medical_services,2017,2017.0,0.0,52752.0,0,1,52752.0,45422.0,-0.138952
+acct_medical_services,2017,2018.0,1.0,45372.0,0,1,52752.0,45422.0,-0.138952
+acct_medical_services,2017,2019.0,2.0,45422.0,1,1,52752.0,45422.0,-0.138952
+acct_medical_services,2018,2018.0,0.0,45918.0,0,1,45918.0,46110.0,0.004181
+acct_medical_services,2018,2019.0,1.0,45918.0,0,1,45918.0,46110.0,0.004181
+acct_medical_services,2018,2020.0,2.0,46110.0,1,1,45918.0,46110.0,0.004181
+acct_medical_services,2019,2019.0,0.0,58046.0,0,1,58046.0,49911.0,-0.140147
+acct_medical_services,2019,2020.0,1.0,49911.0,0,1,58046.0,49911.0,-0.140147
+acct_medical_services,2019,2021.0,2.0,49911.0,1,1,58046.0,49911.0,-0.140147
+acct_medical_services,2020,2020.0,0.0,51411.0,0,1,51411.0,51061.0,-0.006808
+acct_medical_services,2020,2021.0,1.0,51061.0,0,1,51411.0,51061.0,-0.006808
+acct_medical_services,2020,2022.0,2.0,51061.0,1,1,51411.0,51061.0,-0.006808
+acct_medical_services,2021,2021.0,0.0,56655.0,0,1,56655.0,56555.0,-0.001765
+acct_medical_services,2021,2022.0,1.0,56555.0,0,1,56655.0,56555.0,-0.001765
+acct_medical_services,2021,2023.0,2.0,56555.0,1,1,56655.0,56555.0,-0.001765
+acct_medical_services,2022,2022.0,0.0,58897.0,0,1,58897.0,58697.0,-0.003396
+acct_medical_services,2022,2023.0,1.0,58897.0,0,1,58897.0,58697.0,-0.003396
+acct_medical_services,2022,2024.0,2.0,58697.0,1,1,58897.0,58697.0,-0.003396
+acct_medical_services,2023,2023.0,0.0,70584.0,0,1,70584.0,70584.0,0.0
+acct_medical_services,2023,2024.0,1.0,70584.0,0,1,70584.0,70584.0,0.0
+acct_medical_services,2023,2025.0,2.0,70584.0,1,1,70584.0,70584.0,0.0
+acct_medical_services,2024,2024.0,0.0,69071.0,0,1,69071.0,69018.0,-0.000767
+acct_medical_services,2024,2025.0,1.0,69071.0,0,1,69071.0,69018.0,-0.000767
+acct_medical_services,2024,2026.0,2.0,69018.0,1,1,69071.0,69018.0,-0.000767
+acct_medical_services,2025,2025.0,0.0,71000.0,0,1,71000.0,69129.0,-0.026352
+acct_medical_services,2025,2026.0,1.0,69129.0,0,1,71000.0,69129.0,-0.026352
+acct_medical_services,2025,2027.0,2.0,69129.0,1,1,71000.0,69129.0,-0.026352
+acct_medical_services,2026,2026.0,0.0,57120.0,0,1,57120.0,57241.0,0.002118
+acct_medical_services,2026,2027.0,1.0,57241.0,1,1,57120.0,57241.0,0.002118
+acct_medical_support_compliance,2008,2008.0,0.0,3442.0,0,1,3442.0,3957.0,0.149622
+acct_medical_support_compliance,2008,2010.0,2.0,3957.0,1,1,3442.0,3957.0,0.149622
+acct_medical_support_compliance,2010,2010.0,0.0,5100.0,0,1,5100.0,4882.0,-0.042745
+acct_medical_support_compliance,2010,2011.0,1.0,4930.0,0,1,5100.0,4882.0,-0.042745
+acct_medical_support_compliance,2010,2012.0,2.0,4882.0,1,1,5100.0,4882.0,-0.042745
+acct_medical_support_compliance,2011,2011.0,0.0,5307.0,0,1,5307.0,5262.0,-0.008479
+acct_medical_support_compliance,2011,2012.0,1.0,5307.0,0,1,5307.0,5262.0,-0.008479
+acct_medical_support_compliance,2011,2013.0,2.0,5262.0,1,1,5307.0,5262.0,-0.008479
+acct_medical_support_compliance,2012,2012.0,0.0,5424.0,0,1,5424.0,5480.0,0.010324
+acct_medical_support_compliance,2012,2013.0,1.0,5535.0,0,1,5424.0,5480.0,0.010324
+acct_medical_support_compliance,2012,2014.0,2.0,5480.0,1,1,5424.0,5480.0,0.010324
+acct_medical_support_compliance,2013,2013.0,0.0,5746.0,0,1,5746.0,5738.0,-0.001392
+acct_medical_support_compliance,2013,2014.0,1.0,5744.0,0,1,5746.0,5738.0,-0.001392
+acct_medical_support_compliance,2013,2015.0,2.0,5738.0,1,1,5746.0,5738.0,-0.001392
+acct_medical_support_compliance,2014,2014.0,0.0,6033.0,0,1,6033.0,5983.0,-0.008288
+acct_medical_support_compliance,2014,2015.0,1.0,5983.0,0,1,6033.0,5983.0,-0.008288
+acct_medical_support_compliance,2014,2016.0,2.0,5983.0,1,1,6033.0,5983.0,-0.008288
+acct_medical_support_compliance,2015,2015.0,0.0,5880.0,0,1,5880.0,5874.0,-0.00102
+acct_medical_support_compliance,2015,2016.0,1.0,5874.0,0,1,5880.0,5874.0,-0.00102
+acct_medical_support_compliance,2015,2017.0,2.0,5874.0,1,1,5880.0,5874.0,-0.00102
+acct_medical_support_compliance,2016,2016.0,0.0,6214.0,0,1,6214.0,6059.0,-0.024944
+acct_medical_support_compliance,2016,2017.0,1.0,6144.0,0,1,6214.0,6059.0,-0.024944
+acct_medical_support_compliance,2016,2018.0,2.0,6059.0,1,1,6214.0,6059.0,-0.024944
+acct_medical_support_compliance,2017,2017.0,0.0,6524.0,0,1,6524.0,6498.0,-0.003985
+acct_medical_support_compliance,2017,2018.0,1.0,6498.0,0,1,6524.0,6498.0,-0.003985
+acct_medical_support_compliance,2017,2019.0,2.0,6498.0,1,1,6524.0,6498.0,-0.003985
+acct_medical_support_compliance,2018,2018.0,0.0,6939.0,0,1,6939.0,6758.0,-0.026084
+acct_medical_support_compliance,2018,2019.0,1.0,6939.0,0,1,6939.0,6758.0,-0.026084
+acct_medical_support_compliance,2018,2020.0,2.0,6758.0,1,1,6939.0,6758.0,-0.026084
+acct_medical_support_compliance,2019,2019.0,0.0,7239.0,0,1,7239.0,7028.0,-0.029148
+acct_medical_support_compliance,2019,2020.0,1.0,7028.0,0,1,7239.0,7028.0,-0.029148
+acct_medical_support_compliance,2019,2021.0,2.0,7028.0,1,1,7239.0,7028.0,-0.029148
+acct_medical_support_compliance,2020,2020.0,0.0,7338.0,0,1,7338.0,7328.0,-0.001363
+acct_medical_support_compliance,2020,2021.0,1.0,7328.0,0,1,7338.0,7328.0,-0.001363
+acct_medical_support_compliance,2020,2022.0,2.0,7328.0,1,1,7338.0,7328.0,-0.001363
+acct_medical_support_compliance,2021,2021.0,0.0,8214.0,0,1,8214.0,8199.0,-0.001826
+acct_medical_support_compliance,2021,2022.0,1.0,8199.0,0,1,8214.0,8199.0,-0.001826
+acct_medical_support_compliance,2021,2023.0,2.0,8199.0,1,1,8214.0,8199.0,-0.001826
+acct_medical_support_compliance,2022,2022.0,0.0,8403.0,0,1,8403.0,8403.0,0.0
+acct_medical_support_compliance,2022,2023.0,1.0,8403.0,0,1,8403.0,8403.0,0.0
+acct_medical_support_compliance,2022,2024.0,2.0,8403.0,1,1,8403.0,8403.0,0.0
+acct_medical_support_compliance,2023,2023.0,0.0,11073.0,0,1,11073.0,11073.0,0.0
+acct_medical_support_compliance,2023,2024.0,1.0,11073.0,0,1,11073.0,11073.0,0.0
+acct_medical_support_compliance,2023,2025.0,2.0,11073.0,1,1,11073.0,11073.0,0.0
+acct_medical_support_compliance,2024,2024.0,0.0,12300.0,0,1,12300.0,10750.0,-0.126016
+acct_medical_support_compliance,2024,2025.0,1.0,12300.0,0,1,12300.0,10750.0,-0.126016
+acct_medical_support_compliance,2024,2026.0,2.0,10750.0,1,1,12300.0,10750.0,-0.126016
+acct_medical_support_compliance,2025,2025.0,0.0,11800.0,0,1,11800.0,11719.0,-0.006864
+acct_medical_support_compliance,2025,2026.0,1.0,11719.0,0,1,11800.0,11719.0,-0.006864
+acct_medical_support_compliance,2025,2027.0,2.0,11719.0,1,1,11800.0,11719.0,-0.006864
+acct_medical_support_compliance,2026,2026.0,0.0,12090.0,0,1,12090.0,11669.0,-0.034822
+acct_medical_support_compliance,2026,2027.0,1.0,11669.0,1,1,12090.0,11669.0,-0.034822
+acct_nca,2016,2016.0,0.0,266.0,0,1,266.0,271.0,0.018797
+acct_nca,2016,2017.0,1.0,271.0,0,1,266.0,271.0,0.018797
+acct_nca,2016,2018.0,2.0,271.0,1,1,266.0,271.0,0.018797
+acct_nca,2017,2017.0,0.0,286.0,0,1,286.0,286.0,0.0
+acct_nca,2017,2018.0,1.0,286.0,0,1,286.0,286.0,0.0
+acct_nca,2017,2019.0,2.0,286.0,1,1,286.0,286.0,0.0
+acct_nca,2018,2018.0,0.0,306.0,0,1,306.0,306.0,0.0
+acct_nca,2018,2019.0,1.0,306.0,0,1,306.0,306.0,0.0
+acct_nca,2018,2020.0,2.0,306.0,1,1,306.0,306.0,0.0
+acct_nca,2019,2019.0,0.0,316.0,0,1,316.0,316.0,0.0
+acct_nca,2019,2020.0,1.0,316.0,0,1,316.0,316.0,0.0
+acct_nca,2019,2021.0,2.0,316.0,1,1,316.0,316.0,0.0
+acct_nca,2020,2020.0,0.0,329.0,0,1,329.0,329.0,0.0
+acct_nca,2020,2021.0,1.0,328.0,0,1,329.0,329.0,0.0
+acct_nca,2020,2022.0,2.0,329.0,1,1,329.0,329.0,0.0
+acct_nca,2021,2021.0,0.0,360.0,0,1,360.0,352.0,-0.022222
+acct_nca,2021,2022.0,1.0,352.0,0,1,360.0,352.0,-0.022222
+acct_nca,2021,2023.0,2.0,352.0,1,1,360.0,352.0,-0.022222
+acct_nca,2022,2022.0,0.0,394.0,0,1,394.0,394.0,0.0
+acct_nca,2022,2023.0,1.0,394.0,0,1,394.0,394.0,0.0
+acct_nca,2022,2024.0,2.0,394.0,1,1,394.0,394.0,0.0
+acct_nca,2023,2023.0,0.0,430.0,0,1,430.0,430.0,0.0
+acct_nca,2023,2024.0,1.0,430.0,0,1,430.0,430.0,0.0
+acct_nca,2023,2025.0,2.0,430.0,1,1,430.0,430.0,0.0
+acct_nca,2024,2024.0,0.0,480.0,0,1,480.0,480.0,0.0
+acct_nca,2024,2025.0,1.0,480.0,0,1,480.0,480.0,0.0
+acct_nca,2024,2026.0,2.0,480.0,1,1,480.0,480.0,0.0
+acct_nca,2025,2025.0,0.0,495.0,0,1,495.0,480.0,-0.030303
+acct_nca,2025,2026.0,1.0,480.0,0,1,495.0,480.0,-0.030303
+acct_nca,2025,2027.0,2.0,480.0,1,1,495.0,480.0,-0.030303
+acct_nca,2026,2026.0,0.0,497.0,0,1,497.0,499.0,0.004024
+acct_nca,2026,2027.0,1.0,499.0,1,1,497.0,499.0,0.004024
+acct_oig,2008,2008.0,0.0,73.0,0,1,73.0,81.0,0.109589
+acct_oig,2008,2009.0,1.0,81.0,0,1,73.0,81.0,0.109589
+acct_oig,2008,2010.0,2.0,81.0,1,1,73.0,81.0,0.109589
+acct_oig,2009,2009.0,0.0,77.0,0,1,77.0,89.0,0.155844
+acct_oig,2009,2010.0,1.0,88.0,0,1,77.0,89.0,0.155844
+acct_oig,2009,2011.0,2.0,89.0,1,1,77.0,89.0,0.155844
+acct_oig,2010,2010.0,0.0,107.0,0,1,107.0,109.0,0.018692
+acct_oig,2010,2011.0,1.0,109.0,0,1,107.0,109.0,0.018692
+acct_oig,2010,2012.0,2.0,109.0,1,1,107.0,109.0,0.018692
+acct_oig,2011,2011.0,0.0,109.0,0,1,109.0,109.0,0.0
+acct_oig,2011,2012.0,1.0,109.0,0,1,109.0,109.0,0.0
+acct_oig,2011,2013.0,2.0,109.0,1,1,109.0,109.0,0.0
+acct_oig,2012,2012.0,0.0,109.0,0,1,109.0,112.0,0.027523
+acct_oig,2012,2013.0,1.0,112.0,0,1,109.0,112.0,0.027523
+acct_oig,2012,2014.0,2.0,112.0,1,1,109.0,112.0,0.027523
+acct_oig,2013,2013.0,0.0,113.0,0,1,113.0,115.0,0.017699
+acct_oig,2013,2014.0,1.0,115.0,0,1,113.0,115.0,0.017699
+acct_oig,2013,2015.0,2.0,115.0,1,1,113.0,115.0,0.017699
+acct_oig,2014,2014.0,0.0,116.0,0,1,116.0,121.0,0.043103
+acct_oig,2014,2015.0,1.0,121.0,0,1,116.0,121.0,0.043103
+acct_oig,2014,2016.0,2.0,121.0,1,1,116.0,121.0,0.043103
+acct_oig,2015,2015.0,0.0,121.0,0,1,121.0,127.0,0.049587
+acct_oig,2015,2016.0,1.0,126.0,0,1,121.0,127.0,0.049587
+acct_oig,2015,2017.0,2.0,127.0,1,1,121.0,127.0,0.049587
+acct_oig,2016,2016.0,0.0,127.0,0,1,127.0,137.0,0.07874
+acct_oig,2016,2017.0,1.0,137.0,0,1,127.0,137.0,0.07874
+acct_oig,2016,2018.0,2.0,137.0,1,1,127.0,137.0,0.07874
+acct_oig,2017,2017.0,0.0,160.0,0,1,160.0,160.0,0.0
+acct_oig,2017,2018.0,1.0,160.0,0,1,160.0,160.0,0.0
+acct_oig,2017,2019.0,2.0,160.0,1,1,160.0,160.0,0.0
+acct_oig,2018,2018.0,0.0,160.0,0,1,160.0,164.0,0.025
+acct_oig,2018,2019.0,1.0,160.0,0,1,160.0,164.0,0.025
+acct_oig,2018,2020.0,2.0,164.0,1,1,160.0,164.0,0.025
+acct_oig,2019,2019.0,0.0,172.0,0,1,172.0,192.0,0.116279
+acct_oig,2019,2020.0,1.0,192.0,0,1,172.0,192.0,0.116279
+acct_oig,2019,2021.0,2.0,192.0,1,1,172.0,192.0,0.116279
+acct_oig,2020,2020.0,0.0,207.0,0,1,207.0,210.0,0.014493
+acct_oig,2020,2021.0,1.0,210.0,0,1,207.0,210.0,0.014493
+acct_oig,2020,2022.0,2.0,210.0,1,1,207.0,210.0,0.014493
+acct_oig,2021,2021.0,0.0,228.0,0,1,228.0,228.0,0.0
+acct_oig,2021,2022.0,1.0,228.0,0,1,228.0,228.0,0.0
+acct_oig,2021,2023.0,2.0,228.0,1,1,228.0,228.0,0.0
+acct_oig,2022,2022.0,0.0,239.0,0,1,239.0,239.0,0.0
+acct_oig,2022,2023.0,1.0,239.0,0,1,239.0,239.0,0.0
+acct_oig,2022,2024.0,2.0,239.0,1,1,239.0,239.0,0.0
+acct_oig,2023,2023.0,0.0,273.0,0,1,273.0,273.0,0.0
+acct_oig,2023,2024.0,1.0,273.0,0,1,273.0,273.0,0.0
+acct_oig,2023,2025.0,2.0,273.0,1,1,273.0,273.0,0.0
+acct_oig,2024,2024.0,0.0,296.0,0,1,296.0,296.0,0.0
+acct_oig,2024,2025.0,1.0,296.0,0,1,296.0,296.0,0.0
+acct_oig,2024,2026.0,2.0,296.0,1,1,296.0,296.0,0.0
+acct_oig,2025,2025.0,0.0,296.0,0,1,296.0,296.0,0.0
+acct_oig,2025,2026.0,1.0,296.0,0,1,296.0,296.0,0.0
+acct_oig,2025,2027.0,2.0,296.0,1,1,296.0,296.0,0.0
+acct_oig,2026,2026.0,0.0,296.0,0,1,296.0,296.0,0.0
+acct_oig,2026,2027.0,1.0,296.0,1,1,296.0,296.0,0.0
+tot_discretionary_derived,2008,2008.0,0.0,41779.0,0,1,41779.0,46112.0,0.103712
+tot_discretionary_derived,2008,2009.0,1.0,45442.0,0,1,41779.0,46112.0,0.103712
+tot_discretionary_derived,2008,2010.0,2.0,46112.0,1,1,41779.0,46112.0,0.103712
+tot_discretionary_derived,2009,2009.0,0.0,47231.0,0,1,47231.0,52000.0,0.100972
+tot_discretionary_derived,2009,2010.0,1.0,50382.0,0,1,47231.0,52000.0,0.100972
+tot_discretionary_derived,2009,2011.0,2.0,52000.0,1,1,47231.0,52000.0,0.100972
+tot_discretionary_derived,2010,2010.0,0.0,55921.0,0,1,55921.0,55926.0,8.9e-05
+tot_discretionary_derived,2010,2011.0,1.0,56081.0,0,1,55921.0,55926.0,8.9e-05
+tot_discretionary_derived,2010,2012.0,2.0,55926.0,1,1,55921.0,55926.0,8.9e-05
+tot_discretionary_derived,2011,2011.0,0.0,60321.0,0,1,60321.0,59108.0,-0.020109
+tot_discretionary_derived,2011,2012.0,1.0,60082.0,0,1,60321.0,59108.0,-0.020109
+tot_discretionary_derived,2011,2013.0,2.0,59108.0,1,1,60321.0,59108.0,-0.020109
+tot_discretionary_derived,2012,2012.0,0.0,61854.0,0,1,61854.0,61476.0,-0.006111
+tot_discretionary_derived,2012,2013.0,1.0,61228.0,0,1,61854.0,61476.0,-0.006111
+tot_discretionary_derived,2012,2014.0,2.0,61476.0,1,1,61854.0,61476.0,-0.006111
+tot_discretionary_derived,2013,2013.0,0.0,63979.0,0,1,63979.0,64242.0,0.004111
+tot_discretionary_derived,2013,2014.0,1.0,63809.0,0,1,63979.0,64242.0,0.004111
+tot_discretionary_derived,2013,2015.0,2.0,64242.0,1,1,63979.0,64242.0,0.004111
+tot_discretionary_derived,2014,2014.0,0.0,66536.0,0,1,66536.0,66471.0,-0.000977
+tot_discretionary_derived,2014,2015.0,1.0,66338.0,0,1,66536.0,66471.0,-0.000977
+tot_discretionary_derived,2014,2016.0,2.0,66471.0,1,1,66536.0,66471.0,-0.000977
+tot_discretionary_derived,2015,2015.0,0.0,68354.0,0,1,68354.0,68549.0,0.002853
+tot_discretionary_derived,2015,2016.0,1.0,68329.0,0,1,68354.0,68549.0,0.002853
+tot_discretionary_derived,2015,2017.0,2.0,68549.0,1,1,68354.0,68549.0,0.002853
+tot_discretionary_derived,2016,2016.0,0.0,73486.0,0,1,73486.0,74406.0,0.012519
+tot_discretionary_derived,2016,2017.0,1.0,75066.0,0,1,73486.0,74406.0,0.012519
+tot_discretionary_derived,2016,2018.0,2.0,74406.0,1,1,73486.0,74406.0,0.012519
+tot_discretionary_derived,2017,2017.0,0.0,78709.0,0,1,78709.0,77864.0,-0.010736
+tot_discretionary_derived,2017,2018.0,1.0,77815.0,0,1,78709.0,77864.0,-0.010736
+tot_discretionary_derived,2017,2019.0,2.0,77864.0,1,1,78709.0,77864.0,-0.010736
+tot_discretionary_derived,2018,2018.0,0.0,82114.0,0,1,82114.0,85185.0,0.037399
+tot_discretionary_derived,2018,2019.0,1.0,82103.0,0,1,82114.0,85185.0,0.037399
+tot_discretionary_derived,2018,2020.0,2.0,85185.0,1,1,82114.0,85185.0,0.037399
+tot_discretionary_derived,2019,2019.0,0.0,88920.0,0,1,88920.0,90532.0,0.018129
+tot_discretionary_derived,2019,2020.0,1.0,90242.0,0,1,88920.0,90532.0,0.018129
+tot_discretionary_derived,2019,2021.0,2.0,90532.0,1,1,88920.0,90532.0,0.018129
+tot_discretionary_derived,2020,2020.0,0.0,96991.0,0,1,96991.0,95467.0,-0.015713
+tot_discretionary_derived,2020,2021.0,1.0,95962.0,0,1,96991.0,95467.0,-0.015713
+tot_discretionary_derived,2020,2022.0,2.0,95467.0,1,1,96991.0,95467.0,-0.015713
+tot_discretionary_derived,2021,2021.0,0.0,109491.0,0,1,109491.0,107674.0,-0.016595
+tot_discretionary_derived,2021,2022.0,1.0,107549.0,0,1,109491.0,107674.0,-0.016595
+tot_discretionary_derived,2021,2023.0,2.0,107674.0,1,1,109491.0,107674.0,-0.016595
+tot_discretionary_derived,2022,2022.0,0.0,118028.0,0,1,118028.0,116331.0,-0.014378
+tot_discretionary_derived,2022,2023.0,1.0,118028.0,0,1,118028.0,116331.0,-0.014378
+tot_discretionary_derived,2022,2024.0,2.0,116331.0,1,1,118028.0,116331.0,-0.014378
+tot_discretionary_derived,2023,2023.0,0.0,140114.0,0,1,140114.0,140099.0,-0.000107
+tot_discretionary_derived,2023,2024.0,1.0,139812.0,0,1,140114.0,140099.0,-0.000107
+tot_discretionary_derived,2023,2025.0,2.0,140099.0,1,1,140114.0,140099.0,-0.000107
+tot_discretionary_derived,2024,2024.0,0.0,142811.0,0,1,142811.0,139484.0,-0.023297
+tot_discretionary_derived,2024,2025.0,1.0,142887.0,0,1,142811.0,139484.0,-0.023297
+tot_discretionary_derived,2024,2026.0,2.0,139484.0,1,1,142811.0,139484.0,-0.023297
+tot_discretionary_derived,2025,2025.0,0.0,133977.0,0,1,133977.0,134134.0,0.001172
+tot_discretionary_derived,2025,2026.0,1.0,133925.0,0,1,133977.0,134134.0,0.001172
+tot_discretionary_derived,2025,2027.0,2.0,134134.0,1,1,133977.0,134134.0,0.001172
+tot_discretionary_derived,2026,2026.0,0.0,140049.0,0,1,140049.0,138290.0,-0.01256
+tot_discretionary_derived,2026,2027.0,1.0,138290.0,1,1,140049.0,138290.0,-0.01256
+tot_mandatory,2008,2008.0,0.0,44595.0,0,1,44595.0,44873.0,0.006234
+tot_mandatory,2008,2009.0,1.0,44849.0,0,1,44595.0,44873.0,0.006234
+tot_mandatory,2008,2010.0,2.0,44873.0,1,1,44595.0,44873.0,0.006234
+tot_mandatory,2009,2009.0,0.0,46435.0,0,1,46435.0,47793.0,0.029245
+tot_mandatory,2009,2010.0,1.0,47328.0,0,1,46435.0,47793.0,0.029245
+tot_mandatory,2009,2011.0,2.0,47793.0,1,1,46435.0,47793.0,0.029245
+tot_mandatory,2010,2010.0,0.0,56923.0,0,1,56923.0,71281.0,0.252235
+tot_mandatory,2010,2011.0,1.0,57954.0,0,1,56923.0,71281.0,0.252235
+tot_mandatory,2010,2012.0,2.0,71281.0,1,1,56923.0,71281.0,0.252235
+tot_mandatory,2011,2011.0,0.0,64683.0,0,1,64683.0,66379.0,0.02622
+tot_mandatory,2011,2012.0,1.0,66447.0,0,1,64683.0,66379.0,0.02622
+tot_mandatory,2011,2013.0,2.0,66379.0,1,1,64683.0,66379.0,0.02622
+tot_mandatory,2012,2012.0,0.0,70312.0,0,1,70312.0,65489.0,-0.068594
+tot_mandatory,2012,2013.0,1.0,65721.0,0,1,70312.0,65489.0,-0.068594
+tot_mandatory,2012,2014.0,2.0,65489.0,1,1,70312.0,65489.0,-0.068594
+tot_mandatory,2013,2013.0,0.0,76368.0,0,1,76368.0,74770.0,-0.020925
+tot_mandatory,2013,2014.0,1.0,74724.0,0,1,76368.0,74770.0,-0.020925
+tot_mandatory,2013,2015.0,2.0,74770.0,1,1,76368.0,74770.0,-0.020925
+tot_mandatory,2014,2014.0,0.0,86146.0,0,1,86146.0,87411.0,0.014684
+tot_mandatory,2014,2015.0,1.0,87543.0,0,1,86146.0,87411.0,0.014684
+tot_mandatory,2014,2016.0,2.0,87411.0,1,1,86146.0,87411.0,0.014684
+tot_mandatory,2015,2015.0,0.0,95569.0,0,1,95569.0,95424.0,-0.001517
+tot_mandatory,2015,2016.0,1.0,95126.0,0,1,95569.0,95424.0,-0.001517
+tot_mandatory,2015,2017.0,2.0,95424.0,1,1,95569.0,95424.0,-0.001517
+tot_mandatory,2016,2016.0,0.0,95316.0,0,1,95316.0,92520.0,-0.029334
+tot_mandatory,2016,2017.0,1.0,92396.0,0,1,95316.0,92520.0,-0.029334
+tot_mandatory,2016,2018.0,2.0,92520.0,1,1,95316.0,92520.0,-0.029334
+tot_mandatory,2017,2017.0,0.0,103631.0,0,1,103631.0,104313.0,0.006581
+tot_mandatory,2017,2018.0,1.0,102213.0,0,1,103631.0,104313.0,0.006581
+tot_mandatory,2017,2019.0,2.0,104313.0,1,1,103631.0,104313.0,0.006581
+tot_mandatory,2018,2018.0,0.0,104347.0,0,1,104347.0,112283.0,0.076054
+tot_mandatory,2018,2019.0,1.0,104347.0,0,1,104347.0,112283.0,0.076054
+tot_mandatory,2018,2020.0,2.0,112283.0,1,1,104347.0,112283.0,0.076054
+tot_mandatory,2019,2019.0,0.0,109652.0,0,1,109652.0,110915.0,0.011518
+tot_mandatory,2019,2020.0,1.0,110896.0,0,1,109652.0,110915.0,0.011518
+tot_mandatory,2019,2021.0,2.0,110915.0,1,1,109652.0,110915.0,0.011518
+tot_mandatory,2020,2020.0,0.0,123213.0,0,1,123213.0,124721.0,0.012239
+tot_mandatory,2020,2021.0,1.0,124724.0,0,1,123213.0,124721.0,0.012239
+tot_mandatory,2020,2022.0,2.0,124721.0,1,1,123213.0,124721.0,0.012239
+tot_mandatory,2021,2021.0,0.0,133766.0,0,1,133766.0,137730.0,0.029634
+tot_mandatory,2021,2022.0,1.0,137730.0,0,1,133766.0,137730.0,0.029634
+tot_mandatory,2021,2023.0,2.0,137730.0,1,1,133766.0,137730.0,0.029634
+tot_mandatory,2022,2022.0,0.0,152654.0,0,1,152654.0,157518.0,0.031863
+tot_mandatory,2022,2023.0,1.0,152654.0,0,1,152654.0,157518.0,0.031863
+tot_mandatory,2022,2024.0,2.0,157518.0,1,1,152654.0,157518.0,0.031863
+tot_mandatory,2023,2023.0,0.0,161282.0,0,1,161282.0,168685.0,0.045901
+tot_mandatory,2023,2024.0,1.0,168710.0,0,1,161282.0,168685.0,0.045901
+tot_mandatory,2023,2025.0,2.0,168685.0,1,1,161282.0,168685.0,0.045901
+tot_mandatory,2024,2024.0,0.0,182320.0,0,1,182320.0,195697.0,0.073371
+tot_mandatory,2024,2025.0,1.0,193461.0,0,1,182320.0,195697.0,0.073371
+tot_mandatory,2024,2026.0,2.0,195697.0,1,1,182320.0,195697.0,0.073371
+tot_mandatory,2025,2025.0,0.0,235280.0,0,1,235280.0,267160.0,0.135498
+tot_mandatory,2025,2026.0,1.0,267009.0,0,1,235280.0,267160.0,0.135498
+tot_mandatory,2025,2027.0,2.0,267160.0,1,1,235280.0,267160.0,0.135498
+tot_mandatory,2026,2026.0,0.0,301165.0,0,1,301165.0,315053.0,0.046114
+tot_mandatory,2026,2027.0,1.0,315053.0,1,1,301165.0,315053.0,0.046114
+tot_va,2008,2008.0,0.0,86374.0,0,1,86374.0,90985.0,0.053384
+tot_va,2008,2009.0,1.0,90291.0,0,1,86374.0,90985.0,0.053384
+tot_va,2008,2010.0,2.0,90985.0,1,1,86374.0,90985.0,0.053384
+tot_va,2009,2009.0,0.0,93666.0,0,1,93666.0,99793.0,0.065413
+tot_va,2009,2010.0,1.0,97710.0,0,1,93666.0,99793.0,0.065413
+tot_va,2009,2011.0,2.0,99793.0,1,1,93666.0,99793.0,0.065413
+tot_va,2010,2010.0,0.0,112844.0,0,1,112844.0,127207.0,0.127282
+tot_va,2010,2011.0,1.0,114035.0,0,1,112844.0,127207.0,0.127282
+tot_va,2010,2012.0,2.0,127207.0,1,1,112844.0,127207.0,0.127282
+tot_va,2011,2011.0,0.0,125004.0,0,1,125004.0,125487.0,0.003864
+tot_va,2011,2012.0,1.0,126529.0,0,1,125004.0,125487.0,0.003864
+tot_va,2011,2013.0,2.0,125487.0,1,1,125004.0,125487.0,0.003864
+tot_va,2012,2012.0,0.0,132166.0,0,1,132166.0,126965.0,-0.039352
+tot_va,2012,2013.0,1.0,126949.0,0,1,132166.0,126965.0,-0.039352
+tot_va,2012,2014.0,2.0,126965.0,1,1,132166.0,126965.0,-0.039352
+tot_va,2013,2013.0,0.0,140347.0,0,1,140347.0,139012.0,-0.009512
+tot_va,2013,2014.0,1.0,138533.0,0,1,140347.0,139012.0,-0.009512
+tot_va,2013,2015.0,2.0,139012.0,1,1,140347.0,139012.0,-0.009512
+tot_va,2014,2014.0,0.0,152682.0,0,1,152682.0,153882.0,0.007859
+tot_va,2014,2015.0,1.0,153881.0,0,1,152682.0,153882.0,0.007859
+tot_va,2014,2016.0,2.0,153882.0,1,1,152682.0,153882.0,0.007859
+tot_va,2015,2015.0,0.0,163923.0,0,1,163923.0,163973.0,0.000305
+tot_va,2015,2016.0,1.0,163455.0,0,1,163923.0,163973.0,0.000305
+tot_va,2015,2017.0,2.0,163973.0,1,1,163923.0,163973.0,0.000305
+tot_va,2016,2016.0,0.0,168802.0,0,1,168802.0,166926.0,-0.011114
+tot_va,2016,2017.0,1.0,167462.0,0,1,168802.0,166926.0,-0.011114
+tot_va,2016,2018.0,2.0,166926.0,1,1,168802.0,166926.0,-0.011114
+tot_va,2017,2017.0,0.0,182340.0,0,1,182340.0,182177.0,-0.000894
+tot_va,2017,2018.0,1.0,180028.0,0,1,182340.0,182177.0,-0.000894
+tot_va,2017,2019.0,2.0,182177.0,1,1,182340.0,182177.0,-0.000894
+tot_va,2018,2018.0,0.0,186461.0,0,1,186461.0,197468.0,0.059031
+tot_va,2018,2019.0,1.0,186450.0,0,1,186461.0,197468.0,0.059031
+tot_va,2018,2020.0,2.0,197468.0,1,1,186461.0,197468.0,0.059031
+tot_va,2019,2019.0,0.0,198572.0,0,1,198572.0,201447.0,0.014478
+tot_va,2019,2020.0,1.0,201138.0,0,1,198572.0,201447.0,0.014478
+tot_va,2019,2021.0,2.0,201447.0,1,1,198572.0,201447.0,0.014478
+tot_va,2020,2020.0,0.0,220204.0,0,1,220204.0,220188.0,-7.3e-05
+tot_va,2020,2021.0,1.0,220686.0,0,1,220204.0,220188.0,-7.3e-05
+tot_va,2020,2022.0,2.0,220188.0,1,1,220204.0,220188.0,-7.3e-05
+tot_va,2021,2021.0,0.0,243257.0,0,1,243257.0,245404.0,0.008826
+tot_va,2021,2022.0,1.0,245279.0,0,1,243257.0,245404.0,0.008826
+tot_va,2021,2023.0,2.0,245404.0,1,1,243257.0,245404.0,0.008826
+tot_va,2022,2022.0,0.0,270682.0,0,1,270682.0,273849.0,0.0117
+tot_va,2022,2023.0,1.0,270682.0,0,1,270682.0,273849.0,0.0117
+tot_va,2022,2024.0,2.0,273849.0,1,1,270682.0,273849.0,0.0117
+tot_va,2023,2023.0,0.0,301396.0,0,1,301396.0,308784.0,0.024513
+tot_va,2023,2024.0,1.0,308522.0,0,1,301396.0,308784.0,0.024513
+tot_va,2023,2025.0,2.0,308784.0,1,1,301396.0,308784.0,0.024513
+tot_va,2024,2024.0,0.0,325131.0,0,1,325131.0,335181.0,0.030911
+tot_va,2024,2025.0,1.0,336348.0,0,1,325131.0,335181.0,0.030911
+tot_va,2024,2026.0,2.0,335181.0,1,1,325131.0,335181.0,0.030911
+tot_va,2025,2025.0,0.0,369257.0,0,1,369257.0,401294.0,0.086761
+tot_va,2025,2026.0,1.0,400934.0,0,1,369257.0,401294.0,0.086761
+tot_va,2025,2027.0,2.0,401294.0,1,1,369257.0,401294.0,0.086761
+tot_va,2026,2026.0,0.0,441214.0,0,1,441214.0,453343.0,0.02749
+tot_va,2026,2027.0,1.0,453343.0,1,1,441214.0,453343.0,0.02749
+mand_comp_pension,2008,2010.0,2.0,41239.0,1,1,,41239.0,
+mand_comp_pension,2009,2010.0,1.0,42656.0,0,1,,42805.9,
+mand_comp_pension,2009,2011.0,2.0,42805.9,1,1,,42805.9,
+mand_comp_pension,2010,2010.0,0.0,47265.0,0,1,47265.0,61177.0,0.29434
+mand_comp_pension,2010,2011.0,1.0,47923.1,0,1,47265.0,61177.0,0.29434
+mand_comp_pension,2010,2012.0,2.0,61177.0,1,1,47265.0,61177.0,0.29434
+mand_comp_pension,2011,2011.0,0.0,53492.2,0,1,53492.2,53040.0,-0.008454
+mand_comp_pension,2011,2012.0,1.0,53978.0,0,1,53492.2,53040.0,-0.008454
+mand_comp_pension,2011,2013.0,2.0,53040.0,1,1,53492.2,53040.0,-0.008454
+mand_comp_pension,2012,2012.0,0.0,58067.0,0,1,58067.0,51238.0,-0.117606
+mand_comp_pension,2012,2013.0,1.0,51238.0,0,1,58067.0,51238.0,-0.117606
+mand_comp_pension,2012,2014.0,2.0,51238.0,1,1,58067.0,51238.0,-0.117606
+mand_comp_pension,2013,2013.0,0.0,61741.0,0,1,61741.0,61425.0,-0.005118
+mand_comp_pension,2013,2014.0,1.0,61425.0,0,1,61741.0,61425.0,-0.005118
+mand_comp_pension,2013,2015.0,2.0,61425.0,1,1,61741.0,61425.0,-0.005118
+mand_comp_pension,2014,2014.0,0.0,71248.0,0,1,71248.0,71476.1,0.003201
+mand_comp_pension,2014,2015.0,1.0,71476.0,0,1,71248.0,71476.1,0.003201
+mand_comp_pension,2014,2016.0,2.0,71476.1,1,1,71248.0,71476.1,0.003201
+mand_comp_pension,2015,2015.0,0.0,78688.0,0,1,78688.0,79071.0,0.004867
+mand_comp_pension,2015,2016.0,1.0,79071.0,0,1,78688.0,79071.0,0.004867
+mand_comp_pension,2015,2017.0,2.0,79071.0,1,1,78688.0,79071.0,0.004867
+mand_comp_pension,2016,2016.0,0.0,79124.7,0,1,79124.7,76865.5,-0.028552
+mand_comp_pension,2016,2017.0,1.0,76865.5,0,1,79124.7,76865.5,-0.028552
+mand_comp_pension,2016,2018.0,2.0,76865.5,1,1,79124.7,76865.5,-0.028552
+mand_comp_pension,2017,2017.0,0.0,86083.1,0,1,86083.1,86083.1,0.0
+mand_comp_pension,2017,2018.0,1.0,86083.1,0,1,86083.1,86083.1,0.0
+mand_comp_pension,2017,2019.0,2.0,86083.1,1,1,86083.1,86083.1,0.0
+mand_comp_pension,2018,2017.0,-1.0,90119.0,0,1,86894.5,90119.4,0.037113
+mand_comp_pension,2018,2018.0,0.0,86894.5,0,1,86894.5,90119.4,0.037113
+mand_comp_pension,2018,2019.0,1.0,90119.4,0,1,86894.5,90119.4,0.037113
+mand_comp_pension,2018,2020.0,2.0,90119.4,1,1,86894.5,90119.4,0.037113
+mand_comp_pension,2019,2019.0,0.0,97178.8,0,1,97178.8,98762.8,0.0163
+mand_comp_pension,2019,2020.0,1.0,98762.8,0,1,97178.8,98762.8,0.0163
+mand_comp_pension,2019,2021.0,2.0,98762.8,1,1,97178.8,98762.8,0.0163
+mand_comp_pension,2020,2019.0,-1.0,107119.8,0,1,109017.2,110457.1,0.013208
+mand_comp_pension,2020,2020.0,0.0,109017.2,0,1,109017.2,110457.1,0.013208
+mand_comp_pension,2020,2021.0,1.0,110457.1,0,1,109017.2,110457.1,0.013208
+mand_comp_pension,2020,2022.0,2.0,110457.1,1,1,109017.2,110457.1,0.013208
+mand_comp_pension,2021,2020.0,-1.0,116801.3,0,1,121060.9,124357.0,0.027227
+mand_comp_pension,2021,2021.0,0.0,121060.9,0,1,121060.9,124357.0,0.027227
+mand_comp_pension,2021,2022.0,1.0,124357.2,0,1,121060.9,124357.0,0.027227
+mand_comp_pension,2021,2023.0,2.0,124357.0,1,1,121060.9,124357.0,0.027227
+mand_comp_pension,2022,2021.0,-1.0,130227.6,0,1,137575.5,139183.0,0.011684
+mand_comp_pension,2022,2022.0,0.0,137575.5,0,1,137575.5,139183.0,0.011684
+mand_comp_pension,2022,2023.0,1.0,137575.0,0,1,137575.5,139183.0,0.011684
+mand_comp_pension,2022,2024.0,2.0,139183.0,1,1,137575.5,139183.0,0.011684
+mand_comp_pension,2023,2022.0,-1.0,147569.5,0,1,0.105,152017.0,1447779.952381
+mand_comp_pension,2023,2023.0,0.0,0.105,0,1,0.105,152017.0,1447779.952381
+mand_comp_pension,2023,2024.0,1.0,152017.0,0,1,0.105,152017.0,1447779.952381
+mand_comp_pension,2023,2025.0,2.0,152017.0,1,1,0.105,152017.0,1447779.952381
+mand_comp_pension,2024,2023.0,-1.0,146778.0,0,1,151434.0,164136.0,0.083878
+mand_comp_pension,2024,2024.0,0.0,151434.0,0,1,151434.0,164136.0,0.083878
+mand_comp_pension,2024,2025.0,1.0,161851.0,0,1,151434.0,164136.0,0.083878
+mand_comp_pension,2024,2026.0,2.0,164136.0,1,1,151434.0,164136.0,0.083878
+mand_comp_pension,2025,2024.0,-1.0,181390.0,0,1,192131.0,212553.0,0.106292
+mand_comp_pension,2025,2025.0,0.0,192131.0,0,1,192131.0,212553.0,0.106292
+mand_comp_pension,2025,2026.0,1.0,212553.0,0,1,192131.0,212553.0,0.106292
+mand_comp_pension,2025,2027.0,2.0,212553.0,1,1,192131.0,212553.0,0.106292
+mand_comp_pension,2026,2026.0,0.0,227240.0,0,1,227240.0,233090.0,0.025744
+mand_comp_pension,2026,2027.0,1.0,233090.0,1,1,227240.0,233090.0,0.025744
+mand_readjustment,2008,2010.0,2.0,3300.0,1,1,,3300.0,
+mand_readjustment,2009,2010.0,1.0,4283.0,0,1,,4132.9,
+mand_readjustment,2009,2011.0,2.0,4132.9,1,1,,4132.9,
+mand_readjustment,2010,2010.0,0.0,8664.0,0,1,8664.0,8822.0,0.018236
+mand_readjustment,2010,2011.0,1.0,8705.4,0,1,8664.0,8822.0,0.018236
+mand_readjustment,2010,2012.0,2.0,8822.0,1,1,8664.0,8822.0,0.018236
+mand_readjustment,2011,2011.0,0.0,10440.2,0,1,10440.2,11335.0,0.085707
+mand_readjustment,2011,2012.0,1.0,10396.0,0,1,10440.2,11335.0,0.085707
+mand_readjustment,2011,2013.0,2.0,11335.0,1,1,10440.2,11335.0,0.085707
+mand_readjustment,2012,2012.0,0.0,11011.0,0,1,11011.0,12108.0,0.099628
+mand_readjustment,2012,2013.0,1.0,12108.0,0,1,11011.0,12108.0,0.099628
+mand_readjustment,2012,2014.0,2.0,12108.0,1,1,11011.0,12108.0,0.099628
+mand_readjustment,2013,2013.0,0.0,12607.0,0,1,12607.0,11199.0,-0.111684
+mand_readjustment,2013,2014.0,1.0,11199.0,0,1,12607.0,11199.0,-0.111684
+mand_readjustment,2013,2015.0,2.0,11199.0,1,1,12607.0,11199.0,-0.111684
+mand_readjustment,2014,2014.0,0.0,13136.0,0,1,13136.0,13135.9,-8e-06
+mand_readjustment,2014,2015.0,1.0,13136.0,0,1,13136.0,13135.9,-8e-06
+mand_readjustment,2014,2016.0,2.0,13135.9,1,1,13136.0,13135.9,-8e-06
+mand_readjustment,2015,2015.0,0.0,14762.0,0,1,14762.0,14997.1,0.015926
+mand_readjustment,2015,2016.0,1.0,14997.1,0,1,14762.0,14997.1,0.015926
+mand_readjustment,2015,2017.0,2.0,14997.1,1,1,14762.0,14997.1,0.015926
+mand_readjustment,2016,2016.0,0.0,15733.3,0,1,15733.3,14313.4,-0.090248
+mand_readjustment,2016,2017.0,1.0,14313.4,0,1,15733.3,14313.4,-0.090248
+mand_readjustment,2016,2018.0,2.0,14313.4,1,1,15733.3,14313.4,-0.090248
+mand_readjustment,2017,2017.0,0.0,16340.8,0,1,16340.8,16340.8,0.0
+mand_readjustment,2017,2018.0,1.0,16340.8,0,1,16340.8,16340.8,0.0
+mand_readjustment,2017,2019.0,2.0,16340.8,1,1,16340.8,16340.8,0.0
+mand_readjustment,2018,2017.0,-1.0,13709.0,0,1,13666.6,13708.6,0.003073
+mand_readjustment,2018,2018.0,0.0,13666.6,0,1,13666.6,13708.6,0.003073
+mand_readjustment,2018,2019.0,1.0,13708.6,0,1,13666.6,13708.6,0.003073
+mand_readjustment,2018,2020.0,2.0,13708.6,1,1,13666.6,13708.6,0.003073
+mand_readjustment,2019,2019.0,0.0,11832.2,0,1,11832.2,11832.2,0.0
+mand_readjustment,2019,2020.0,1.0,11832.2,0,1,11832.2,11832.2,0.0
+mand_readjustment,2019,2021.0,2.0,11832.2,1,1,11832.2,11832.2,0.0
+mand_readjustment,2020,2019.0,-1.0,14065.3,0,1,14065.3,14065.3,0.0
+mand_readjustment,2020,2020.0,0.0,14065.3,0,1,14065.3,14065.3,0.0
+mand_readjustment,2020,2021.0,1.0,14065.3,0,1,14065.3,14065.3,0.0
+mand_readjustment,2020,2022.0,2.0,14065.3,1,1,14065.3,14065.3,0.0
+mand_readjustment,2021,2020.0,-1.0,12579.0,0,1,12579.0,12965.0,0.030686
+mand_readjustment,2021,2021.0,0.0,12579.0,0,1,12579.0,12965.0,0.030686
+mand_readjustment,2021,2022.0,1.0,12579.0,0,1,12579.0,12965.0,0.030686
+mand_readjustment,2021,2023.0,2.0,12965.0,1,1,12579.0,12965.0,0.030686
+mand_readjustment,2022,2021.0,-1.0,14946.6,0,1,14946.6,14947.0,2.7e-05
+mand_readjustment,2022,2022.0,0.0,14946.6,0,1,14946.6,14947.0,2.7e-05
+mand_readjustment,2022,2023.0,1.0,14947.0,0,1,14946.6,14947.0,2.7e-05
+mand_readjustment,2022,2024.0,2.0,14947.0,1,1,14946.6,14947.0,2.7e-05
+mand_readjustment,2023,2022.0,-1.0,8906.9,0,1,-0.404,8907.0,-22048.029703
+mand_readjustment,2023,2023.0,0.0,-0.404,0,1,-0.404,8907.0,-22048.029703
+mand_readjustment,2023,2024.0,1.0,8907.0,0,1,-0.404,8907.0,-22048.029703
+mand_readjustment,2023,2025.0,2.0,8907.0,1,1,-0.404,8907.0,-22048.029703
+mand_readjustment,2024,2023.0,-1.0,8453.0,0,1,8453.0,9424.0,0.11487
+mand_readjustment,2024,2024.0,0.0,8453.0,0,1,8453.0,9424.0,0.11487
+mand_readjustment,2024,2025.0,1.0,8827.0,0,1,8453.0,9424.0,0.11487
+mand_readjustment,2024,2026.0,2.0,9424.0,1,1,8453.0,9424.0,0.11487
+mand_readjustment,2025,2024.0,-1.0,11523.0,0,1,16057.0,18264.0,0.137448
+mand_readjustment,2025,2025.0,0.0,16057.0,0,1,16057.0,18264.0,0.137448
+mand_readjustment,2025,2026.0,1.0,18264.0,0,1,16057.0,18264.0,0.137448
+mand_readjustment,2025,2027.0,2.0,18264.0,1,1,16057.0,18264.0,0.137448
+mand_readjustment,2026,2026.0,0.0,20372.0,0,1,20372.0,25250.0,0.239446
+mand_readjustment,2026,2027.0,1.0,25250.0,1,1,20372.0,25250.0,0.239446
+tef_total,2022,2025.0,3.0,500.0,0,1,,500.0,
+tef_total,2022,2026.0,4.0,500.0,0,1,,500.0,
+tef_total,2022,2027.0,5.0,500.0,1,1,,500.0,
+tef_total,2023,2025.0,2.0,5000.0,0,1,,5000.0,
+tef_total,2023,2026.0,3.0,5000.0,0,1,,5000.0,
+tef_total,2023,2027.0,4.0,5000.0,1,1,,5000.0,
+tef_total,2024,2024.0,0.0,20268.0,0,1,20268.0,20268.0,0.0
+tef_total,2024,2025.0,1.0,20268.0,0,1,20268.0,20268.0,0.0
+tef_total,2024,2026.0,2.0,20268.0,0,1,20268.0,20268.0,0.0
+tef_total,2024,2027.0,3.0,20268.0,1,1,20268.0,20268.0,0.0
+tef_total,2025,2025.0,0.0,24455.0,0,1,24455.0,30455.0,0.245349
+tef_total,2025,2026.0,1.0,30455.0,0,1,24455.0,30455.0,0.245349
+tef_total,2025,2027.0,2.0,30455.0,1,1,24455.0,30455.0,0.245349
+tef_total,2026,2026.0,0.0,52676.0,0,1,52676.0,52676.0,0.0
+tef_total,2026,2027.0,1.0,52676.0,1,1,52676.0,52676.0,0.0
+```
+
+# Data
+
+```{r}
+#| title: "Dataset used by the dashboard (va_data.csv)"
+knitr::kable(head(va, 200))
+```
